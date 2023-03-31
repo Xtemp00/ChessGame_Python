@@ -14,18 +14,42 @@ BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)
 
 # Chargement des images des pièces
+DEFAULT_IMAGE_SIZE = (64,64)
 PAWN_WHITE_IMG = pygame.image.load('pieces/pawn_white.png')
+PAWN_WHITE_IMG = pygame.transform.scale(PAWN_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 PAWN_BLACK_IMG = pygame.image.load('pieces/pawn_black.png')
+PAWN_BLACK_IMG = pygame.transform.scale(PAWN_BLACK_IMG, DEFAULT_IMAGE_SIZE)
+
 ROOK_WHITE_IMG = pygame.image.load('pieces/rook_white.png')
+ROOK_WHITE_IMG = pygame.transform.scale(ROOK_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 ROOK_BLACK_IMG = pygame.image.load('pieces/rook_black.png')
+ROOK_BLACK_IMG = pygame.transform.scale(ROOK_BLACK_IMG, DEFAULT_IMAGE_SIZE)
+
 KNIGHT_WHITE_IMG = pygame.image.load('pieces/knight_white.png')
+KNIGHT_WHITE_IMG = pygame.transform.scale(KNIGHT_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 KNIGHT_BLACK_IMG = pygame.image.load('pieces/knight_black.png')
+KNIGHT_BLACK_IMG = pygame.transform.scale(KNIGHT_BLACK_IMG, DEFAULT_IMAGE_SIZE)
+
 BISHOP_WHITE_IMG = pygame.image.load('pieces/bishop_white.png')
+BISHOP_WHITE_IMG = pygame.transform.scale(BISHOP_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 BISHOP_BLACK_IMG = pygame.image.load('pieces/bishop_black.png')
+BISHOP_BLACK_IMG = pygame.transform.scale(BISHOP_BLACK_IMG, DEFAULT_IMAGE_SIZE)
+
 QUEEN_WHITE_IMG = pygame.image.load('pieces/queen_white.png')
+QUEEN_WHITE_IMG = pygame.transform.scale(QUEEN_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 QUEEN_BLACK_IMG = pygame.image.load('pieces/queen_black.png')
+QUEEN_BLACK_IMG = pygame.transform.scale(QUEEN_BLACK_IMG, DEFAULT_IMAGE_SIZE)
+
 KING_WHITE_IMG = pygame.image.load('pieces/king_white.png')
+KING_WHITE_IMG = pygame.transform.scale(KING_WHITE_IMG, DEFAULT_IMAGE_SIZE)
+
 KING_BLACK_IMG = pygame.image.load('pieces/king_black.png')
+KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 
 
 # Classe pour représenter les pièces du jeu d'échecs
@@ -36,11 +60,14 @@ class Piece:
 
     def draw(self, screen, x, y):
         screen.blit(self.image, (x, y))
+        pygame.display.update()
+        
+        
 
 
 # Classe pour représenter le plateau de jeu
 class Board:
-    def __init__(self):
+    def __init__(self, screen):
         self.grid = []
         for i in range(8):
             row = []
@@ -81,7 +108,8 @@ class Board:
         self.grid[6][5] = Piece('white', PAWN_WHITE_IMG)
         self.grid[6][6] = Piece('white', PAWN_WHITE_IMG)
         self.grid[6][7] = Piece('white', PAWN_WHITE_IMG)
-
+    
+        
     def draw(self, screen):
         for i in range(8):
             for j in range(8):
@@ -89,18 +117,20 @@ class Board:
                     pygame.draw.rect(screen, GRAY, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))
                 else:
                     pygame.draw.rect(screen, WHITE, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-                if self.grid[i][j] is not None:
-                    piece = self.grid[i][j]
-                    piece.draw(screen, j * GRID_SIZE, i * GRID_SIZE)
+                if self.grid[i][j] != None:
+                    self.piece = self.grid[i][j]
+                    self.piece.draw(screen, j * GRID_SIZE, i * GRID_SIZE)
+
+                
 
 
 class Game:
     def __init__(self):
-        self.board = Board()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Jeu d'échec")
+        self.board = Board(self.screen)
         self.selected_piece = None
         self.running = True
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Chess")
 
     def handle_events(self):
         for event in pygame.event.get():
