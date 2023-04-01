@@ -146,10 +146,6 @@ class Game: # Classe pour représenter le jeu
                 self.select_piece(row, col) # On sélectionne la pièce
 
 
-    """def select_piece(self, row, col):
-        piece = self.board.grid[row][col]
-        if piece is not None:
-            self.selected_piece = (row, col)"""
 
     def select_piece(self, row, col): # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]
@@ -166,13 +162,44 @@ class Game: # Classe pour représenter le jeu
             self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
             self.selected_piece = None # On déselectionne la pièce
 
-    """def move_piece(self, row, col):
+
+
+
+    #Ajout des getter et setter(ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
+    def get_piece(self, row, col): # Fonction qui permet de récupérer une pièce
+        return self.board.grid[row][col]
+
+    def get_selected_piece(self): # Fonction qui permet de récupérer la pièce sélectionnée
         if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            self.board.grid[piece_row][piece_col] = None
-            self.board.grid[row][col] = piece
-            self.selected_piece = None"""
+            return self.get_piece(*self.selected_piece)
+        return None
+
+    def get_board(self): # Fonction qui permet de récupérer le plateau de jeu
+        return self.board
+
+    def get_screen(self): # Fonction qui permet de récupérer l'écran
+        return self.screen
+
+    def get_running(self): # Fonction qui permet de récupérer l'état du jeu
+        return self.running
+
+    def set_piece(self, row, col, piece): # Fonction qui permet de placer une pièce
+        self.board.grid[row][col] = piece
+
+    def set_selected_piece(self, row, col): # Fonction qui permet de sélectionner une pièce
+        self.selected_piece = (row, col)
+
+    def set_board(self, board): # Fonction qui permet de placer le plateau de jeu
+        self.board = board
+
+    def set_screen(self, screen): # Fonction qui permet de placer l'écran
+        self.screen = screen
+
+    def set_running(self, running): # Fonction qui permet de changer l'état du jeu
+        self.running = running
+
+
+
 
     def run(self): # Fonction qui permet de lancer le jeu
         while self.running:
