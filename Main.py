@@ -183,6 +183,18 @@ class Game: # Classe pour représenter le jeu
     def get_running(self): # Fonction qui permet de récupérer l'état du jeu
         return self.running
 
+    def get_grid(self):  # Fonction qui permet de récupérer la grille
+        return self.board.grid
+
+    def get_grid_size(self):  # Fonction qui permet de récupérer la taille de la grille
+        return GRID_SIZE
+
+    def get_screen_width(self):  # Fonction qui permet de récupérer la largeur de l'écran
+        return SCREEN_WIDTH
+
+    def get_screen_height(self):  # Fonction qui permet de récupérer la hauteur de l'écran
+        return SCREEN_HEIGHT
+
     def set_piece(self, row, col, piece): # Fonction qui permet de placer une pièce
         self.board.grid[row][col] = piece
 
@@ -197,6 +209,19 @@ class Game: # Classe pour représenter le jeu
 
     def set_running(self, running): # Fonction qui permet de changer l'état du jeu
         self.running = running
+
+    def set_grid(self, grid):  # Fonction qui permet de placer la grille
+        self.board.grid = grid
+
+    def set_grid_size(self, grid_size):  # Fonction qui permet de placer la taille de la grille
+        GRID_SIZE = grid_size
+
+    def set_screen_width(self, screen_width):  # Fonction qui permet de placer la largeur de l'écran
+        SCREEN_WIDTH = screen_width
+
+    def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
+        SCREEN_HEIGHT = screen_height
+
 
 
 
