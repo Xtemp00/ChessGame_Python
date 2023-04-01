@@ -170,8 +170,8 @@ class Game: # Classe pour représenter le jeu
     def select_piece(self, row, col): # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]
         if piece is not None: # Si la pièce n'est pas vide
-            self.selected_piece = (row, col)
-        elif self.selected_piece is not None:
+            self.selected_piece = (row, col) # On sélectionne la pièce
+        elif self.selected_piece is not None: # Si une pièce est sélectionnée
             self.move_piece(row, col) # On déplace la pièce
 
     def move_piece(self, row, col): # Fonction qui permet de déplacer une pièce
@@ -182,7 +182,7 @@ class Game: # Classe pour représenter le jeu
             self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
             self.selected_piece = None # On déselectionne la pièce
 
-    #Ajout des getter et setter(ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
+    # Ajout des getter et setter (ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
     def get_piece(self, row, col): # Fonction qui permet de récupérer une pièce
         return self.board.grid[row][col]
 
@@ -239,7 +239,12 @@ class Game: # Classe pour représenter le jeu
     def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
         SCREEN_HEIGHT = screen_height 
 
-    def run(self): # Fonction qui permet de lancer le jeu
+    def reset(self): # Fonction qui permet de réinitialiser le jeu
+        self.board = Board(self.screen)
+        self.selected_piece = None
+        self.running = True
+
+    def run(self):  # Fonction qui permet de lancer le jeu
         while self.running:
             self.handle_events()
             self.screen.fill(BLACK)
@@ -249,7 +254,7 @@ class Game: # Classe pour représenter le jeu
         
 class AI:
     def __init__(self):
-        # On va récupérer le plateaux d'échec sous forme de tableau
+        # On va récupérer le plateau d'échec sous forme de tableau
         game = Game()
         self.grid = game.get_grid()
         self.Affichage_type()
@@ -264,6 +269,20 @@ class AI:
                     AI_grid[i][j] = "None"
             print("")
         print(AI_grid)
+
+    def get_grid(self):
+        return self.grid
+
+    def set_grid(self, grid):
+        self.grid = grid
+
+    def get_AI_grid(self):
+        return self.AI_grid
+
+    def set_AI_grid(self, AI_grid):
+        self.AI_grid = AI_grid
+
+
 
 
 
