@@ -66,6 +66,7 @@ class Piece: # Piece est une classe qui contient une couleur, une image et un ty
     def draw(self, screen, x, y): # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))
         updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE))
+        
 
 
 # Classe pour représenter le plateau de jeu
@@ -162,9 +163,6 @@ class Game: # Classe pour représenter le jeu
             self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
             self.selected_piece = None # On déselectionne la pièce
 
-
-
-
     #Ajout des getter et setter(ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
     def get_piece(self, row, col): # Fonction qui permet de récupérer une pièce
         return self.board.grid[row][col]
@@ -220,11 +218,7 @@ class Game: # Classe pour représenter le jeu
         SCREEN_WIDTH = screen_width
 
     def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
-        SCREEN_HEIGHT = screen_height
-
-
-
-
+        SCREEN_HEIGHT = screen_height 
 
     def run(self): # Fonction qui permet de lancer le jeu
         while self.running:
@@ -233,6 +227,18 @@ class Game: # Classe pour représenter le jeu
             self.board.draw(self.screen)
             pygame.display.flip()
         pygame.quit()
+        
+class AI:
+    def __init__(self):
+        # On va récupérer le plateaux d'échec sous forme de tableau
+        game = Game()
+        self.grid = game.get_grid()
+        self.Affichage()
+        
+    def Affichage(self):
+        for i in range(8):
+            for j in range(8):
+                print(self.grid[i][j])
 
 class Main_Screen: # Classe pour représenter l'écran d'accueil
     def __init__(self): # Fonction d'initialisation
@@ -249,6 +255,7 @@ class Main_Screen: # Classe pour représenter l'écran d'accueil
                 print(x,y)
                 if x > 150 and x < 340 and y > 300 and y < 400: # Si on clique sur le bouton "Jouer"
                     game = Game() # On lance le jeu
+                    AI()
                     game.run()
 
     def draw(self): # Fonction qui permet de dessiner l'écran d'accueil
@@ -261,12 +268,16 @@ class Main_Screen: # Classe pour représenter l'écran d'accueil
         text = font.render("Jouer", 1, BLACK) # On écrit le texte
         self.screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 310)) # On affiche le texte
         pygame.display.update() # On met à jour l'affichage
+        
+        
 
     def run(self): # Fonction qui permet de lancer l'écran d'accueil
         while self.running:
             self.handle_events()
             self.draw()
         pygame.quit()
+        
+        
 if __name__ == '__main__': # Si on lance le script
     pygame.init()
     main_screen = Main_Screen() # On lance l'écran d'accueil
