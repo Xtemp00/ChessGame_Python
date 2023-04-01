@@ -58,7 +58,7 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 
 # Classe pour représenter les pièces du jeu d'échecs
 class Piece: # Piece est une classe qui contient une couleur, une image et un type
-    def __init__(self, color, image,type): # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
+    def __init__(self, color, image, type): # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
         self.color = color
         self.image = image
         self.type = type
@@ -66,6 +66,26 @@ class Piece: # Piece est une classe qui contient une couleur, une image et un ty
     def draw(self, screen, x, y): # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))
         updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE))
+
+    def get_type(self):
+        return self.type
+
+    def get_color(self):
+        return self.color
+
+    def get_image(self):
+        return self.image
+
+    def set_image(self,image):
+        self.image = image
+
+    def set_type(self,type):
+        self.type = type
+
+    def set_color(self,color):
+        self.color = color
+
+
         
 
 
@@ -145,7 +165,6 @@ class Game: # Classe pour représenter le jeu
                 row = y // GRID_SIZE # On calcule la ligne
                 col = x // GRID_SIZE # On calcule la colonne
                 self.select_piece(row, col) # On sélectionne la pièce
-
 
 
     def select_piece(self, row, col): # Fonction qui permet de sélectionner une pièce
@@ -233,12 +252,22 @@ class AI:
         # On va récupérer le plateaux d'échec sous forme de tableau
         game = Game()
         self.grid = game.get_grid()
-        self.Affichage()
+        self.Affichage_type()
         
-    def Affichage(self):
+    def Affichage_type(self):
+        AI_grid = [[0 for i in range(8)] for j in range(8)]
         for i in range(8):
             for j in range(8):
-                print(self.grid[i][j])
+                if self.grid[i][j] is not None:
+                    AI_grid[i][j] = [self.grid[i][j].get_type(), self.grid[i][j].get_color(), i , j]
+                else:
+                    AI_grid[i][j] = "None"
+            print("")
+        print(AI_grid)
+
+
+
+
 
 class Main_Screen: # Classe pour représenter l'écran d'accueil
     def __init__(self): # Fonction d'initialisation
