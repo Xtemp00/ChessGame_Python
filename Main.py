@@ -193,16 +193,44 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            #piece2 = self.board.grid[piece_row][piece_col-1]
             if piece.type == "pawn": # Si la pièce est un pion
-                if self.board.grid[row - 1][col] is not None and self.board.grid[row - 1][col].color == "black" : # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                if self.board.grid[row + 1][col] is not None and self.board.grid[row + 1][col].color == "white": # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
+                if piece.color == "white": # Si la pièce est blanche
+                    if row == piece_row - 1 and col == piece_col and self.board.grid[row][col] is None:
+                        # Déplacement normal d'un pion blanc
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+                    elif piece_row == 6 and row == piece_row - 2 and col == piece_col and self.board.grid[row][
+                        col] is None and self.board.grid[row + 1][col] is None:
+                        # Déplacement initial d'un pion blanc
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+                    elif row == piece_row - 1 and abs(col - piece_col) == 1 and self.board.grid[row][
+                        col] is not None and self.board.grid[row][col].color == "black":
+                        # Prise en diagonale d'un pion noir par un pion blanc
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+                else:
+                    if row == piece_row + 1 and col == piece_col and self.board.grid[row][col] is None:
+                        # Déplacement normal d'un pion noir
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+                    elif piece_row == 1 and row == piece_row + 2 and col == piece_col and self.board.grid[row][
+                        col] is None and self.board.grid[row - 1][col] is None:
+                        # Déplacement initial d'un pion noir
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+                    elif row == piece_row + 1 and abs(col - piece_col) == 1 and self.board.grid[row][
+                        col] is not None and self.board.grid[row][col].color == "white":
+                        # Prise en diagonale d'un pion blanc par un pion noir
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+
 
     def rook_move(self, row, col): # Fonction qui permet de déplacer une tour
         if self.selected_piece is not None: # Si une pièce est sélectionnée
@@ -216,39 +244,22 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "knight": # Si la pièce est un cavalier
-                if self.board.grid[row + 2][col + 1] is not None: # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row + 2][col - 1] is not None:
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row - 2][col + 1] is not None:
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row - 2][col - 1] is not None:
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row + 1][col + 2] is not None: # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
-                elif self.board.grid[row + 1][col - 2] is not None: # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
-                elif self.board.grid[row - 1][col + 2] is not None: # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
-                elif self.board.grid[row - 1][col - 2] is not None: # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
+            if piece.type == "knight":
+                # Vérification des déplacements valides pour un cavalier
+                if ((row == piece_row + 2 and col == piece_col + 1) or
+                        (row == piece_row + 2 and col == piece_col - 1) or
+                        (row == piece_row - 2 and col == piece_col + 1) or
+                        (row == piece_row - 2 and col == piece_col - 1) or
+                        (row == piece_row + 1 and col == piece_col + 2) or
+                        (row == piece_row + 1 and col == piece_col - 2) or
+                        (row == piece_row - 1 and col == piece_col + 2) or
+                        (row == piece_row - 1 and col == piece_col - 2)):
+
+                    # Vérification si la case d'arrivée est vide ou contient une pièce adverse
+                    if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color:
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
 
     def bishop_move(self, row, col): # Fonction qui permet de déplacer un fou
         if self.selected_piece is not None:
@@ -270,43 +281,16 @@ class Game:  # Classe pour représenter le jeu
                 elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
                     self.board.grid[row][col] = None # On vide la case de départ
 
-    def king_move(self, row, col): # Fonction qui permet de déplacer un roi
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "king": # Si la pièce est un roi
-                if self.board.grid[row + 1][col] is not None : # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row - 1][col] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row][col + 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row][col - 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row + 1][col + 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row + 1][col - 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row - 1][col + 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row - 1][col - 1] is not None :
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-                    self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None  # On déselectionne la pièce
+    def king_move(self, row, col):
+        if self.selected_piece is not None:
+            piece_row, piece_col = self.selected_piece
+            piece = self.board.grid[piece_row][piece_col]
+            if piece.type == "king":
+                if abs(row - piece_row) <= 1 and abs(col - piece_col) <= 1 and (row, col) != (piece_row, piece_col):
+                    if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color:
+                        self.board.grid[piece_row][piece_col] = None
+                        self.board.grid[row][col] = piece
+                        self.selected_piece = None
     def move(self, row, col): # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
