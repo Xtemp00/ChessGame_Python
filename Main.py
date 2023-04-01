@@ -57,10 +57,11 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 # Classe pour représenter les pièces du jeu d'échecs
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
-                 type):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
+                 type, id):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
         self.color = color
         self.image = image
         self.type = type
+        self.id = id
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))
@@ -75,6 +76,12 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
 
     def get_image(self):
         return self.image
+    
+    def get_id(self):
+        return self.image
+    
+    def set_id(self, id):
+        self.id = id
 
     def set_image(self, image):
         self.image = image
@@ -98,38 +105,38 @@ class Board:  # Board est une classe qui contient une liste de pièces
             self.grid.append(row)  # self.grid est une liste de pièces
 
         # Placement des pièces initiales
-        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook")
-        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight")
-        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop")
-        self.grid[0][3] = Piece('black', QUEEN_BLACK_IMG, "queen")
-        self.grid[0][4] = Piece('black', KING_BLACK_IMG, "king")
-        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop")
-        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight")
-        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook")
-        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn")
-        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook")
-        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight")
-        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop")
-        self.grid[7][3] = Piece('white', QUEEN_WHITE_IMG, "queen")
-        self.grid[7][4] = Piece('white', KING_WHITE_IMG, "king")
-        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop")
-        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight")
-        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook")
-        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn")
-        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn")
+        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook",1)
+        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight",2)
+        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop",3)
+        self.grid[0][3] = Piece('black', QUEEN_BLACK_IMG, "queen",4)
+        self.grid[0][4] = Piece('black', KING_BLACK_IMG, "king",5)
+        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop",6)
+        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight",7)
+        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook",8)
+        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn",9)
+        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn",10)
+        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn",11)
+        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn",12)
+        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn",13)
+        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn",14)
+        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn",15)
+        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn",16)
+        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook",17)
+        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight",18)
+        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop",19)
+        self.grid[7][3] = Piece('white', QUEEN_WHITE_IMG, "queen",20)
+        self.grid[7][4] = Piece('white', KING_WHITE_IMG, "king",21)
+        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop",22)
+        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight",23)
+        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook",24)
+        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn",25)
+        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn",26)
+        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn",27)
+        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn",28)
+        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn",29)
+        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn",30)
+        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn",31)
+        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn",32)
 
     def draw(self, screen):  # Fonction pour dessiner le plateau de jeu
         for i in range(8):
@@ -186,6 +193,7 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+            piece2 = self.board.grid[piece_row][piece_col-1]
             if piece.type == "pawn": # Si la pièce est un pion
                 if self.board.grid[row - 1][col] is not None and self.board.grid[row - 1][col].color == "black":  # Si la case d'arrivée est vide
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
@@ -376,6 +384,9 @@ class Game:  # Classe pour représenter le jeu
 
     def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
         SCREEN_HEIGHT = screen_height
+        
+    def set_grid(self, grid):
+        self.grid = grid
 
     def reset(self):  # Fonction qui permet de réinitialiser le jeu
         self.board = Board(self.screen)
@@ -408,6 +419,20 @@ class AI:
                     AI_grid[i][j] = ["None", i, j]
             print("")
         print(AI_grid)
+        
+    def Input(self,x,y):
+        # Coordoner de d'arriver x,y 
+        self.x
+        self.y
+        game = Game()
+        self.grid = game.get_grid()
+        for i in range (8):
+            for j in range(8):
+                if self.grid[x][y] is not None :
+                    # Déplacement de la pièces a la position final
+                    game.set_grid(grid)
+                
+                
 
     def get_grid(self):
         return self.grid
