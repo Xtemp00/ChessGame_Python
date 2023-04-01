@@ -1,19 +1,19 @@
-import pygame
+import pygame # Importation du module Pygame
 
 # Initialisation de Pygame
-pygame.init()
+pygame.init() # Initialise les modules de Pygame
 
-updated_rects = []
+updated_rects = [] # Liste des rectangles de l'écran qui ont été mis à jour
 
 # Constantes pour la taille de l'écran et de la grille de jeu
-SCREEN_WIDTH = 480
-SCREEN_HEIGHT = 480
-GRID_SIZE = SCREEN_WIDTH // 8
+SCREEN_WIDTH = 480 # Largeur de l'écran
+SCREEN_HEIGHT = 480 # Taille de l'écran
+GRID_SIZE = SCREEN_WIDTH // 8 # Taille d'une case du plateau de jeu
 
 # Couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (128, 128, 128)
+WHITE = (255, 255, 255) # Blanc
+BLACK = (0, 0, 0) # Noir
+GRAY = (128, 128, 128) # Gris
 
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
@@ -58,14 +58,14 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
                  type, id):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
-        self.color = color
-        self.image = image
-        self.type = type
-        self.id = id
+        self.color = color # color est une chaîne de caractères
+        self.image = image # image est un objet de la classe pygame.Surface
+        self.type = type # type est une chaîne de caractères
+        self.id = id # id est un entier
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
-        screen.blit(self.image, (x, y))
-        updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE))
+        screen.blit(self.image, (x, y)) # Dessine l'image de la pièce sur l'écran
+        updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE)) # Ajout de la zone de l'écran qui a été mise à jour
 
 
     def get_type(self):
@@ -98,10 +98,10 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
 class Board:  # Board est une classe qui contient une liste de pièces
     def __init__(self, screen):  # screen est un objet de la classe pygame.Surface
         self.grid = []  # self.grid est une liste de pièces
-        for i in range(8):
+        for i in range(8): # i est un entier
             row = []  # row est une liste de pièces
-            for j in range(8):
-                row.append(None)
+            for j in range(8): # j est un entier
+                row.append(None) # row est une liste de pièces
             self.grid.append(row)  # self.grid est une liste de pièces
 
         # Placement des pièces initiales
@@ -139,15 +139,15 @@ class Board:  # Board est une classe qui contient une liste de pièces
         self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn",32)
 
     def draw(self, screen):  # Fonction pour dessiner le plateau de jeu
-        for i in range(8):
-            for j in range(8):
+        for i in range(8): # Pour chaque case du plateau
+            for j in range(8): # Pour chaque case du plateau
                 if (i + j) % 2 == 0:  # Pour dessiner les cases blanches et noires
-                    pygame.draw.rect(screen, GRAY, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))
+                    pygame.draw.rect(screen, GRAY, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE)) # On dessine la case
                 else:
-                    pygame.draw.rect(screen, WHITE, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))
+                    pygame.draw.rect(screen, WHITE, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE)) # On dessine la case
                 if self.grid[i][j] is not None:  # Pour dessiner les pièces
-                    x = j * GRID_SIZE
-                    y = i * GRID_SIZE
+                    x = j * GRID_SIZE # On récupère les coordonnées de la pièce
+                    y = i * GRID_SIZE # On récupère les coordonnées de la pièce
                     self.grid[i][j].draw(screen, x, y)  # On dessine la pièce
         pygame.display.update(updated_rects)  # On met à jour l'affichage
 
@@ -158,11 +158,11 @@ def get_grid_size():  # Fonction qui permet de récupérer la taille de la grill
 
 class Game:  # Classe pour représenter le jeu
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Jeu d'échec")
-        self.board = Board(self.screen)
-        self.selected_piece = None
-        self.running = True
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # On crée une fenêtre
+        pygame.display.set_caption("Jeu d'échec") # On donne un titre à la fenêtre
+        self.board = Board(self.screen) # On crée un plateau de jeu
+        self.selected_piece = None # Pour savoir quelle pièce est sélectionnée
+        self.running = True # Pour savoir si le jeu est en cours
 
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
@@ -193,9 +193,9 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            piece2 = self.board.grid[piece_row][piece_col-1]
+            #piece2 = self.board.grid[piece_row][piece_col-1]
             if piece.type == "pawn": # Si la pièce est un pion
-                if self.board.grid[row - 1][col] is not None and self.board.grid[row - 1][col].color == "black":  # Si la case d'arrivée est vide
+                if self.board.grid[row - 1][col] is not None and self.board.grid[row - 1][col].color == "black" : # Si la case d'arrivée est vide
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                     self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                     self.selected_piece = None  # On déselectionne la pièce
@@ -213,11 +213,11 @@ class Game:  # Classe pour représenter le jeu
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
 
     def knight_move(self, row, col): # Fonction qui permet de déplacer un cavalier
-        if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            if piece.type == "knight":
-                if self.board.grid[row + 2][col + 1] is not None:
+        if self.selected_piece is not None: # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+            if piece.type == "knight": # Si la pièce est un cavalier
+                if self.board.grid[row + 2][col + 1] is not None: # Si la case d'arrivée est vide
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                     self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                     self.selected_piece = None  # On déselectionne la pièce
@@ -233,22 +233,22 @@ class Game:  # Classe pour représenter le jeu
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                     self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                     self.selected_piece = None  # On déselectionne la pièce
-                elif self.board.grid[row + 1][col + 2] is not None:
-                    self.board.grid[piece_row][piece_col] = None
-                    self.board.grid[row][col] = piece
-                    self.selected_piece = None
-                elif self.board.grid[row + 1][col - 2] is not None:
-                    self.board.grid[piece_row][piece_col] = None
-                    self.board.grid[row][col] = piece
-                    self.selected_piece = None
-                elif self.board.grid[row - 1][col + 2] is not None:
-                    self.board.grid[piece_row][piece_col] = None
-                    self.board.grid[row][col] = piece
-                    self.selected_piece = None
-                elif self.board.grid[row - 1][col - 2] is not None:
-                    self.board.grid[piece_row][piece_col] = None
-                    self.board.grid[row][col] = piece
-                    self.selected_piece = None
+                elif self.board.grid[row + 1][col + 2] is not None: # Si la case d'arrivée est vide
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
+                elif self.board.grid[row + 1][col - 2] is not None: # Si la case d'arrivée est vide
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
+                elif self.board.grid[row - 1][col + 2] is not None: # Si la case d'arrivée est vide
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
+                elif self.board.grid[row - 1][col - 2] is not None: # Si la case d'arrivée est vide
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
 
     def bishop_move(self, row, col): # Fonction qui permet de déplacer un fou
         if self.selected_piece is not None:
@@ -257,25 +257,25 @@ class Game:  # Classe pour représenter le jeu
             if piece.type == "bishop":
                 if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black":
                     self.board.grid[row][col] = None
-                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black":
-                    self.board.grid[row][col] = None
+                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
+                    self.board.grid[row][col] = None # On vide la case de départ
 
     def queen_move(self, row, col): # Fonction qui permet de déplacer une reine
-        if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            if piece.type == "queen":
-                if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black":
-                    self.board.grid[row][col] = None
-                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black":
-                    self.board.grid[row][col] = None
+        if self.selected_piece is not None: # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+            if piece.type == "queen": # Si la pièce est une reine
+                if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
+                    self.board.grid[row][col] = None # On vide la case de départ
+                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
+                    self.board.grid[row][col] = None # On vide la case de départ
 
     def king_move(self, row, col): # Fonction qui permet de déplacer un roi
-        if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            if piece.type == "king":
-                if self.board.grid[row + 1][col] is not None :
+        if self.selected_piece is not None: # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+            if piece.type == "king": # Si la pièce est un roi
+                if self.board.grid[row + 1][col] is not None : # Si la case d'arrivée est vide
                     self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                     self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                     self.selected_piece = None  # On déselectionne la pièce
@@ -326,125 +326,125 @@ class Game:  # Classe pour représenter le jeu
             self.selected_piece = None # On déselectionne la pièce
         else: # Si aucune pièce n'est sélectionnée
             if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "white": # Si la case sélectionnée contient une pièce blanche
-                self.selected_piece = (row, col)
+                self.selected_piece = (row, col) # On sélectionne la pièce
 
     def update(self):  # Fonction qui permet de mettre à jour le jeu
         self.board.draw(self.screen)  # On dessine le plateau de jeu
 
     # Ajout des getter et setter (ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
-        return self.board.grid[row][col]
+        return self.board.grid[row][col] # On retourne la pièce
 
     def get_selected_piece(self):  # Fonction qui permet de récupérer la pièce sélectionnée
-        if self.selected_piece is not None:
-            return self.get_piece(*self.selected_piece)
-        return None
+        if self.selected_piece is not None: # Si une pièce est sélectionnée
+            return self.get_piece(*self.selected_piece) # On retourne la pièce sélectionnée
+        return None # On retourne la pièce sélectionnée
 
     def get_board(self):  # Fonction qui permet de récupérer le plateau de jeu
-        return self.board
+        return self.board # On retourne le plateau de jeu
 
     def get_screen(self):  # Fonction qui permet de récupérer l'écran
-        return self.screen
+        return self.screen # On retourne l'écran
 
     def get_running(self):  # Fonction qui permet de récupérer l'état du jeu
-        return self.running
+        return self.running # On retourne l'état du jeu
 
     def get_grid(self):  # Fonction qui permet de récupérer la grille
-        return self.board.grid
+        return self.board.grid # On retourne la grille
 
     def get_screen_width(self):  # Fonction qui permet de récupérer la largeur de l'écran
-        return SCREEN_WIDTH
+        return SCREEN_WIDTH # On retourne la largeur de l'écran
 
     def get_screen_height(self):  # Fonction qui permet de récupérer la hauteur de l'écran
-        return SCREEN_HEIGHT
+        return SCREEN_HEIGHT # On retourne la hauteur de l'écran
 
     def set_piece(self, row, col, piece):  # Fonction qui permet de placer une pièce
-        self.board.grid[row][col] = piece
+        self.board.grid[row][col] = piece # On place la pièce
 
     def set_selected_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
-        self.selected_piece = (row, col)
+        self.selected_piece = (row, col) # On sélectionne la pièce
 
     def set_board(self, board):  # Fonction qui permet de placer le plateau de jeu
-        self.board = board
+        self.board = board # On place le plateau de jeu
 
     def set_screen(self, screen):  # Fonction qui permet de placer l'écran
-        self.screen = screen
+        self.screen = screen # On place l'écran
 
     def set_running(self, running):  # Fonction qui permet de changer l'état du jeu
-        self.running = running
+        self.running = running # On change l'état du jeu
 
     def set_grid(self, grid):  # Fonction qui permet de placer la grille
-        self.board.grid = grid
+        self.board.grid = grid # On place la grille
 
     def set_grid_size(self, grid_size):  # Fonction qui permet de placer la taille de la grille
-        GRID_SIZE = grid_size
+        GRID_SIZE = grid_size # On place la taille de la grille
 
     def set_screen_width(self, screen_width):  # Fonction qui permet de placer la largeur de l'écran
-        SCREEN_WIDTH = screen_width
+        SCREEN_WIDTH = screen_width # On place la largeur de l'écran
 
     def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
-        SCREEN_HEIGHT = screen_height
+        SCREEN_HEIGHT = screen_height # On place la hauteur de l'écran
         
-    def set_grid(self, grid):
-        self.grid = grid
+    def set_grid(self, grid): # Fonction qui permet de placer la grille
+        self.grid = grid # On place la grille
 
     def reset(self):  # Fonction qui permet de réinitialiser le jeu
-        self.board = Board(self.screen)
-        self.selected_piece = None
-        self.running = True
+        self.board = Board(self.screen) # On réinitialise le plateau de jeu
+        self.selected_piece = None # On déselectionne la pièce
+        self.running = True # On lance le jeu
 
     def run(self):  # Fonction qui permet de lancer le jeu
-        while self.running:
-            self.handle_events()
-            self.screen.fill(BLACK)
-            self.board.draw(self.screen)
-            pygame.display.flip()
-        pygame.quit()
+        while self.running: # Tant que le jeu est lancé
+            self.handle_events() # On gère les évènements
+            self.screen.fill(BLACK) # On remplit l'écran de noir
+            self.board.draw(self.screen) # On dessine le plateau de jeu
+            pygame.display.flip() # On met à jour l'écran
+        pygame.quit() # On quitte pygame
 
 
-class AI:
+class AI: # Classe qui permet de créer un IA
     def __init__(self):
         # On va récupérer le plateau d'échec sous forme de tableau
-        game = Game()
-        self.grid = game.get_grid()
-        self.Affichage_type()
+        game = Game() # On récupère le jeu
+        self.grid = game.get_grid() # On récupère le plateau de jeu
+        self.Affichage_type() # On affiche le tableau
 
-    def Affichage_type(self):
-        AI_grid = [[0 for i in range(8)] for j in range(8)]
-        for i in range(8):
-            for j in range(8):
-                if self.grid[i][j] is not None:
-                    AI_grid[i][j] = [self.grid[i][j].get_type(), self.grid[i][j].get_color(), i, j]
-                else:
-                    AI_grid[i][j] = ["None", i, j]
-            print("")
-        print(AI_grid)
+    def Affichage_type(self): # Affichage du tableau
+        AI_grid = [[0 for i in range(8)] for j in range(8)] # Création d'un tableau de 8*8
+        for i in range(8): # On parcours le tableau
+            for j in range(8): # On parcours le tableau
+                if self.grid[i][j] is not None: # Si la case n'est pas vide
+                    AI_grid[i][j] = [self.grid[i][j].get_type(), self.grid[i][j].get_color(), i, j] # On ajoute le type de la pièce
+                else: # Sinon
+                    AI_grid[i][j] = ["None", i, j] # On ajoute "None"
+            print("") # On saute une ligne
+        print(AI_grid) # On affiche le tableau
         
     def Input(self,x,y):
         # Coordoner de d'arriver x,y 
-        self.x
-        self.y
-        game = Game()
-        self.grid = game.get_grid()
-        for i in range (8):
-            for j in range(8):
-                if self.grid[x][y] is not None :
+        self.x = x
+        self.y = y
+        game = Game() # On récupère le plateau de jeu
+        self.grid = game.get_grid() # On récupère le plateau de jeu
+        for i in range (8): # On parcours le tableau
+            for j in range(8): # On parcours le tableau
+                if self.grid[x][y] is not None : # Si la case n'est pas vide
                     # Déplacement de la pièces a la position final
-                    game.set_grid(grid)
+                    game.set_grid(self.grid) # On place le plateau de jeu
                 
                 
 
-    def get_grid(self):
-        return self.grid
+    def get_grid(self): # Fonction qui permet de récupérer le plateau de jeu
+        return self.grid # On retourne le plateau de jeu
 
-    def set_grid(self, grid):
-        self.grid = grid
+    def set_grid(self, grid): # Fonction qui permet de placer le plateau de jeu
+        self.grid = grid # On place le plateau de jeu
 
-    def get_AI_grid(self):
-        return self.AI_grid
+    def get_AI_grid(self): # Fonction qui permet de récupérer le plateau de jeu
+        return self.AI_grid # On retourne le plateau de jeu
 
-    def set_AI_grid(self, AI_grid):
-        self.AI_grid = AI_grid
+    def set_AI_grid(self, AI_grid): # Fonction qui permet de placer le plateau de jeu
+        self.AI_grid = AI_grid # On place le plateau de jeu
 
 
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
