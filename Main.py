@@ -182,8 +182,40 @@ class Game: # Classe pour représenter le jeu
             pygame.display.flip()
         pygame.quit()
 
+class Main_Screen: # Classe pour représenter l'écran d'accueil
+    def __init__(self): # Fonction d'initialisation
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Jeu d'échec")
+        self.running = True
 
+    def handle_events(self): # Fonction qui gère les événements
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Si on clique sur la souris
+                x, y = pygame.mouse.get_pos() # On récupère les coordonnées de la souris
+                print(x,y)
+                if x > 150 and x < 340 and y > 300 and y < 400: # Si on clique sur le bouton "Jouer"
+                    game = Game() # On lance le jeu
+                    game.run()
+
+    def draw(self): # Fonction qui permet de dessiner l'écran d'accueil
+        self.screen.fill(BLACK)
+        font = pygame.font.SysFont('comicsans', 70) # On définit la police
+        text = font.render("Jeu d'échec", 1, WHITE) # On écrit le texte
+        self.screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 100)) # On affiche le texte
+        pygame.draw.rect(self.screen, WHITE, (150, 300, 190, 100)) # On dessine le bouton "Jouer"
+        font = pygame.font.SysFont('comicsans', 50) # On définit la police
+        text = font.render("Jouer", 1, BLACK) # On écrit le texte
+        self.screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 310)) # On affiche le texte
+        pygame.display.update() # On met à jour l'affichage
+
+    def run(self): # Fonction qui permet de lancer l'écran d'accueil
+        while self.running:
+            self.handle_events()
+            self.draw()
+        pygame.quit()
 if __name__ == '__main__': # Si on lance le script
     pygame.init()
-    game = Game()
-    game.run()
+    main_screen = Main_Screen() # On lance l'écran d'accueil
+    main_screen.run()
