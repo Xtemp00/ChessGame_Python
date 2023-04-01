@@ -449,21 +449,21 @@ class AI: # Classe qui permet de créer un IA
 
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Jeu d'échec")
-        self.running = True
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # On crée une fenêtre
+        pygame.display.set_caption("Jeu d'échec") # On donne un titre à la fenêtre
+        self.running = True # Variable qui permet de savoir si le jeu est lancé ou non
 
     def handle_events(self):  # Fonction qui gère les événements
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+        for event in pygame.event.get(): # On parcours la liste des événements reçus
+            if event.type == pygame.QUIT: # Si on clique sur la croix
+                self.running = False # On quitte le jeu
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Si on clique sur la souris
                 x, y = pygame.mouse.get_pos()  # On récupère les coordonnées de la souris
-                print(x, y)
+                print(x, y) # On affiche les coordonnées de la souris
                 if x > 150 and x < 340 and y > 300 and y < 400:  # Si on clique sur le bouton "Jouer"
                     game = Game()  # On lance le jeu
-                    AI()
-                    game.run()
+                    AI() # On lance l'IA
+                    game.run() # On lance le jeu
 
     def draw(self):  # Fonction qui permet de dessiner l'écran d'accueil
         self.screen.fill(BLACK)
@@ -477,13 +477,13 @@ class Main_Screen:  # Classe pour représenter l'écran d'accueil
         pygame.display.update()  # On met à jour l'affichage
 
     def run(self):  # Fonction qui permet de lancer l'écran d'accueil
-        while self.running:
-            self.handle_events()
-            self.draw()
-        pygame.quit()
+        while self.running: # Tant que l'écran d'accueil est lancé
+            self.handle_events() # On gère les évènements
+            self.draw() # On dessine l'écran d'accueil
+        pygame.quit() # On quitte pygame
 
 
 if __name__ == '__main__':  # Si on lance le script
-    pygame.init()
+    pygame.init() # On initialise pygame
     main_screen = Main_Screen()  # On lance l'écran d'accueil
-    main_screen.run()
+    main_screen.run() # On lance l'écran d'accueil
