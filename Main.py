@@ -271,26 +271,68 @@ class Game:  # Classe pour représenter le jeu
                 elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
                     self.board.grid[row][col] = None # On vide la case de départ
 
-    def queen_move(self, row, col): # Fonction qui permet de déplacer une reine
+    def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "queen":  # Si la pièce est une reine
+                if self.board.grid[row][col] is None or self.board.grid[row][
+                    col].color != piece.color:  # Si la case d'arrivée est vide ou contient une pièce de couleur différente
+                    if row == piece_row or col == piece_col or abs(row - piece_row) == abs(
+                            col - piece_col):  # Si le déplacement est horizontal, vertical ou diagonal
+                        # Vérification que la reine ne saute pas par-dessus d'autres pièces
+                        if row == piece_row:  # Déplacement horizontal
+                            if col > piece_col: # Déplacement vers la droite
+                                for i in range(piece_col + 1, col): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[row][i] is not None: # Si une case n'est pas vide
+                                        return # On ne déplace pas la pièce
+                            else: # Déplacement vers la gauche
+                                for i in range(col + 1, piece_col): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[row][i] is not None: # Si une case n'est pas vide
+                                        return # On ne déplace pas la pièce
+                        elif col == piece_col:  # Déplacement vertical
+                            if row > piece_row: # Déplacement vers le bas
+                                for i in range(piece_row + 1, row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[i][col] is not None: # Si une case n'est pas vide
+                                        return # On ne déplace pas la pièce
+                            else: # Déplacement vers le haut
+                                for i in range(row + 1, piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[i][col] is not None: # Si une case n'est pas vide
+                                        return # On ne déplace pas la pièce
+                        else:  # Déplacement diagonal
+                            if row > piece_row: # Déplacement vers le bas
+                                if col > piece_col: # Déplacement vers la droite
+                                    for i in range(1, row - piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row + i][piece_col + i] is not None: # Si une case n'est pas vide
+                                            return # On ne déplace pas la pièce
+                                else: # Déplacement vers la gauche
+                                    for i in range(1, row - piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row + i][piece_col - i] is not None: # Si une case n'est pas vide
+                                            return # On ne déplace pas la pièce
+                            else: # Déplacement vers le haut
+                                if col > piece_col: # Déplacement vers la droite
+                                    for i in range(1, piece_row - row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row - i][piece_col + i] is not None: # Si une case n'est pas vide
+                                            return # On ne déplace pas la pièce
+                                else: # Déplacement vers la gauche
+                                    for i in range(1, piece_row - row): # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row - i][piece_col - i] is not None: # Si une case n'est pas vide
+                                            return # On ne déplace pas la pièce
+                        # Si la reine ne saute pas par-dessus d'autres pièces, on effectue le déplacement
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.selected_piece = None # On déselectionne la pièce
+
+    def king_move(self, row, col): # Fonction qui permet de déplacer un roi
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "queen": # Si la pièce est une reine
-                if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
-                    self.board.grid[row][col] = None # On vide la case de départ
-                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
-                    self.board.grid[row][col] = None # On vide la case de départ
-
-    def king_move(self, row, col):
-        if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            if piece.type == "king":
-                if abs(row - piece_row) <= 1 and abs(col - piece_col) <= 1 and (row, col) != (piece_row, piece_col):
-                    if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color:
-                        self.board.grid[piece_row][piece_col] = None
-                        self.board.grid[row][col] = piece
-                        self.selected_piece = None
+            if piece.type == "king": # Si la pièce est un roi
+                if abs(row - piece_row) <= 1 and abs(col - piece_col) <= 1 and (row, col) != (piece_row, piece_col): # Si le déplacement est valide
+                    if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color: # Si la case d'arrivée est vide ou contient une pièce adverse
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
     def move(self, row, col): # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
