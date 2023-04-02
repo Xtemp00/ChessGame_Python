@@ -181,14 +181,6 @@ class Game:  # Classe pour représenter le jeu
         elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
 
-    """def move_piece(self, row, col):  # Fonction qui permet de déplacer une pièce
-        if self.selected_piece is not None:  # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
-            self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
-            self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
-            self.selected_piece = None  # On déselectionne la pièce"""
-
     def pawn_move(self, row, col): # Fonction qui permet de déplacer un pion
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
@@ -237,8 +229,32 @@ class Game:  # Classe pour représenter le jeu
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
             if piece.type == "rook": # Si la pièce est une tour
-                if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
-                    self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                # Vérification des déplacements valides pour une tour
+                if row == piece_row and col != piece_col: # Déplacement horizontal
+                    if col > piece_col: # col > piece_col
+                        for i in range(piece_col + 1, col): # On vérifie si une pièce est sur la trajectoire
+                            if self.board.grid[row][i] is not None: # On vérifie si une pièce est sur la trajectoire
+                                return # On déselectionne la pièce
+                    else: # col < piece_col
+                        for i in range(col + 1, piece_col): # On vérifie si une pièce est sur la trajectoire
+                            if self.board.grid[row][i] is not None: # On vérifie si une pièce est sur la trajectoire
+                                return # On déselectionne la pièce
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
+                elif row != piece_row and col == piece_col: # Si la tour se déplace verticalement
+                    if row > piece_row: # row > piece_row
+                        for i in range(piece_row + 1, row): # On vérifie si une pièce est sur la trajectoire
+                            if self.board.grid[i][col] is not None: # On vérifie si une pièce est sur la trajectoire
+                                return # On déselectionne la pièce
+                    else: # row < piece_row
+                        for i in range(row + 1, piece_row): # On vérifie si une pièce est sur la trajectoire
+                            if self.board.grid[i][col] is not None: # On vérifie si une pièce est sur la trajectoire
+                                return # On déselectionne la pièce
+                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                    self.selected_piece = None # On déselectionne la pièce
+
 
     def knight_move(self, row, col): # Fonction qui permet de déplacer un cavalier
         if self.selected_piece is not None: # Si une pièce est sélectionnée
@@ -262,14 +278,33 @@ class Game:  # Classe pour représenter le jeu
                         self.selected_piece = None # On déselectionne la pièce
 
     def bishop_move(self, row, col): # Fonction qui permet de déplacer un fou
-        if self.selected_piece is not None:
-            piece_row, piece_col = self.selected_piece
-            piece = self.board.grid[piece_row][piece_col]
-            if piece.type == "bishop":
-                if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black":
-                    self.board.grid[row][col] = None
-                elif self.board.grid[row][col] is not None and self.board.grid[row][col].color == "black": # Si la case d'arrivée est vide
-                    self.board.grid[row][col] = None # On vide la case de départ
+        if self.selected_piece is not None: # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+            if piece.type == "bishop": # Si la pièce est un fou
+                if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color: # Si la case d'arrivée est vide ou contient une pièce de couleur différente
+                    if abs(row - piece_row) == abs(col - piece_col): # Si le déplacement est diagonal
+                        # Vérification que le fou ne saute pas par dessus une pièce
+                        if row > piece_row and col > piece_col: # Si le déplacement est en bas à droite
+                            for i in range(1, row - piece_row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row + i][piece_col + i] is not None: # Si la case est occupée
+                                    return # Si le déplacement est valide
+                        elif row > piece_row and col < piece_col: # Si le déplacement est en bas à gauche
+                            for i in range(1, row - piece_row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row + i][piece_col - i] is not None: # Si la case est occupée
+                                    return # Si le déplacement est valide
+                        elif row < piece_row and col > piece_col: # Si le déplacement est en haut à droite
+                            for i in range(1, piece_row - row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row - i][piece_col + i] is not None: # Si la case est occupée
+                                    return # Si le déplacement est valide
+                        elif row < piece_row and col < piece_col: # Si le déplacement est en haut à gauche
+                            for i in range(1, piece_row - row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row - i][piece_col - i] is not None: # Si la case est occupée
+                                    return # Si le déplacement est valide
+                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
+                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None # On déselectionne la pièce
+
 
     def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -333,6 +368,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None # On vide la case de départ
                         self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
                         self.selected_piece = None # On déselectionne la pièce
+
     def move(self, row, col): # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
@@ -353,6 +389,7 @@ class Game:  # Classe pour représenter le jeu
         else: # Si aucune pièce n'est sélectionnée
             if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "white": # Si la case sélectionnée contient une pièce blanche
                 self.selected_piece = (row, col) # On sélectionne la pièce
+
 
     def update(self):  # Fonction qui permet de mettre à jour le jeu
         self.board.draw(self.screen)  # On dessine le plateau de jeu
