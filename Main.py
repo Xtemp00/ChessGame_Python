@@ -260,6 +260,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece
                         self.selected_piece = None
 
+
     def knight_move(self, row, col): # Fonction qui permet de déplacer un cavalier
         if self.selected_piece is not None: # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
