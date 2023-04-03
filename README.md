@@ -20,6 +20,10 @@ We use SemVer for versioning. For the versions available, see the tags on this r
 ##### Rondo Benjamin - Xtemp00
 ##### Loureau Ryan - RyanLru
 
+
+### Beta-Testeurs :
+##### Tim 
+##### Nino
 (License)
 
 
