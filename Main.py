@@ -63,12 +63,14 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
         self.image = image # image est un objet de la classe pygame.Surface
         self.type = type # type est une chaîne de caractères
         self.id = id # id est un entier
+        self.check = False # check est un booléen
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y)) # Dessine l'image de la pièce sur l'écran
         updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE)) # Ajout de la zone de l'écran qui a été mise à jour
 
-
+    def get_check(self):
+        return self.check
     def get_type(self):
         return self.type
 
@@ -174,6 +176,7 @@ class Game:  # Classe pour représenter le jeu
                 row = y // GRID_SIZE  # On calcule la ligne
                 col = x // GRID_SIZE  # On calcule la colonne
                 self.select_piece(row, col)  # On sélectionne la pièce
+                self.Echec()
 
     def select_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]  # On récupère la pièce
@@ -182,6 +185,55 @@ class Game:  # Classe pour représenter le jeu
                 self.selected_piece = (row, col)  # On sélectionne la pièce
         elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
+
+    def check(self, board):
+        # On cherche la position du roi
+        for i in range(8):
+            for j in range(8):
+                if board.grid[i][j] != None and board.grid[i][j].type == "king":
+                    x = i
+                    y = j
+        piece = self.board.grid[x][y]
+        if piece.type == "king":
+            # On regarde si la pièce est en échec par un pion
+            if piece.color == "white":
+                if board.grid[x + 1][y + 1] != None and board.grid[x + 1][y + 1].type == "pawn" and board.grid[x + 1][
+                    y + 1].color == "black":
+                    self.check = True
+                elif board.grid[x - 1][y + 1] != None and board.grid[x - 1][y + 1].type == "pawn" and board.grid[x - 1][
+                    y + 1].color == "black":
+                    self.check = True
+
+            if piece.color == "black":
+                if board.grid[x + 1][y - 1] != None and board.grid[x + 1][y - 1].type == "pawn" and board.grid[x + 1][
+                    y - 1].color == "white":
+                    self.check = True
+                elif board.grid[x - 1][y - 1] != None and board.grid[x - 1][y - 1].type == "pawn" and board.grid[x - 1][
+                    y - 1].color == "white":
+                    self.check = True
+
+
+    def Echec(self):
+        for i in range(8):
+            for j in range(8):
+                if self.board.grid[i][j] is not None:
+                    if self.board.grid[i][j].type == "king" and self.board.grid[i][j].color == "white":
+                        # On regarde si le roi est en échec
+                        self.check = self.check(self.board)
+                        if self.check == True:
+                            print("Echec")
+                            return True
+
+        #Roi noir
+        for i in range(8):
+            for j in range(8):
+                if self.board.grid[i][j] is not None:
+                    if self.board.grid[i][j].type == "king" and self.board.grid[i][j].color == "black":
+                        # On regarde si le roi est en échec
+                        if self.board.grid[i][j].check == True:
+                            print("Echec")
+                            return True
+        return False
 
     def pawn_move(self, row, col): # Fonction qui permet de déplacer un pion
         if self.selected_piece is not None: # Si une pièce est sélectionnée
