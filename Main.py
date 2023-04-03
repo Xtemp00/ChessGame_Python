@@ -67,11 +67,13 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 # Classe pour représenter les pièces du jeu d'échecs
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
-                 type, id):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
+                 type, id, row , col):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
         self.color = color  # color est une chaîne de caractères
         self.image = image  # image est un objet de la classe pygame.Surface
         self.type = type  # type est une chaîne de caractères
         self.id = id  # id est un entier
+        self.row = row # row est un entier
+        self.col = col # col est un entier
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))  # Dessine l'image de la pièce sur l'écran
@@ -115,38 +117,38 @@ class Board:  # Board est une classe qui contient une liste de pièces
             self.grid.append(row)  # self.grid est une liste de pièces
 
         # Placement des pièces initiales
-        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook", 1)
-        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight", 2)
-        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop", 3)
-        self.grid[0][4] = Piece('black', QUEEN_BLACK_IMG, "queen", 4)
-        self.grid[0][3] = Piece('black', KING_BLACK_IMG, "king", 5)
-        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop", 6)
-        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight", 7)
-        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook", 8)
-        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn", 9)
-        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn", 10)
-        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn", 11)
-        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn", 12)
-        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn", 13)
-        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn", 14)
-        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn", 15)
-        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn", 16)
-        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook", 17)
-        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight", 18)
-        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop", 19)
-        self.grid[7][4] = Piece('white', QUEEN_WHITE_IMG, "queen", 20)
-        self.grid[7][3] = Piece('white', KING_WHITE_IMG, "king", 21)
-        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop", 22)
-        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight", 23)
-        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook", 24)
-        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn", 25)
-        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn", 26)
-        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn", 27)
-        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn", 28)
-        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn", 29)
-        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn", 30)
-        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn", 31)
-        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn", 32)
+        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook", 1, 0, 0)
+        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight", 2, 0, 1)
+        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop", 3, 0, 2)
+        self.grid[0][4] = Piece('black', QUEEN_BLACK_IMG, "queen", 4, 0, 4)
+        self.grid[0][3] = Piece('black', KING_BLACK_IMG, "king", 5, 0, 3)
+        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop", 6, 0, 5)
+        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight", 7, 0, 6)
+        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook", 8, 0, 7)
+        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn", 9, 1, 0)
+        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn", 10, 1, 1)
+        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn", 11, 1, 2)
+        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn", 12, 1, 3)
+        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn", 13, 1, 4)
+        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn", 14, 1, 5)
+        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn", 15, 1, 6)
+        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn", 16, 1, 7)
+        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook", 17, 7, 0)
+        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight", 18, 7, 1)
+        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop", 19, 7, 2)
+        self.grid[7][4] = Piece('white', QUEEN_WHITE_IMG, "queen", 20, 7, 4)
+        self.grid[7][3] = Piece('white', KING_WHITE_IMG, "king", 21, 7, 3)
+        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop", 22, 7, 5)
+        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight", 23, 7, 6)
+        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook", 24, 7, 7)
+        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn", 25, 6, 0)
+        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn", 26, 6, 1)
+        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn", 27, 6, 2)
+        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn", 28, 6, 3)
+        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn", 29, 6, 4)
+        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn", 30, 6, 5)
+        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn", 31, 6, 6)
+        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn", 32, 6, 7)
 
     def draw(self, screen):  # Fonction pour dessiner le plateau de jeu
         for i in range(8):  # Pour chaque case du plateau
@@ -185,9 +187,12 @@ class Game:  # Classe pour représenter le jeu
                 row = y // GRID_SIZE  # On calcule la ligne
                 col = x // GRID_SIZE  # On calcule la colonne
                 self.select_piece(row, col)  # On sélectionne la pièce
+                self.is_check(row, col)
+
             elif event.type == pygame.KEYDOWN:  # Si on appuie sur une touche du clavier
                 if event.key == pygame.K_g:
                     # Si on appuie sur la touche échap
+                    self.get_tab_piece()
                     run = True
                     while run:
                         for event in pygame.event.get():
@@ -599,7 +604,6 @@ class Game:  # Classe pour représenter le jeu
 
 
 
-
     def draw_highlight(self, row, col):
         pygame.draw.rect(self.screen, BROWN,
                                 (col * GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE % 32, GRID_SIZE % 32))
@@ -631,6 +635,64 @@ class Game:  # Classe pour représenter le jeu
 
     def update(self):  # Fonction qui permet de mettre à jour le jeu
         self.board.draw(self.screen)  # On dessine le plateau de jeu
+
+    def get_tab_piece(self):
+        tab = []
+        for row in range(8):
+            for col in range(8):
+                if self.board.grid[row][col] is not None:
+                    tab.append(self.board.grid[row][col])
+        return tab
+
+    #fonction qui permet de detecter si le roi est en echec
+    def check(self):
+        tab = self.get_tab_piece()
+        for piece in tab:
+            if piece.type == "king" and piece.color == "white":
+                return self.is_check(piece.row, piece.col)
+        return False
+
+    def is_check(self,row,col):
+        piece = self.board.grid[row][col]
+        if piece is not None:
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:
+                        if self.board.grid[row + i][col + j] is not None:
+                            if self.board.grid[row + i][col + j].color != piece.color:
+                                if self.board.grid[row + i][col + j].type == "queen":
+                                    print("check1")
+                                    return True
+                                elif self.board.grid[row + i][col + j].type == "rook" and i == 0 or j == 0:
+                                    print("check2")
+                                    return True
+                                elif self.board.grid[row + i][col + j].type == "bishop" and i != 0 and j != 0:
+                                    print("check3")
+                                    return True
+                                elif self.board.grid[row + i][col + j].type == "knight" and abs(i) + abs(j) == 3:
+                                    print("check4")
+                                    return True
+                                elif self.board.grid[row + i][col + j].type == "pawn" and i == 1 and j != 0:
+                                    print("check5")
+                                    return True
+        return False
+
+    def is_checkmate(self):
+        tab = self.get_tab_piece()
+        for piece in tab:
+            if piece.color == "white":
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        if piece.row + i >= 0 and piece.row + i < 8 and piece.col + j >= 0 and piece.col + j < 8:
+                            if self.board.grid[piece.row + i][piece.col + j] is None:
+                                self.move(piece.row,piece.col)
+                                self.move(piece.row + i,piece.col + j)
+                                if not self.check():
+                                    self.move(piece.row + i,piece.col + j)
+                                    self.move(piece.row,piece.col)
+                                    return False
+                                self.move(piece.row + i,piece.col + j)
+                                self.move(piece.row,piece.col)
 
     # Ajout des getter et setter (ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
