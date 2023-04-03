@@ -24,6 +24,7 @@ We use SemVer for versioning. For the versions available, see the tags on this r
 ### Beta-Testeurs :
 ##### Tim 
 ##### Nino
+##### Tess
 (License)
 
 
