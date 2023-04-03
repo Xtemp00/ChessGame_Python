@@ -1,29 +1,29 @@
 import copy
 
-import pygame # Importation du module Pygame
+import pygame  # Importation du module Pygame
 
 # Initialisation de Pygame
-pygame.init() # Initialise les modules de Pygame
+pygame.init()  # Initialise les modules de Pygame
 
-updated_rects = [] # Liste des rectangles de l'écran qui ont été mis à jour
+updated_rects = []  # Liste des rectangles de l'écran qui ont été mis à jour
 
 # Constantes pour la taille de l'écran et de la grille de jeu
-SCREEN_WIDTH = 480 # Largeur de l'écran
-SCREEN_HEIGHT = 480 # Taille de l'écran
-GRID_SIZE = SCREEN_WIDTH // 8 # Taille d'une case du plateau de jeu
+SCREEN_WIDTH = 480  # Largeur de l'écran
+SCREEN_HEIGHT = 480  # Taille de l'écran
+GRID_SIZE = SCREEN_WIDTH // 8  # Taille d'une case du plateau de jeu
 
 # Couleurs
-WHITE = (255, 255, 255) # Blanc
-BLACK = (0, 0, 0) # Noir
-GRAY = (128, 128, 128) # Gris
-GREEN = (0, 255, 0) # Vert
-RED = (255, 0, 0) # Rouge
-BROWN = (165, 42, 42) # Marron
-
+WHITE = (255, 255, 255)  # Blanc
+BLACK = (0, 0, 0)  # Noir
+GRAY = (128, 128, 128)  # Gris
+GREEN = (0, 255, 0)  # Vert
+RED = (255, 0, 0)  # Rouge
+BROWN = (165, 42, 42)  # Marron
 
 # Chargement du background
-BACKGROUND_IMG = pygame.image.load('Background.png') # Charge l'image du background
-BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG, (SCREEN_WIDTH+350, SCREEN_HEIGHT+40)) # Redimensionne l'image du background
+BACKGROUND_IMG = pygame.image.load('Background.png')  # Charge l'image du background
+BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG,
+                                        (SCREEN_WIDTH + 350, SCREEN_HEIGHT + 40))  # Redimensionne l'image du background
 
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
@@ -68,14 +68,15 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
                  type, id):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
-        self.color = color # color est une chaîne de caractères
-        self.image = image # image est un objet de la classe pygame.Surface
-        self.type = type # type est une chaîne de caractères
-        self.id = id # id est un entier
+        self.color = color  # color est une chaîne de caractères
+        self.image = image  # image est un objet de la classe pygame.Surface
+        self.type = type  # type est une chaîne de caractères
+        self.id = id  # id est un entier
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
-        screen.blit(self.image, (x, y)) # Dessine l'image de la pièce sur l'écran
-        updated_rects.append(pygame.Rect(x, y, GRID_SIZE, GRID_SIZE)) # Ajout de la zone de l'écran qui a été mise à jour
+        screen.blit(self.image, (x, y))  # Dessine l'image de la pièce sur l'écran
+        updated_rects.append(
+            pygame.Rect(x, y, GRID_SIZE, GRID_SIZE))  # Ajout de la zone de l'écran qui a été mise à jour
 
     def get_type(self):
         return self.type
@@ -85,10 +86,10 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
 
     def get_image(self):
         return self.image
-    
+
     def get_id(self):
         return self.image
-    
+
     def set_id(self, id):
         self.id = id
 
@@ -107,56 +108,58 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
 class Board:  # Board est une classe qui contient une liste de pièces
     def __init__(self, screen):  # screen est un objet de la classe pygame.Surface
         self.grid = []  # self.grid est une liste de pièces
-        for i in range(8): # i est un entier
+        for i in range(8):  # i est un entier
             row = []  # row est une liste de pièces
-            for j in range(8): # j est un entier
-                row.append(None) # row est une liste de pièces
+            for j in range(8):  # j est un entier
+                row.append(None)  # row est une liste de pièces
             self.grid.append(row)  # self.grid est une liste de pièces
 
         # Placement des pièces initiales
-        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook",1)
-        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight",2)
-        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop",3)
-        self.grid[0][4] = Piece('black', QUEEN_BLACK_IMG, "queen",4)
-        self.grid[0][3] = Piece('black', KING_BLACK_IMG, "king",5)
-        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop",6)
-        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight",7)
-        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook",8)
-        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn",9)
-        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn",10)
-        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn",11)
-        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn",12)
-        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn",13)
-        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn",14)
-        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn",15)
-        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn",16)
-        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook",17)
-        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight",18)
-        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop",19)
-        self.grid[7][4] = Piece('white', QUEEN_WHITE_IMG, "queen",20)
-        self.grid[7][3] = Piece('white', KING_WHITE_IMG, "king",21)
-        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop",22)
-        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight",23)
-        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook",24)
-        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn",25)
-        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn",26)
-        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn",27)
-        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn",28)
-        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn",29)
-        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn",30)
-        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn",31)
-        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn",32)
+        self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook", 1)
+        self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight", 2)
+        self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop", 3)
+        self.grid[0][4] = Piece('black', QUEEN_BLACK_IMG, "queen", 4)
+        self.grid[0][3] = Piece('black', KING_BLACK_IMG, "king", 5)
+        self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop", 6)
+        self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight", 7)
+        self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook", 8)
+        self.grid[1][0] = Piece('black', PAWN_BLACK_IMG, "pawn", 9)
+        self.grid[1][1] = Piece('black', PAWN_BLACK_IMG, "pawn", 10)
+        self.grid[1][2] = Piece('black', PAWN_BLACK_IMG, "pawn", 11)
+        self.grid[1][3] = Piece('black', PAWN_BLACK_IMG, "pawn", 12)
+        self.grid[1][4] = Piece('black', PAWN_BLACK_IMG, "pawn", 13)
+        self.grid[1][5] = Piece('black', PAWN_BLACK_IMG, "pawn", 14)
+        self.grid[1][6] = Piece('black', PAWN_BLACK_IMG, "pawn", 15)
+        self.grid[1][7] = Piece('black', PAWN_BLACK_IMG, "pawn", 16)
+        self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook", 17)
+        self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight", 18)
+        self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop", 19)
+        self.grid[7][4] = Piece('white', QUEEN_WHITE_IMG, "queen", 20)
+        self.grid[7][3] = Piece('white', KING_WHITE_IMG, "king", 21)
+        self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop", 22)
+        self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight", 23)
+        self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook", 24)
+        self.grid[6][0] = Piece('white', PAWN_WHITE_IMG, "pawn", 25)
+        self.grid[6][1] = Piece('white', PAWN_WHITE_IMG, "pawn", 26)
+        self.grid[6][2] = Piece('white', PAWN_WHITE_IMG, "pawn", 27)
+        self.grid[6][3] = Piece('white', PAWN_WHITE_IMG, "pawn", 28)
+        self.grid[6][4] = Piece('white', PAWN_WHITE_IMG, "pawn", 29)
+        self.grid[6][5] = Piece('white', PAWN_WHITE_IMG, "pawn", 30)
+        self.grid[6][6] = Piece('white', PAWN_WHITE_IMG, "pawn", 31)
+        self.grid[6][7] = Piece('white', PAWN_WHITE_IMG, "pawn", 32)
 
     def draw(self, screen):  # Fonction pour dessiner le plateau de jeu
-        for i in range(8): # Pour chaque case du plateau
-            for j in range(8): # Pour chaque case du plateau
+        for i in range(8):  # Pour chaque case du plateau
+            for j in range(8):  # Pour chaque case du plateau
                 if (i + j) % 2 == 0:  # Pour dessiner les cases blanches et noires
-                    pygame.draw.rect(screen, GRAY, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE)) # On dessine la case
+                    pygame.draw.rect(screen, GRAY,
+                                     (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))  # On dessine la case
                 else:
-                    pygame.draw.rect(screen, WHITE, (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE)) # On dessine la case
+                    pygame.draw.rect(screen, WHITE,
+                                     (j * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE))  # On dessine la case
                 if self.grid[i][j] is not None:  # Pour dessiner les pièces
-                    x = j * GRID_SIZE # On récupère les coordonnées de la pièce
-                    y = i * GRID_SIZE # On récupère les coordonnées de la pièce
+                    x = j * GRID_SIZE  # On récupère les coordonnées de la pièce
+                    y = i * GRID_SIZE  # On récupère les coordonnées de la pièce
                     self.grid[i][j].draw(screen, x, y)  # On dessine la pièce
         pygame.display.update(updated_rects)  # On met à jour l'affichage
 
@@ -167,11 +170,11 @@ def get_grid_size():  # Fonction qui permet de récupérer la taille de la grill
 
 class Game:  # Classe pour représenter le jeu
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # On crée une fenêtre
-        pygame.display.set_caption("Jeu d'échec") # On donne un titre à la fenêtre
-        self.board = Board(self.screen) # On crée un plateau de jeu
-        self.selected_piece = None # Pour savoir quelle pièce est sélectionnée
-        self.running = True # Pour savoir si le jeu est en cours
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # On crée une fenêtre
+        pygame.display.set_caption("Jeu d'échec")  # On donne un titre à la fenêtre
+        self.board = Board(self.screen)  # On crée un plateau de jeu
+        self.selected_piece = None  # Pour savoir quelle pièce est sélectionnée
+        self.running = True  # Pour savoir si le jeu est en cours
 
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
@@ -183,10 +186,33 @@ class Game:  # Classe pour représenter le jeu
                 col = x // GRID_SIZE  # On calcule la colonne
                 self.select_piece(row, col)  # On sélectionne la pièce
             elif event.type == pygame.KEYDOWN:  # Si on appuie sur une touche du clavier
-                if event.key == pygame.K_G:  # Si on appuie sur la touche échap
-                    if self.selected_piece is not None:
-                        #appeler la fonction highlight_moves par pieces avec les coordonnées de la pièce sélectionnée
-                        self.board.grid[self.selected_piece[0]][self.selected_piece[1]].highlight_moves(self.board.grid, self.selected_piece[0], self.selected_piece[1])
+                if event.key == pygame.K_g:
+                    # Si on appuie sur la touche échap
+                    run = True
+                    while run:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                run = False
+                                self.running = False
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_g:
+                                    run = False
+                        if self.selected_piece is not None:
+                            piece = self.board.grid[self.selected_piece[0]][self.selected_piece[1]]
+                            # appeler la fonction highlight_moves par pieces avec les coordonnées de la pièce sélectionnée
+                            if piece is not None:
+                                if piece.type == "pawn":
+                                    self.highlight_moves_pawn(self.selected_piece[0], self.selected_piece[1])
+                                if piece.type == "rook":
+                                    self.highlight_moves_rook(self.selected_piece[0], self.selected_piece[1])
+                                if piece.type == "knight":
+                                    self.highlight_moves_knight(self.selected_piece[0], self.selected_piece[1])
+                                if piece.type == "bishop":
+                                    self.highlight_moves_bishop(self.selected_piece[0], self.selected_piece[1])
+                                if piece.type == "queen":
+                                    self.highlight_moves_queen(self.selected_piece[0], self.selected_piece[1])
+                                if piece.type == "king":
+                                    self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
 
                 """self.is_king_in_check("white") # On vérifie si le roi est en échec
                 self.is_king_in_check("black") # On vérifie si le roi est en échec"""
@@ -199,50 +225,48 @@ class Game:  # Classe pour représenter le jeu
         elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
 
-
-
-    def pawn_move(self, row, col): # Fonction qui permet de déplacer un pion
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "pawn": # Si la pièce est un pion
-                if piece.color == "white": # Si la pièce est blanche
+    def pawn_move(self, row, col):  # Fonction qui permet de déplacer un pion
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "pawn":  # Si la pièce est un pion
+                if piece.color == "white":  # Si la pièce est blanche
                     if row == piece_row - 1 and col == piece_col and self.board.grid[row][col] is None:
                         # On affiche le carré ou le pions peut se déplacer
                         # Déplacement normal d'un pion blanc
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
                     elif piece_row == 6 and row == piece_row - 2 and col == piece_col and self.board.grid[row][
                         col] is None and self.board.grid[row + 1][col] is None:
                         # Déplacement initial d'un pion blanc
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
                     elif row == piece_row - 1 and abs(col - piece_col) == 1 and self.board.grid[row][
                         col] is not None and self.board.grid[row][col].color == "black":
                         # Prise en diagonale d'un pion noir par un pion blanc
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
                 else:
                     if row == piece_row + 1 and col == piece_col and self.board.grid[row][col] is None:
                         # Déplacement normal d'un pion noir
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
                     elif piece_row == 1 and row == piece_row + 2 and col == piece_col and self.board.grid[row][
                         col] is None and self.board.grid[row - 1][col] is None:
                         # Déplacement initial d'un pion noir
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
                     elif row == piece_row + 1 and abs(col - piece_col) == 1 and self.board.grid[row][
                         col] is not None and self.board.grid[row][col].color == "white":
                         # Prise en diagonale d'un pion blanc par un pion noir
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
 
     def rook_move(self, row, col):
         if self.selected_piece is not None:
@@ -278,11 +302,10 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece
                         self.selected_piece = None
 
-
-    def knight_move(self, row, col): # Fonction qui permet de déplacer un cavalier
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
+    def knight_move(self, row, col):  # Fonction qui permet de déplacer un cavalier
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
             if piece.type == "knight":
                 # Vérification des déplacements valides pour un cavalier
                 if ((row == piece_row + 2 and col == piece_col + 1) or
@@ -296,37 +319,42 @@ class Game:  # Classe pour représenter le jeu
 
                     # Vérification si la case d'arrivée est vide ou contient une pièce adverse
                     if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color:
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
 
-    def bishop_move(self, row, col): # Fonction qui permet de déplacer un fou
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "bishop": # Si la pièce est un fou
-                if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color: # Si la case d'arrivée est vide ou contient une pièce de couleur différente
-                    if abs(row - piece_row) == abs(col - piece_col): # Si le déplacement est diagonal
+    def bishop_move(self, row, col):  # Fonction qui permet de déplacer un fou
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "bishop":  # Si la pièce est un fou
+                if self.board.grid[row][col] is None or self.board.grid[row][
+                    col].color != piece.color:  # Si la case d'arrivée est vide ou contient une pièce de couleur différente
+                    if abs(row - piece_row) == abs(col - piece_col):  # Si le déplacement est diagonal
                         # Vérification que le fou ne saute pas par dessus une pièce
-                        if row > piece_row and col > piece_col: # Si le déplacement est en bas à droite
-                            for i in range(1, row - piece_row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
-                                if self.board.grid[piece_row + i][piece_col + i] is not None: # Si la case est occupée
-                                    return # Si le déplacement est valide
-                        elif row > piece_row and col < piece_col: # Si le déplacement est en bas à gauche
-                            for i in range(1, row - piece_row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
-                                if self.board.grid[piece_row + i][piece_col - i] is not None: # Si la case est occupée
-                                    return # Si le déplacement est valide
-                        elif row < piece_row and col > piece_col: # Si le déplacement est en haut à droite
-                            for i in range(1, piece_row - row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
-                                if self.board.grid[piece_row - i][piece_col + i] is not None: # Si la case est occupée
-                                    return # Si le déplacement est valide
-                        elif row < piece_row and col < piece_col: # Si le déplacement est en haut à gauche
-                            for i in range(1, piece_row - row): # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
-                                if self.board.grid[piece_row - i][piece_col - i] is not None: # Si la case est occupée
-                                    return # Si le déplacement est valide
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+                        if row > piece_row and col > piece_col:  # Si le déplacement est en bas à droite
+                            for i in range(1,
+                                           row - piece_row):  # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row + i][piece_col + i] is not None:  # Si la case est occupée
+                                    return  # Si le déplacement est valide
+                        elif row > piece_row and col < piece_col:  # Si le déplacement est en bas à gauche
+                            for i in range(1,
+                                           row - piece_row):  # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row + i][piece_col - i] is not None:  # Si la case est occupée
+                                    return  # Si le déplacement est valide
+                        elif row < piece_row and col > piece_col:  # Si le déplacement est en haut à droite
+                            for i in range(1,
+                                           piece_row - row):  # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row - i][piece_col + i] is not None:  # Si la case est occupée
+                                    return  # Si le déplacement est valide
+                        elif row < piece_row and col < piece_col:  # Si le déplacement est en haut à gauche
+                            for i in range(1,
+                                           piece_row - row):  # On vérifie que la case d'arrivée est vide ou contient une pièce de couleur différente
+                                if self.board.grid[piece_row - i][piece_col - i] is not None:  # Si la case est occupée
+                                    return  # Si le déplacement est valide
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
 
     def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -339,258 +367,279 @@ class Game:  # Classe pour représenter le jeu
                             col - piece_col):  # Si le déplacement est horizontal, vertical ou diagonal
                         # Vérification que la reine ne saute pas par-dessus d'autres pièces
                         if row == piece_row:  # Déplacement horizontal
-                            if col > piece_col: # Déplacement vers la droite
-                                for i in range(piece_col + 1, col): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                    if self.board.grid[row][i] is not None: # Si une case n'est pas vide
-                                        return # On ne déplace pas la pièce
-                            else: # Déplacement vers la gauche
-                                for i in range(col + 1, piece_col): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                    if self.board.grid[row][i] is not None: # Si une case n'est pas vide
-                                        return # On ne déplace pas la pièce
+                            if col > piece_col:  # Déplacement vers la droite
+                                for i in range(piece_col + 1,
+                                               col):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[row][i] is not None:  # Si une case n'est pas vide
+                                        return  # On ne déplace pas la pièce
+                            else:  # Déplacement vers la gauche
+                                for i in range(col + 1,
+                                               piece_col):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[row][i] is not None:  # Si une case n'est pas vide
+                                        return  # On ne déplace pas la pièce
                         elif col == piece_col:  # Déplacement vertical
-                            if row > piece_row: # Déplacement vers le bas
-                                for i in range(piece_row + 1, row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                    if self.board.grid[i][col] is not None: # Si une case n'est pas vide
-                                        return # On ne déplace pas la pièce
-                            else: # Déplacement vers le haut
-                                for i in range(row + 1, piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                    if self.board.grid[i][col] is not None: # Si une case n'est pas vide
-                                        return # On ne déplace pas la pièce
+                            if row > piece_row:  # Déplacement vers le bas
+                                for i in range(piece_row + 1,
+                                               row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[i][col] is not None:  # Si une case n'est pas vide
+                                        return  # On ne déplace pas la pièce
+                            else:  # Déplacement vers le haut
+                                for i in range(row + 1,
+                                               piece_row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                    if self.board.grid[i][col] is not None:  # Si une case n'est pas vide
+                                        return  # On ne déplace pas la pièce
                         else:  # Déplacement diagonal
-                            if row > piece_row: # Déplacement vers le bas
-                                if col > piece_col: # Déplacement vers la droite
-                                    for i in range(1, row - piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                        if self.board.grid[piece_row + i][piece_col + i] is not None: # Si une case n'est pas vide
-                                            return # On ne déplace pas la pièce
-                                else: # Déplacement vers la gauche
-                                    for i in range(1, row - piece_row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                        if self.board.grid[piece_row + i][piece_col - i] is not None: # Si une case n'est pas vide
-                                            return # On ne déplace pas la pièce
-                            else: # Déplacement vers le haut
-                                if col > piece_col: # Déplacement vers la droite
-                                    for i in range(1, piece_row - row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                        if self.board.grid[piece_row - i][piece_col + i] is not None: # Si une case n'est pas vide
-                                            return # On ne déplace pas la pièce
-                                else: # Déplacement vers la gauche
-                                    for i in range(1, piece_row - row): # On parcourt les cases entre la case de départ et la case d'arrivée
-                                        if self.board.grid[piece_row - i][piece_col - i] is not None: # Si une case n'est pas vide
-                                            return # On ne déplace pas la pièce
+                            if row > piece_row:  # Déplacement vers le bas
+                                if col > piece_col:  # Déplacement vers la droite
+                                    for i in range(1,
+                                                   row - piece_row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row + i][
+                                            piece_col + i] is not None:  # Si une case n'est pas vide
+                                            return  # On ne déplace pas la pièce
+                                else:  # Déplacement vers la gauche
+                                    for i in range(1,
+                                                   row - piece_row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row + i][
+                                            piece_col - i] is not None:  # Si une case n'est pas vide
+                                            return  # On ne déplace pas la pièce
+                            else:  # Déplacement vers le haut
+                                if col > piece_col:  # Déplacement vers la droite
+                                    for i in range(1,
+                                                   piece_row - row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row - i][
+                                            piece_col + i] is not None:  # Si une case n'est pas vide
+                                            return  # On ne déplace pas la pièce
+                                else:  # Déplacement vers la gauche
+                                    for i in range(1,
+                                                   piece_row - row):  # On parcourt les cases entre la case de départ et la case d'arrivée
+                                        if self.board.grid[piece_row - i][
+                                            piece_col - i] is not None:  # Si une case n'est pas vide
+                                            return  # On ne déplace pas la pièce
                         # Si la reine ne saute pas par-dessus d'autres pièces, on effectue le déplacement
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.selected_piece = None # On déselectionne la pièce
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.selected_piece = None  # On déselectionne la pièce
 
-    def king_move(self, row, col): # Fonction qui permet de déplacer un roi
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "king": # Si la pièce est un roi
-                if abs(row - piece_row) <= 1 and abs(col - piece_col) <= 1 and (row, col) != (piece_row, piece_col): # Si le déplacement est valide
-                    if self.board.grid[row][col] is None or self.board.grid[row][col].color != piece.color: # Si la case d'arrivée est vide ou contient une pièce adverse
-                        self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                        self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                        self.selected_piece = None # On déselectionne la pièce
+    def king_move(self, row, col):  # Fonction qui permet de déplacer un roi
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "king":  # Si la pièce est un roi
+                if abs(row - piece_row) <= 1 and abs(col - piece_col) <= 1 and (row, col) != (
+                        piece_row, piece_col):  # Si le déplacement est valide
+                    if self.board.grid[row][col] is None or self.board.grid[row][
+                        col].color != piece.color:  # Si la case d'arrivée est vide ou contient une pièce adverse
+                        self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
+                        self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
+                        self.selected_piece = None  # On déselectionne la pièce
 
-    def highlight_moves_pawn(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'un pion
-        piece = self.board.grid[row][col] # On récupère la pièce
-        if piece is not None: # Si la case n'est pas vide
-            if piece.color == "black": # Si la pièce est blanche
-                if row == 1: # Si le pion est sur sa ligne de départ
-                    if self.board.grid[row+1][col] is None: # Si la case devant le pion est vide
-                        self.draw_highlight(row + 1, col) # On met en évidence la case
-                        if self.board.grid[row + 2][col] is None: # Si la case devant le pion est vide
-                            self.draw_highlight(row + 2, col) # On met en évidence la case
-                else: # Si le pion n'est pas sur sa ligne de départ
-                    if self.board.grid[row + 1][col] is None: # Si la case devant le pion est vide
-                        self.draw_highlight(row + 1, col) # On met en évidence la case
-                if col > 0: # Si le pion n'est pas sur la colonne de gauche
-                    if self.board.grid[row + 1][col - 1] is not None and self.board.grid[row + 1][col - 1].color != piece.color: # Si la case devant le pion est occupée par une pièce adverse
-                        self.draw_highlight(row + 1, col - 1) # On met en évidence la case
-                if col < 7: # Si le pion n'est pas sur la colonne de droite
-                    if self.board.grid[row + 1][col + 1] is not None and self.board.grid[row + 1][col + 1].color != piece.color: # Si la case devant le pion est occupée par une pièce adverse
-                        self.draw_highlight(row + 1, col + 1) # On met en évidence la case
-            else: # Si la pièce est blanche
-                if row == 6: # Si le pion est sur sa ligne de départ
-                    if self.board.grid[row - 1][col] is None: # Si la case devant le pion est vide
+    def highlight_moves_pawn(self, row,
+                             col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un pion
+        piece = self.board.grid[row][col]  # On récupère la pièce
+        if piece is not None:  # Si la case n'est pas vide
+            if piece.color == "black":  # Si la pièce est blanche
+                if row == 1:  # Si le pion est sur sa ligne de départ
+                    if self.board.grid[row + 1][col] is None:  # Si la case devant le pion est vide
+                        self.draw_highlight(row + 1, col)  # On met en évidence la case
+                        if self.board.grid[row + 2][col] is None:  # Si la case devant le pion est vide
+                            self.draw_highlight(row + 2, col)  # On met en évidence la case
+                else:  # Si le pion n'est pas sur sa ligne de départ
+                    if self.board.grid[row + 1][col] is None:  # Si la case devant le pion est vide
+                        self.draw_highlight(row + 1, col)  # On met en évidence la case
+                if col > 0:  # Si le pion n'est pas sur la colonne de gauche
+                    if self.board.grid[row + 1][col - 1] is not None and self.board.grid[row + 1][
+                        col - 1].color != piece.color:  # Si la case devant le pion est occupée par une pièce adverse
+                        self.draw_highlight(row + 1, col - 1)  # On met en évidence la case
+                if col < 7:  # Si le pion n'est pas sur la colonne de droite
+                    if self.board.grid[row + 1][col + 1] is not None and self.board.grid[row + 1][
+                        col + 1].color != piece.color:  # Si la case devant le pion est occupée par une pièce adverse
+                        self.draw_highlight(row + 1, col + 1)  # On met en évidence la case
+            else:  # Si la pièce est blanche
+                if row == 6:  # Si le pion est sur sa ligne de départ
+                    if self.board.grid[row - 1][col] is None:  # Si la case devant le pion est vide
                         self.draw_highlight(row - 1, col)
-                        if self.board.grid[row - 2][col] is None: # Si la case devant le pion est vide
-                            self.draw_highlight(row - 2, col) # On met en évidence la case
-                else: # Si le pion n'est pas sur sa ligne de départ
-                    if self.board.grid[row - 1][col] is None: # Si la case devant le pion est vide
-                        self.draw_highlight(row - 1, col) # On met en évidence la case
-                if col > 0: # Si le pion n'est pas sur la colonne de gauche
-                    if self.board.grid[row - 1][col - 1] is not None and self.board.grid[row - 1][col - 1].color != piece.color: # Si la case devant le pion est occupée par une pièce adverse
-                        self.draw_highlight(row - 1, col - 1) # On met en évidence la case
-                if col < 7: # Si le pion n'est pas sur la colonne de droite
-                    if self.board.grid[row - 1][col + 1] is not None and self.board.grid[row - 1][col + 1].color != piece.color: # Si la case devant le pion est occupée par une pièce adverse
-                        self.draw_highlight(row - 1, col + 1) # On met en évidence la case
+                        if self.board.grid[row - 2][col] is None:  # Si la case devant le pion est vide
+                            self.draw_highlight(row - 2, col)  # On met en évidence la case
+                else:  # Si le pion n'est pas sur sa ligne de départ
+                    if self.board.grid[row - 1][col] is None:  # Si la case devant le pion est vide
+                        self.draw_highlight(row - 1, col)  # On met en évidence la case
+                if col > 0:  # Si le pion n'est pas sur la colonne de gauche
+                    if self.board.grid[row - 1][col - 1] is not None and self.board.grid[row - 1][
+                        col - 1].color != piece.color:  # Si la case devant le pion est occupée par une pièce adverse
+                        self.draw_highlight(row - 1, col - 1)  # On met en évidence la case
+                if col < 7:  # Si le pion n'est pas sur la colonne de droite
+                    if self.board.grid[row - 1][col + 1] is not None and self.board.grid[row - 1][
+                        col + 1].color != piece.color:  # Si la case devant le pion est occupée par une pièce adverse
+                        self.draw_highlight(row - 1, col + 1)  # On met en évidence la case
 
-    def highlight_moves_rook(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'une tour
-        piece = self.board.grid[row][col] # On récupère la pièce
-        if piece is not None: # Si la case n'est pas vide
-            for i in range(1, 8): # On parcourt les cases devant la tour
-                if row + i < 8: # Si la case est dans l'échiquier
-                    if self.board.grid[row + i][col] is None: # Si la case est vide
-                        self.draw_highlight(row + i, col) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row + i][col].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row + i, col) # On met en évidence la case
-                        break # On arrête de parcourir les cases devant la tour
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases devant la tour
-            for i in range(1, 8): # On parcourt les cases derrière la tour
-                if row - i >= 0: # Si la case est dans l'échiquier
+    def highlight_moves_rook(self, row,
+                             col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'une tour
+        piece = self.board.grid[row][col]  # On récupère la pièce
+        if piece is not None:  # Si la case n'est pas vide
+            for i in range(1, 8):  # On parcourt les cases devant la tour
+                if row + i < 8:  # Si la case est dans l'échiquier
+                    if self.board.grid[row + i][col] is None:  # Si la case est vide
+                        self.draw_highlight(row + i, col)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row + i][col].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row + i, col)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases devant la tour
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases devant la tour
+            for i in range(1, 8):  # On parcourt les cases derrière la tour
+                if row - i >= 0:  # Si la case est dans l'échiquier
 
-                    if self.board.grid[row - i][col] is None: # Si la case est vide
-                        self.draw_highlight(row - i, col) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row - i][col].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row - i, col) # On met en évidence la case
-                        break # On arrête de parcourir les cases derrière la tour
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases derrière la tour
-            for i in range(1, 8): # On parcourt les cases à droite de la tour
-                if col + i < 8: # Si la case est dans l'échiquier
-                    if self.board.grid[row][col + i] is None: # Si la case est vide
-                        self.draw_highlight(row, col + i) # On met en évidence la case
+                    if self.board.grid[row - i][col] is None:  # Si la case est vide
+                        self.draw_highlight(row - i, col)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row - i][col].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row - i, col)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases derrière la tour
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases derrière la tour
+            for i in range(1, 8):  # On parcourt les cases à droite de la tour
+                if col + i < 8:  # Si la case est dans l'échiquier
+                    if self.board.grid[row][col + i] is None:  # Si la case est vide
+                        self.draw_highlight(row, col + i)  # On met en évidence la case
 
-                    else: # Si la case est occupée
-                        if self.board.grid[row][col + i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row, col + i) # On met en évidence la case
-                        break # On arrête de parcourir les cases à droite de la tour
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases à droite de la tour
-            for i in range(1, 8): # On parcourt les cases à gauche de la tour
-                if col - i >= 0: # Si la case est dans l'échiquier
-                    if self.board.grid[row][col - i] is None: # Si la case est vide
-                        self.draw_highlight(row, col - i) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row][col - i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row, col - i) # On met en évidence la case
-                        break # On arrête de parcourir les cases à gauche de la tour
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases à gauche de la tour
+                    else:  # Si la case est occupée
+                        if self.board.grid[row][col + i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row, col + i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases à droite de la tour
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases à droite de la tour
+            for i in range(1, 8):  # On parcourt les cases à gauche de la tour
+                if col - i >= 0:  # Si la case est dans l'échiquier
+                    if self.board.grid[row][col - i] is None:  # Si la case est vide
+                        self.draw_highlight(row, col - i)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row][col - i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row, col - i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases à gauche de la tour
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases à gauche de la tour
 
-    def highlight_moves_bishop(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'un fou
-        piece = self.board.grid[row][col] # On récupère la pièce
-        if piece is not None: # Si la case n'est pas vide
-            for i in range(1, 8): # On parcourt les cases en haut à droite du fou
-                if row + i < 8 and col + i < 8: # Si la case est dans l'échiquier
-                    if self.board.grid[row + i][col + i] is None: # Si la case est vide
-                        self.draw_highlight(row + i, col + i) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row + i][col + i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row + i, col + i) # On met en évidence la case
-                        break # On arrête de parcourir les cases en haut à droite du fou
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases en haut à droite du fou
-            for i in range(1, 8): # On parcourt les cases en haut à gauche du fou
-                if row + i < 8 and col - i >= 0: # Si la case est dans l'échiquier
-                    if self.board.grid[row + i][col - i] is None: # Si la case est vide
-                        self.draw_highlight(row + i, col - i) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row + i][col - i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row + i, col - i) # On met en évidence la case
-                        break # On arrête de parcourir les cases en haut à gauche du fou
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases en haut à gauche du fou
-            for i in range(1, 8): # On parcourt les cases en bas à droite du fou
-                if row - i >= 0 and col + i < 8: # Si la case est dans l'échiquier
-                    if self.board.grid[row - i][col + i] is None: # Si la case est vide
-                        self.draw_highlight(row - i, col + i) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row - i][col + i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row - i, col + i) # On met en évidence la case
-                        break # On arrête de parcourir les cases en bas à droite du fou
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases en bas à droite du fou
-            for i in range(1, 8): # On parcourt les cases en bas à gauche du fou
-                if row - i >= 0 and col - i >= 0: # Si la case est dans l'échiquier
-                    if self.board.grid[row - i][col - i] is None: # Si la case est vide
-                        self.draw_highlight(row - i, col - i) # On met en évidence la case
-                    else: # Si la case est occupée
-                        if self.board.grid[row - i][col - i].color != piece.color: # Si la pièce est adverse
-                            self.draw_highlight(row - i, col - i) # On met en évidence la case
-                        break # On arrête de parcourir les cases en bas à gauche du fou
-                else: # Si la case n'est pas dans l'échiquier
-                    break # On arrête de parcourir les cases en bas à gauche du fou
+    def highlight_moves_bishop(self, row,
+                               col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un fou
+        piece = self.board.grid[row][col]  # On récupère la pièce
+        if piece is not None:  # Si la case n'est pas vide
+            for i in range(1, 8):  # On parcourt les cases en haut à droite du fou
+                if row + i < 8 and col + i < 8:  # Si la case est dans l'échiquier
+                    if self.board.grid[row + i][col + i] is None:  # Si la case est vide
+                        self.draw_highlight(row + i, col + i)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row + i][col + i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row + i, col + i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases en haut à droite du fou
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases en haut à droite du fou
+            for i in range(1, 8):  # On parcourt les cases en haut à gauche du fou
+                if row + i < 8 and col - i >= 0:  # Si la case est dans l'échiquier
+                    if self.board.grid[row + i][col - i] is None:  # Si la case est vide
+                        self.draw_highlight(row + i, col - i)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row + i][col - i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row + i, col - i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases en haut à gauche du fou
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases en haut à gauche du fou
+            for i in range(1, 8):  # On parcourt les cases en bas à droite du fou
+                if row - i >= 0 and col + i < 8:  # Si la case est dans l'échiquier
+                    if self.board.grid[row - i][col + i] is None:  # Si la case est vide
+                        self.draw_highlight(row - i, col + i)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row - i][col + i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row - i, col + i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases en bas à droite du fou
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases en bas à droite du fou
+            for i in range(1, 8):  # On parcourt les cases en bas à gauche du fou
+                if row - i >= 0 and col - i >= 0:  # Si la case est dans l'échiquier
+                    if self.board.grid[row - i][col - i] is None:  # Si la case est vide
+                        self.draw_highlight(row - i, col - i)  # On met en évidence la case
+                    else:  # Si la case est occupée
+                        if self.board.grid[row - i][col - i].color != piece.color:  # Si la pièce est adverse
+                            self.draw_highlight(row - i, col - i)  # On met en évidence la case
+                        break  # On arrête de parcourir les cases en bas à gauche du fou
+                else:  # Si la case n'est pas dans l'échiquier
+                    break  # On arrête de parcourir les cases en bas à gauche du fou
 
-    def highlight_moves_knight(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'un cavalier
-        piece = self.board.grid[row][col] # On récupère la pièce
-        if piece is not None: # Si la case n'est pas vide
-            for i in range(-2, 3): # On parcourt les cases autour du cavalier
-                for j in range(-2, 3): # On parcourt les cases autour du cavalier
-                    if abs(i) + abs(j) == 3: # Si la case est à 3 cases du cavalier
-                        if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8: # Si la case est dans l'échiquier
-                            if self.board.grid[row + i][col + j] is None: # Si la case est vide
-                                self.draw_highlight(row + i, col + j) # On met en évidence la case
-                            else: # Si la case est occupée
-                                if self.board.grid[row + i][col + j].color != piece.color: # Si la pièce est adverse
-                                    self.draw_highlight(row + i, col + j) # On met en évidence la case
+    def highlight_moves_knight(self, row,
+                               col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un cavalier
+        piece = self.board.grid[row][col]  # On récupère la pièce
+        if piece is not None:  # Si la case n'est pas vide
+            for i in range(-2, 3):  # On parcourt les cases autour du cavalier
+                for j in range(-2, 3):  # On parcourt les cases autour du cavalier
+                    if abs(i) + abs(j) == 3:  # Si la case est à 3 cases du cavalier
+                        if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:  # Si la case est dans l'échiquier
+                            if self.board.grid[row + i][col + j] is None:  # Si la case est vide
+                                self.draw_highlight(row + i, col + j)  # On met en évidence la case
+                            else:  # Si la case est occupée
+                                if self.board.grid[row + i][col + j].color != piece.color:  # Si la pièce est adverse
+                                    self.draw_highlight(row + i, col + j)  # On met en évidence la case
 
-    def highlight_moves_queen(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'une reine
-        self.highlight_moves_rook(row, col) # On met en évidence les déplacements possibles de la tour
-        self.highlight_moves_bishop(row, col) # On met en évidence les déplacements possibles du fou
+    def highlight_moves_queen(self, row,
+                              col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'une reine
+        self.highlight_moves_rook(row, col)  # On met en évidence les déplacements possibles de la tour
+        self.highlight_moves_bishop(row, col)  # On met en évidence les déplacements possibles du fou
 
-    def highlight_moves_king(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'un roi
-        piece = self.board.grid[row][col] # On récupère la pièce
-        if piece is not None: # Si la case n'est pas vide
-            for i in range(-1, 2): # On parcourt les cases autour du roi
-                for j in range(-1, 2): # On parcourt les cases autour du roi
-                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8: # Si la case est dans l'échiquier
-                        if self.board.grid[row + i][col + j] is None: # Si la case est vide
-                            self.draw_highlight(row + i, col + j) # On met en évidence la case
-                        else: # Si la case est occupée
-                            if self.board.grid[row + i][col + j].color != piece.color: # Si la pièce est adverse
-                                self.draw_highlight(row + i, col + j) # On met en évidence la case
+    def highlight_moves_king(self, row,
+                             col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un roi
+        piece = self.board.grid[row][col]  # On récupère la pièce
+        if piece is not None:  # Si la case n'est pas vide
+            for i in range(-1, 2):  # On parcourt les cases autour du roi
+                for j in range(-1, 2):  # On parcourt les cases autour du roi
+                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:  # Si la case est dans l'échiquier
+                        if self.board.grid[row + i][col + j] is None:  # Si la case est vide
+                            self.draw_highlight(row + i, col + j)
+
+                        else:
+                            if self.board.grid[row + i][col + j].color != piece.color:
+                                self.draw_highlight(row + i, col + j)
 
 
 
 
-    def draw_highlight(self, row, col): # Fonction qui permet de mettre en évidence une case
-        pygame.draw.rect(self.screen, BROWN, (col*GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE%32,GRID_SIZE%32)) # On dessine un rectangle jaune sur la case
-        pygame.display.update()  # On met à jour l'affichage
-        pygame.display.update(updated_rects) # On met à jour l'affichage
+    def draw_highlight(self, row, col):
+        pygame.draw.rect(self.screen, BROWN,
+                                (col * GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE % 32, GRID_SIZE % 32))
+        pygame.display.update()
+        pygame.display.update(updated_rects)  # On met à jour l'affichage
 
-    def move(self, row, col): # Fonction qui permet de déplacer une pièce
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "pawn": # Si la pièce est un pion
-                self.highlight_moves_pawn(row, col)
-                self.pawn_move(row, col) # On appelle la fonction qui permet de déplacer un pion
-            elif piece.type == "rook": # Si la pièce est une tour
-                self.highlight_moves_rook(row, col)
-                self.rook_move(row, col) # On appelle la fonction qui permet de déplacer une tour
-            elif piece.type == "knight": # Si la pièce est un cavalier
-                self.highlight_moves_knight(row, col)
-                self.knight_move(row, col) # On appelle la fonction qui permet de déplacer un cavalier
-            elif piece.type == "bishop": # Si la pièce est un fou
-                self.highlight_moves_bishop(row, col)
-                self.bishop_move(row, col) # On appelle la fonction qui permet de déplacer un fou
-            elif piece.type == "queen": # Si la pièce est une reine
-                self.highlight_moves_queen(row, col)
-                self.queen_move(row, col) # On appelle la fonction qui permet de déplacer une reine
-            elif piece.type == "king": # Si la pièce est un roi
-                self.highlight_moves_king(row, col)
-                self.king_move(row, col) # On appelle la fonction qui permet de déplacer un roi
-            self.selected_piece = None # On déselectionne la pièce
-        else: # Si aucune pièce n'est sélectionnée
-            if self.board.grid[row][col] is not None and self.board.grid[row][col].color == "white": # Si la case sélectionnée contient une pièce blanche
-                self.selected_piece = (row, col) # On sélectionne la pièce
 
+    def move(self, row, col):  # Fonction qui permet de déplacer une pièce
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "pawn":  # Si la pièce est un pion
+                self.pawn_move(row, col)  # On appelle la fonction qui permet de déplacer un pion
+            elif piece.type == "rook":  # Si la pièce est une tour
+                self.rook_move(row, col)  # On appelle la fonction qui permet de déplacer une tour
+            elif piece.type == "knight":  # Si la pièce est un cavalier
+                self.knight_move(row, col)  # On appelle la fonction qui permet de déplacer un cavalier
+            elif piece.type == "bishop":  # Si la pièce est un fou
+                self.bishop_move(row, col)  # On appelle la fonction qui permet de déplacer un fou
+            elif piece.type == "queen":  # Si la pièce est une reine
+                self.queen_move(row, col)  # On appelle la fonction qui permet de déplacer une reine
+            elif piece.type == "king":  # Si la pièce est un roi
+                self.king_move(row, col)  # On appelle la fonction qui permet de déplacer un roi
+            self.selected_piece = None  # On déselectionne la pièce
+        else:  # Si aucune pièce n'est sélectionnée
+            if self.board.grid[row][col] is not None and self.board.grid[row][
+                col].color == "white":  # Si la case sélectionnée contient une pièce blanche
+                self.selected_piece = (row, col)  # On sélectionne la pièce
 
     def update(self):  # Fonction qui permet de mettre à jour le jeu
         self.board.draw(self.screen)  # On dessine le plateau de jeu
 
     # Ajout des getter et setter (ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
-        return self.board.grid[row][col] # On retourne la pièce
+        return self.board.grid[row][col]  # On retourne la pièce
 
     def get_selected_piece(self):  # Fonction qui permet de récupérer la pièce sélectionnée
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            return self.get_piece(*self.selected_piece) # On retourne la pièce sélectionnée
-        return None # On retourne la pièce sélectionnée
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+            return self.get_piece(*self.selected_piece)  # On retourne la pièce sélectionnée
+        return None  # On retourne la pièce sélectionnée
 
     # On récupère la position d'une pièce par son id
     def get_piece_position(self, id):
@@ -601,65 +650,65 @@ class Game:  # Classe pour représenter le jeu
         return None
 
     def get_board(self):  # Fonction qui permet de récupérer le plateau de jeu
-        return self.board # On retourne le plateau de jeu
+        return self.board  # On retourne le plateau de jeu
 
     def get_screen(self):  # Fonction qui permet de récupérer l'écran
-        return self.screen # On retourne l'écran
+        return self.screen  # On retourne l'écran
 
     def get_running(self):  # Fonction qui permet de récupérer l'état du jeu
-        return self.running # On retourne l'état du jeu
+        return self.running  # On retourne l'état du jeu
 
     def get_grid(self):  # Fonction qui permet de récupérer la grille
-        return self.board.grid # On retourne la grille
+        return self.board.grid  # On retourne la grille
 
     def get_screen_width(self):  # Fonction qui permet de récupérer la largeur de l'écran
-        return SCREEN_WIDTH # On retourne la largeur de l'écran
+        return SCREEN_WIDTH  # On retourne la largeur de l'écran
 
     def get_screen_height(self):  # Fonction qui permet de récupérer la hauteur de l'écran
-        return SCREEN_HEIGHT # On retourne la hauteur de l'écran
+        return SCREEN_HEIGHT  # On retourne la hauteur de l'écran
 
     def set_piece(self, row, col, piece):  # Fonction qui permet de placer une pièce
-        self.board.grid[row][col] = piece # On place la pièce
+        self.board.grid[row][col] = piece  # On place la pièce
 
     def set_selected_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
-        self.selected_piece = (row, col) # On sélectionne la pièce
+        self.selected_piece = (row, col)  # On sélectionne la pièce
 
     def set_board(self, board):  # Fonction qui permet de placer le plateau de jeu
-        self.board = board # On place le plateau de jeu
+        self.board = board  # On place le plateau de jeu
 
     def set_screen(self, screen):  # Fonction qui permet de placer l'écran
-        self.screen = screen # On place l'écran
+        self.screen = screen  # On place l'écran
 
     def set_running(self, running):  # Fonction qui permet de changer l'état du jeu
-        self.running = running # On change l'état du jeu
+        self.running = running  # On change l'état du jeu
 
     def set_grid(self, grid):  # Fonction qui permet de placer la grille
-        self.board.grid = grid # On place la grille
+        self.board.grid = grid  # On place la grille
 
     def set_grid_size(self, grid_size):  # Fonction qui permet de placer la taille de la grille
-        GRID_SIZE = grid_size # On place la taille de la grille
+        GRID_SIZE = grid_size  # On place la taille de la grille
 
     def set_screen_width(self, screen_width):  # Fonction qui permet de placer la largeur de l'écran
-        SCREEN_WIDTH = screen_width # On place la largeur de l'écran
+        SCREEN_WIDTH = screen_width  # On place la largeur de l'écran
 
     def set_screen_height(self, screen_height):  # Fonction qui permet de placer la hauteur de l'écran
-        SCREEN_HEIGHT = screen_height # On place la hauteur de l'écran
-        
-    def set_grid(self, grid): # Fonction qui permet de placer la grille
-        self.grid = grid # On place la grille
+        SCREEN_HEIGHT = screen_height  # On place la hauteur de l'écran
+
+    def set_grid(self, grid):  # Fonction qui permet de placer la grille
+        self.grid = grid  # On place la grille
 
     def reset(self):  # Fonction qui permet de réinitialiser le jeu
-        self.board = Board(self.screen) # On réinitialise le plateau de jeu
-        self.selected_piece = None # On déselectionne la pièce
-        self.running = True # On lance le jeu
+        self.board = Board(self.screen)  # On réinitialise le plateau de jeu
+        self.selected_piece = None  # On déselectionne la pièce
+        self.running = True  # On lance le jeu
 
     def run(self):  # Fonction qui permet de lancer le jeu
-        while self.running: # Tant que le jeu est lancé
-            self.handle_events() # On gère les évènements
-            self.screen.fill(BLACK) # On remplit l'écran de noir
+        while self.running:  # Tant que le jeu est lancé
+            self.handle_events()  # On gère les évènements
+            self.screen.fill(BLACK)  # On remplit l'écran de noir
             self.board.draw(self.screen)  # On dessine le plateau de jeu
-            pygame.display.flip() # On met à jour l'écran
-        pygame.quit() # On quitte pygame
+            pygame.display.flip()  # On met à jour l'écran
+        pygame.quit()  # On quitte pygame
 
     # Méthode pour regarder si le roi est en échec
     """def is_king_in_check(self, color): # Fonction qui permet de savoir si le roi est en échec
@@ -681,73 +730,69 @@ class Game:  # Classe pour représenter le jeu
         return False # On retourne faux"""
 
 
-
-
-
-class AI: # Classe qui permet de créer un IA
+class AI:  # Classe qui permet de créer un IA
     def __init__(self):
         # On va récupérer le plateau d'échec sous forme de tableau
-        game = Game() # On récupère le jeu
-        self.grid = game.get_grid() # On récupère le plateau de jeu
-        self.Affichage_type() # On affiche le tableau
+        game = Game()  # On récupère le jeu
+        self.grid = game.get_grid()  # On récupère le plateau de jeu
+        self.Affichage_type()  # On affiche le tableau
 
-    def Affichage_type(self): # Affichage du tableau
-        AI_grid = [[0 for i in range(8)] for j in range(8)] # Création d'un tableau de 8*8
-        for i in range(8): # On parcours le tableau
-            for j in range(8): # On parcours le tableau
-                if self.grid[i][j] is not None: # Si la case n'est pas vide
-                    AI_grid[i][j] = [self.grid[i][j].get_type(), self.grid[i][j].get_color(), i, j] # On ajoute le type de la pièce
-                else: # Sinon
-                    AI_grid[i][j] = ["None", i, j] # On ajoute "None"
-            print("") # On saute une ligne
-        print(AI_grid) # On affiche le tableau
-        
-    def Input(self,x,y):
+    def Affichage_type(self):  # Affichage du tableau
+        AI_grid = [[0 for i in range(8)] for j in range(8)]  # Création d'un tableau de 8*8
+        for i in range(8):  # On parcours le tableau
+            for j in range(8):  # On parcours le tableau
+                if self.grid[i][j] is not None:  # Si la case n'est pas vide
+                    AI_grid[i][j] = [self.grid[i][j].get_type(), self.grid[i][j].get_color(), i,
+                                     j]  # On ajoute le type de la pièce
+                else:  # Sinon
+                    AI_grid[i][j] = ["None", i, j]  # On ajoute "None"
+            print("")  # On saute une ligne
+        print(AI_grid)  # On affiche le tableau
+
+    def Input(self, x, y):
         # Coordoner de d'arriver x,y 
         self.x = x
         self.y = y
-        game = Game() # On récupère le plateau de jeu
-        self.grid = game.get_grid() # On récupère le plateau de jeu
-        for i in range (8): # On parcours le tableau
-            for j in range(8): # On parcours le tableau
-                if self.grid[x][y] is not None : # Si la case n'est pas vide
+        game = Game()  # On récupère le plateau de jeu
+        self.grid = game.get_grid()  # On récupère le plateau de jeu
+        for i in range(8):  # On parcours le tableau
+            for j in range(8):  # On parcours le tableau
+                if self.grid[x][y] is not None:  # Si la case n'est pas vide
                     # Déplacement de la pièces a la position final
-                    game.set_grid(self.grid) # On place le plateau de jeu
-                
-                
+                    game.set_grid(self.grid)  # On place le plateau de jeu
 
-    def get_grid(self): # Fonction qui permet de récupérer le plateau de jeu
-        return self.grid # On retourne le plateau de jeu
+    def get_grid(self):  # Fonction qui permet de récupérer le plateau de jeu
+        return self.grid  # On retourne le plateau de jeu
 
-    def set_grid(self, grid): # Fonction qui permet de placer le plateau de jeu
-        self.grid = grid # On place le plateau de jeu
+    def set_grid(self, grid):  # Fonction qui permet de placer le plateau de jeu
+        self.grid = grid  # On place le plateau de jeu
 
-    def get_AI_grid(self): # Fonction qui permet de récupérer le plateau de jeu
-        return self.AI_grid # On retourne le plateau de jeu
+    def get_AI_grid(self):  # Fonction qui permet de récupérer le plateau de jeu
+        return self.AI_grid  # On retourne le plateau de jeu
 
-    def set_AI_grid(self, AI_grid): # Fonction qui permet de placer le plateau de jeu
-        self.AI_grid = AI_grid # On place le plateau de jeu
+    def set_AI_grid(self, AI_grid):  # Fonction qui permet de placer le plateau de jeu
+        self.AI_grid = AI_grid  # On place le plateau de jeu
 
 
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # On crée une fenêtre
-        self.screen.blit(BACKGROUND_IMG, (-150, 0)) # On affiche l'image de fond
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # On crée une fenêtre
+        self.screen.blit(BACKGROUND_IMG, (-150, 0))  # On affiche l'image de fond
         pygame.display.flip()
-        pygame.display.set_caption("Jeu d'échec") # On donne un titre à la fenêtre
-        self.running = True # Variable qui permet de savoir si le jeu est lancé ou non
+        pygame.display.set_caption("Jeu d'échec")  # On donne un titre à la fenêtre
+        self.running = True  # Variable qui permet de savoir si le jeu est lancé ou non
 
     def handle_events(self):  # Fonction qui gère les événements
-        for event in pygame.event.get(): # On parcours la liste des événements reçus
-            if event.type == pygame.QUIT: # Si on clique sur la croix
-                self.running = False # On quitte le jeu
+        for event in pygame.event.get():  # On parcours la liste des événements reçus
+            if event.type == pygame.QUIT:  # Si on clique sur la croix
+                self.running = False  # On quitte le jeu
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Si on clique sur la souris
                 x, y = pygame.mouse.get_pos()  # On récupère les coordonnées de la souris
-                print(x, y) # On affiche les coordonnées de la souris
+                print(x, y)  # On affiche les coordonnées de la souris
                 if x > 150 and x < 340 and y > 300 and y < 400:  # Si on clique sur le bouton "Jouer"
                     game = Game()  # On lance le jeu
-                    AI() # On lance l'IA
-                    game.run() # On lance le jeu
+                    AI()  # On lance l'IA
+                    game.run()  # On lance le jeu
 
     def draw(self):  # Fonction qui permet de dessiner l'écran d'accueil
         font = pygame.font.SysFont('comicsans', 70)  # On définit la police
@@ -760,13 +805,13 @@ class Main_Screen:  # Classe pour représenter l'écran d'accueil
         pygame.display.update()  # On met à jour l'affichage
 
     def run(self):  # Fonction qui permet de lancer l'écran d'accueil
-        while self.running: # Tant que l'écran d'accueil est lancé
-            self.handle_events() # On gère les évènements
-            self.draw() # On dessine l'écran d'accueil
-        pygame.quit() # On quitte pygame
+        while self.running:  # Tant que l'écran d'accueil est lancé
+            self.handle_events()  # On gère les évènements
+            self.draw()  # On dessine l'écran d'accueil
+        pygame.quit()  # On quitte pygame
 
 
 if __name__ == '__main__':  # Si on lance le script
-    pygame.init() # On initialise pygame
+    pygame.init()  # On initialise pygame
     main_screen = Main_Screen()  # On lance l'écran d'accueil
-    main_screen.run() # On lance l'écran d'accueil
+    main_screen.run()  # On lance l'écran d'accueil
