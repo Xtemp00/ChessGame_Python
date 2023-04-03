@@ -14,6 +14,7 @@ GRID_SIZE = SCREEN_WIDTH // 8 # Taille d'une case du plateau de jeu
 WHITE = (255, 255, 255) # Blanc
 BLACK = (0, 0, 0) # Noir
 GRAY = (128, 128, 128) # Gris
+GREEN = (0, 255, 0) # Vert
 
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
@@ -176,8 +177,9 @@ class Game:  # Classe pour représenter le jeu
 
     def select_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]  # On récupère la pièce
-        if piece is not None:  # Si la pièce n'est pas vide
-            self.selected_piece = (row, col)  # On sélectionne la pièce
+        if self.selected_piece is None:
+            if piece is not None:  # Si la pièce n'est pas vide
+                self.selected_piece = (row, col)  # On sélectionne la pièce
         elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
 
@@ -188,6 +190,7 @@ class Game:  # Classe pour représenter le jeu
             if piece.type == "pawn": # Si la pièce est un pion
                 if piece.color == "white": # Si la pièce est blanche
                     if row == piece_row - 1 and col == piece_col and self.board.grid[row][col] is None:
+                        # On affiche le carré ou le pions peut se déplacer
                         # Déplacement normal d'un pion blanc
                         self.board.grid[piece_row][piece_col] = None # On vide la case de départ
                         self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
@@ -305,7 +308,6 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
                         self.selected_piece = None # On déselectionne la pièce
 
-
     def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
@@ -368,6 +370,12 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None # On vide la case de départ
                         self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
                         self.selected_piece = None # On déselectionne la pièce
+
+    # Fonction pour afficher un carré de couleur verte sur les mouvements possible des pièces
+    def Highlight(self, row, col, color):
+        pygame.draw.rect(self.screen, color, (col*100 , row*100, 30, 30))
+        pygame.display.update()
+
 
     def move(self, row, col): # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None: # Si une pièce est sélectionnée
