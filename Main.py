@@ -109,8 +109,8 @@ class Board:  # Board est une classe qui contient une liste de pièces
         self.grid[0][0] = Piece('black', ROOK_BLACK_IMG, "rook",1)
         self.grid[0][1] = Piece('black', KNIGHT_BLACK_IMG, "knight",2)
         self.grid[0][2] = Piece('black', BISHOP_BLACK_IMG, "bishop",3)
-        self.grid[0][3] = Piece('black', QUEEN_BLACK_IMG, "queen",4)
-        self.grid[0][4] = Piece('black', KING_BLACK_IMG, "king",5)
+        self.grid[0][4] = Piece('black', QUEEN_BLACK_IMG, "queen",4)
+        self.grid[0][3] = Piece('black', KING_BLACK_IMG, "king",5)
         self.grid[0][5] = Piece('black', BISHOP_BLACK_IMG, "bishop",6)
         self.grid[0][6] = Piece('black', KNIGHT_BLACK_IMG, "knight",7)
         self.grid[0][7] = Piece('black', ROOK_BLACK_IMG, "rook",8)
@@ -125,8 +125,8 @@ class Board:  # Board est une classe qui contient une liste de pièces
         self.grid[7][0] = Piece('white', ROOK_WHITE_IMG, "rook",17)
         self.grid[7][1] = Piece('white', KNIGHT_WHITE_IMG, "knight",18)
         self.grid[7][2] = Piece('white', BISHOP_WHITE_IMG, "bishop",19)
-        self.grid[7][3] = Piece('white', QUEEN_WHITE_IMG, "queen",20)
-        self.grid[7][4] = Piece('white', KING_WHITE_IMG, "king",21)
+        self.grid[7][4] = Piece('white', QUEEN_WHITE_IMG, "queen",20)
+        self.grid[7][3] = Piece('white', KING_WHITE_IMG, "king",21)
         self.grid[7][5] = Piece('white', BISHOP_WHITE_IMG, "bishop",22)
         self.grid[7][6] = Piece('white', KNIGHT_WHITE_IMG, "knight",23)
         self.grid[7][7] = Piece('white', ROOK_WHITE_IMG, "rook",24)
@@ -226,38 +226,39 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
                         self.selected_piece = None # On déselectionne la pièce
 
-
-    def rook_move(self, row, col): # Fonction qui permet de déplacer une tour
-        if self.selected_piece is not None: # Si une pièce est sélectionnée
-            piece_row, piece_col = self.selected_piece # On récupère les coordonnées de la pièce
-            piece = self.board.grid[piece_row][piece_col] # On récupère la pièce
-            if piece.type == "rook": # Si la pièce est une tour
-                # Vérification des déplacements valides pour une tour
-                if row == piece_row and col != piece_col: # Déplacement horizontal
-                    if col > piece_col: # col > piece_col
-                        for i in range(piece_col + 1, col): # On vérifie si une pièce est sur la trajectoire
-                            if self.board.grid[row][i] is not None: # On vérifie si une pièce est sur la trajectoire
-                                return # On déselectionne la pièce
-                    else: # col < piece_col
-                        for i in range(col + 1, piece_col): # On vérifie si une pièce est sur la trajectoire
-                            if self.board.grid[row][i] is not None: # On vérifie si une pièce est sur la trajectoire
-                                return # On déselectionne la pièce
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
-                elif row != piece_row and col == piece_col: # Si la tour se déplace verticalement
-                    if row > piece_row: # row > piece_row
-                        for i in range(piece_row + 1, row): # On vérifie si une pièce est sur la trajectoire
-                            if self.board.grid[i][col] is not None: # On vérifie si une pièce est sur la trajectoire
-                                return # On déselectionne la pièce
-                    else: # row < piece_row
-                        for i in range(row + 1, piece_row): # On vérifie si une pièce est sur la trajectoire
-                            if self.board.grid[i][col] is not None: # On vérifie si une pièce est sur la trajectoire
-                                return # On déselectionne la pièce
-                    self.board.grid[piece_row][piece_col] = None # On vide la case de départ
-                    self.board.grid[row][col] = piece # On place la pièce sur la case d'arrivée
-                    self.selected_piece = None # On déselectionne la pièce
-
+    def rook_move(self, row, col):
+        if self.selected_piece is not None:
+            piece_row, piece_col = self.selected_piece
+            piece = self.board.grid[piece_row][piece_col]
+            if piece.type == "rook":
+                if row == piece_row and col != piece_col:
+                    if col > piece_col:
+                        for i in range(piece_col + 1, col):
+                            if self.board.grid[row][i] is not None:
+                                return
+                    else:
+                        for i in range(col + 1, piece_col):
+                            if self.board.grid[row][i] is not None:
+                                return
+                    if self.board.grid[row][col] is None or self.board.grid[row][
+                        col].color != piece.color:  # Ajout de la vérification de la couleur de la pièce cible
+                        self.board.grid[piece_row][piece_col] = None
+                        self.board.grid[row][col] = piece
+                        self.selected_piece = None
+                elif row != piece_row and col == piece_col:
+                    if row > piece_row:
+                        for i in range(piece_row + 1, row):
+                            if self.board.grid[i][col] is not None:
+                                return
+                    else:
+                        for i in range(row + 1, piece_row):
+                            if self.board.grid[i][col] is not None:
+                                return
+                    if self.board.grid[row][col] is None or self.board.grid[row][
+                        col].color != piece.color:  # Ajout de la vérification de la couleur de la pièce cible
+                        self.board.grid[piece_row][piece_col] = None
+                        self.board.grid[row][col] = piece
+                        self.selected_piece = None
 
     def knight_move(self, row, col): # Fonction qui permet de déplacer un cavalier
         if self.selected_piece is not None: # Si une pièce est sélectionnée
