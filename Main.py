@@ -19,6 +19,10 @@ GRAY = (128, 128, 128) # Gris
 # Couleur verte transparente
 GREEN = (0, 255, 0) # Vert
 
+# Chargement du background
+BACKGROUND_IMG = pygame.image.load('Background.png') # Charge l'image du background
+BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG, (SCREEN_WIDTH+350, SCREEN_HEIGHT+40)) # Redimensionne l'image du background
+
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
 PAWN_WHITE_IMG = pygame.image.load('pieces/pawn_white.png')
@@ -726,6 +730,8 @@ class AI: # Classe qui permet de créer un IA
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
     def __init__(self):  # Fonction d'initialisation
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # On crée une fenêtre
+        self.screen.blit(BACKGROUND_IMG, (-150, 0)) # On affiche l'image de fond
+        pygame.display.flip()
         pygame.display.set_caption("Jeu d'échec") # On donne un titre à la fenêtre
         self.running = True # Variable qui permet de savoir si le jeu est lancé ou non
 
@@ -742,7 +748,6 @@ class Main_Screen:  # Classe pour représenter l'écran d'accueil
                     game.run() # On lance le jeu
 
     def draw(self):  # Fonction qui permet de dessiner l'écran d'accueil
-        self.screen.fill(BLACK)
         font = pygame.font.SysFont('comicsans', 70)  # On définit la police
         text = font.render("Jeu d'échec", 1, WHITE)  # On écrit le texte
         self.screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 100))  # On affiche le texte
