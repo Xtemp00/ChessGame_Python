@@ -8,9 +8,9 @@ pygame.init()  # Initialise les modules de Pygame
 updated_rects = []  # Liste des rectangles de l'écran qui ont été mis à jour
 
 # Constantes pour la taille de l'écran et de la grille de jeu
-SCREEN_WIDTH = 480  # Largeur de l'écran
+SCREEN_WIDTH = 720 # Largeur de l'écran
 SCREEN_HEIGHT = 480  # Taille de l'écran
-GRID_SIZE = SCREEN_WIDTH // 8  # Taille d'une case du plateau de jeu
+GRID_SIZE = (SCREEN_WIDTH -250)// 8  # Taille d'une case du plateau de jeu
 
 # Couleurs
 WHITE = (255, 255, 255)  # Blanc
@@ -22,8 +22,10 @@ BROWN = (165, 42, 42)  # Marron
 
 # Chargement du background
 BACKGROUND_IMG = pygame.image.load('Background.png')  # Charge l'image du background
-BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG,
-                                        (SCREEN_WIDTH + 350, SCREEN_HEIGHT + 40))  # Redimensionne l'image du background
+BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG,(SCREEN_WIDTH + 350, SCREEN_HEIGHT + 40))  # Redimensionne l'image du background
+
+BACKGROUND_IMG2 = pygame.image.load('Background2.png')# Charge l'image du background
+BACKGROUND_IMG2 = pygame.transform.scale(BACKGROUND_IMG2,(SCREEN_WIDTH, SCREEN_HEIGHT))  # Redimensionne l'image du background
 
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
@@ -170,6 +172,7 @@ def get_grid_size():  # Fonction qui permet de récupérer la taille de la grill
     return GRID_SIZE
 
 
+
 class Game:  # Classe pour représenter le jeu
     def __init__(self):  # Fonction d'initialisation
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # On crée une fenêtre
@@ -177,6 +180,45 @@ class Game:  # Classe pour représenter le jeu
         self.board = Board(self.screen)  # On crée un plateau de jeu
         self.selected_piece = None  # Pour savoir quelle pièce est sélectionnée
         self.running = True  # Pour savoir si le jeu est en cours
+        self.screen.blit(BACKGROUND_IMG2, (0, 0))  # On affiche l'image de fond
+        self.draw()
+        self.position = 60
+        self.afficher = []
+        pygame.display.flip()  # On met à jour l'affichage
+
+    def draw(self):  # Fonction qui permet de dessiner l'écran d'accueil
+        font = pygame.font.SysFont('comicsans', 30)  # On définit la police
+        text = font.render("Coups Jouer : ", 1, WHITE)  # On écrit le texte
+        self.screen.blit(text, (500, 5))  # On affiche le texte
+
+    # On Enregistre les coups joués
+    def Coups_Joués(self, piece, row, col):
+        colonne = ["A","B","C","D","E","F","G","H"]
+        coup = ("La Pièces " + piece.type + " En " + str(piece.row) + str(colonne[piece.col]) + " Vers " + str(row) + str(colonne[col]))
+        for i in range(len(coup)):
+            print(coup[i], end=" ")
+        font = pygame.font.SysFont('comicsans', 20)
+        # Affiche les 15 dernier coup jouer dans la fenêtre
+        for i in range(10):
+
+            text1 = (str(piece.row) + str(colonne[piece.col]) + " -> "+ str(row) + str(colonne[col]))
+
+            if text1 not in self.afficher:
+                text = font.render(text1, 1, WHITE)
+                self.screen.blit(text, (500, self.position))
+                self.position += 30
+                self.afficher.append(text1)
+
+            # Lorsque le tableau a atteint 10, on supprime le premier élément et on décale tous les autres
+            if len(self.afficher) > 10:
+                self.afficher.pop(0)
+                self.position -= 30
+                self.screen.blit(BACKGROUND_IMG2, (0, 0))
+                self.draw()
+                for i in range(len(self.afficher)):
+                    text = font.render(self.afficher[i], 1, WHITE)
+                    self.screen.blit(text, (500, self.position - 30 * (len(self.afficher) - i)))
+
 
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
@@ -218,6 +260,11 @@ class Game:  # Classe pour représenter le jeu
                                     self.highlight_moves_queen(self.selected_piece[0], self.selected_piece[1])
                                 if piece.type == "king":
                                     self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
+                                # On affiche un texte sur le coté qui dit que le Hightlight est activer
+                                font = pygame.font.SysFont('comicsans', 20)
+                                text = font.render("Hightlight Activer", 1, WHITE)
+                                self.screen.blit(text, (500, 400))
+                                pygame.display.flip()
 
                 """self.is_king_in_check("white") # On vérifie si le roi est en échec
                 self.is_king_in_check("black") # On vérifie si le roi est en échec"""
@@ -272,6 +319,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+        self.Coups_Joués(self.board.grid[row][col], row, col)
 
     def rook_move(self, row, col):
         if self.selected_piece is not None:
@@ -768,7 +816,6 @@ class Game:  # Classe pour représenter le jeu
     def run(self):  # Fonction qui permet de lancer le jeu
         while self.running:  # Tant que le jeu est lancé
             self.handle_events()  # On gère les évènements
-            self.screen.fill(BLACK)  # On remplit l'écran de noir
             self.board.draw(self.screen)  # On dessine le plateau de jeu
             pygame.display.flip()  # On met à jour l'écran
         pygame.quit()  # On quitte pygame
@@ -839,7 +886,7 @@ class AI:  # Classe qui permet de créer un IA
 
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # On crée une fenêtre
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH-240, SCREEN_HEIGHT))  # On crée une fenêtre
         self.screen.blit(BACKGROUND_IMG, (-150, 0))  # On affiche l'image de fond
         pygame.display.flip()
         pygame.display.set_caption("Jeu d'échec")  # On donne un titre à la fenêtre
