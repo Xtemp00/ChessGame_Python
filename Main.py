@@ -677,6 +677,7 @@ class Game:  # Classe pour représenter le jeu
                                     return True
         return False
 
+
     def is_checkmate(self):
         tab = self.get_tab_piece()
         for piece in tab:
