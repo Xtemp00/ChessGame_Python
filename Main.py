@@ -16,8 +16,10 @@ GRID_SIZE = SCREEN_WIDTH // 8 # Taille d'une case du plateau de jeu
 WHITE = (255, 255, 255) # Blanc
 BLACK = (0, 0, 0) # Noir
 GRAY = (128, 128, 128) # Gris
-# Couleur verte transparente
 GREEN = (0, 255, 0) # Vert
+RED = (255, 0, 0) # Rouge
+BROWN = (165, 42, 42) # Marron
+
 
 # Chargement du background
 BACKGROUND_IMG = pygame.image.load('Background.png') # Charge l'image du background
@@ -517,14 +519,14 @@ class Game:  # Classe pour représenter le jeu
         piece = self.board.grid[row][col] # On récupère la pièce
         if piece is not None: # Si la case n'est pas vide
             for i in range(-2, 3): # On parcourt les cases autour du cavalier
-                for j in range(-2, 3):
-                    if abs(i) + abs(j) == 3:
-                        if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:
-                            if self.board.grid[row + i][col + j] is None:
-                                self.draw_highlight(row + i, col + j)
-                            else:
-                                if self.board.grid[row + i][col + j].color != piece.color:
-                                    self.draw_highlight(row + i, col + j)
+                for j in range(-2, 3): # On parcourt les cases autour du cavalier
+                    if abs(i) + abs(j) == 3: # Si la case est à 3 cases du cavalier
+                        if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8: # Si la case est dans l'échiquier
+                            if self.board.grid[row + i][col + j] is None: # Si la case est vide
+                                self.draw_highlight(row + i, col + j) # On met en évidence la case
+                            else: # Si la case est occupée
+                                if self.board.grid[row + i][col + j].color != piece.color: # Si la pièce est adverse
+                                    self.draw_highlight(row + i, col + j) # On met en évidence la case
 
     def highlight_moves_queen(self, row, col): # Fonction qui permet de mettre en évidence les déplacements possibles d'une reine
         self.highlight_moves_rook(row, col) # On met en évidence les déplacements possibles de la tour
@@ -534,21 +536,21 @@ class Game:  # Classe pour représenter le jeu
         piece = self.board.grid[row][col] # On récupère la pièce
         if piece is not None: # Si la case n'est pas vide
             for i in range(-1, 2): # On parcourt les cases autour du roi
-                for j in range(-1, 2):
-                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:
-                        if self.board.grid[row + i][col + j] is None:
-                            self.draw_highlight(row + i, col + j)
-                        else:
-                            if self.board.grid[row + i][col + j].color != piece.color:
-                                self.draw_highlight(row + i, col + j)
+                for j in range(-1, 2): # On parcourt les cases autour du roi
+                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8: # Si la case est dans l'échiquier
+                        if self.board.grid[row + i][col + j] is None: # Si la case est vide
+                            self.draw_highlight(row + i, col + j) # On met en évidence la case
+                        else: # Si la case est occupée
+                            if self.board.grid[row + i][col + j].color != piece.color: # Si la pièce est adverse
+                                self.draw_highlight(row + i, col + j) # On met en évidence la case
 
 
 
 
     def draw_highlight(self, row, col): # Fonction qui permet de mettre en évidence une case
-        pygame.draw.rect(self.screen, GREEN, (col*GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE%32,GRID_SIZE%32)) # On dessine un rectangle jaune sur la case
+        pygame.draw.rect(self.screen, BROWN, (col*GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE%32,GRID_SIZE%32)) # On dessine un rectangle jaune sur la case
         pygame.display.update()  # On met à jour l'affichage
-        pygame.display.update(updated_rects)
+        pygame.display.update(updated_rects) # On met à jour l'affichage
 
     def move(self, row, col): # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None: # Si une pièce est sélectionnée
