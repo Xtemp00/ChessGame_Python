@@ -1,4 +1,5 @@
 import copy
+from time import sleep
 
 import pygame  # Importation du module Pygame
 
@@ -223,48 +224,51 @@ class Game:  # Classe pour représenter le jeu
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:  # Si on clique sur la souris
+                run = False
+                self.running = True
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Si on clique sur la souris
                 x, y = pygame.mouse.get_pos()  # On récupère les coordonnées de la souris
                 row = y // GRID_SIZE  # On calcule la ligne
                 col = x // GRID_SIZE  # On calcule la colonne
+                run = True
                 self.select_piece(row, col)  # On sélectionne la pièce
-                self.is_check(row, col)
+                self.is_check(row, col) # On vérifie si le roi est en échec
+                self.get_tab_piece() # On récupère les pièces de chaque joueur
+                # On regarde la pièce sélectionnée et on la met en Hightlight tant que un second click n'est pas détecter puis on déplace la pièce au click
 
-            elif event.type == pygame.KEYDOWN:  # Si on appuie sur une touche du clavier
-                if event.key == pygame.K_g:
-                    # Si on appuie sur la touche échap
-                    self.get_tab_piece()
-                    run = True
-                    while run:
-                        for event in pygame.event.get():
-                            if event.type == pygame.QUIT:
-                                run = False
-                                self.running = False
-                            if event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_g:
-                                    run = False
-                        if self.selected_piece is not None:
-                            piece = self.board.grid[self.selected_piece[0]][self.selected_piece[1]]
-                            # appeler la fonction highlight_moves par pieces avec les coordonnées de la pièce sélectionnée
-                            if piece is not None:
-                                if piece.type == "pawn":
-                                    self.highlight_moves_pawn(self.selected_piece[0], self.selected_piece[1])
-                                if piece.type == "rook":
-                                    self.highlight_moves_rook(self.selected_piece[0], self.selected_piece[1])
-                                if piece.type == "knight":
-                                    self.highlight_moves_knight(self.selected_piece[0], self.selected_piece[1])
-                                if piece.type == "bishop":
-                                    self.highlight_moves_bishop(self.selected_piece[0], self.selected_piece[1])
-                                if piece.type == "queen":
-                                    self.highlight_moves_queen(self.selected_piece[0], self.selected_piece[1])
-                                if piece.type == "king":
-                                    self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
-                                # On affiche un texte sur le coté qui dit que le Hightlight est activer
-                                font = pygame.font.SysFont('comicsans', 20)
-                                text = font.render("Hightlight Activer", 1, WHITE)
-                                self.screen.blit(text, (500, 400))
-                                pygame.display.flip()
+                while run:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            run = False
+                            self.running = False
+                        # Si on detect un click gauche on déplace la pièce
+                        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                            x, y = pygame.mouse.get_pos()
+                            row = y // GRID_SIZE
+                            col = x // GRID_SIZE
+                            self.move(row, col)
+                            self.is_check(row, col)
+                            self.get_tab_piece()
+                            run = False
+
+                    if self.selected_piece is not None:
+                        piece = self.board.grid[self.selected_piece[0]][self.selected_piece[1]]
+                        # appeler la fonction highlight_moves par pieces avec les coordonnées de la pièce sélectionnée
+                        if piece is not None:
+                            if piece.type == "pawn":
+                                self.highlight_moves_pawn(self.selected_piece[0], self.selected_piece[1])
+                            if piece.type == "rook":
+                                self.highlight_moves_rook(self.selected_piece[0], self.selected_piece[1])
+                            if piece.type == "knight":
+                                self.highlight_moves_knight(self.selected_piece[0], self.selected_piece[1])
+                            if piece.type == "bishop":
+                                self.highlight_moves_bishop(self.selected_piece[0], self.selected_piece[1])
+                            if piece.type == "queen":
+                                self.highlight_moves_queen(self.selected_piece[0], self.selected_piece[1])
+                            if piece.type == "king":
+                                self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
+
+
 
                 """self.is_king_in_check("white") # On vérifie si le roi est en échec
                 self.is_king_in_check("black") # On vérifie si le roi est en échec"""
@@ -911,7 +915,7 @@ class Main_Screen:  # Classe pour représenter l'écran d'accueil
         pygame.draw.rect(self.screen, WHITE, (150, 300, 190, 100))  # On dessine le bouton "Jouer"
         font = pygame.font.SysFont('comicsans', 50)  # On définit la police
         text = font.render("Jouer", 1, BLACK)  # On écrit le texte
-        self.screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 310))  # On affiche le texte
+        self.screen.blit(text, ((SCREEN_WIDTH - 240 ) / 2 - text.get_width() / 2, 310))  # On affiche le texte
         pygame.display.update()  # On met à jour l'affichage
 
     def run(self):  # Fonction qui permet de lancer l'écran d'accueil
