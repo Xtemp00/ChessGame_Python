@@ -13,8 +13,6 @@
 ##### Pygame - library of python
 ##### SQL - to save all the process of learning
 
-### Versioning
-We use SemVer for versioning. For the versions available, see the tags on this repository.
 
 ### Authors
 ##### Rondo Benjamin - Xtemp00
