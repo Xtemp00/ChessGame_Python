@@ -87,18 +87,18 @@ class Game:  # Classe pour représenter le jeu
         self.screen.blit(text, (500, 5))  # On affiche le texte
 
     # On Enregistre les coups joués
-    def Coups_Joues(self, piece, row, col):
+    def Coups_Joues(self, row, col, row2, col2, piece):
         colonne = ["A", "B", "C", "D", "E", "F", "G", "H"]
         if piece is not None:
-            coup = ("La Pièces " + piece.type + " En " + str(piece.row) + str(colonne[piece.col]) + " Vers " + str(
-                row) + str(colonne[col]))
+            coup = ("La Pièces " + piece.type + " En " + str(colonne[col]) + str(row) + " Vers " + str(
+                row) + str(colonne[col2]))
             for i in range(len(coup)):
                 print(coup[i], end=" ")
             font = pygame.font.SysFont('comicsans', 20)
             # Affiche les 15 dernier coup jouer dans la fenêtre
             for i in range(10):
 
-                text1 = (str(piece.row) + str(colonne[piece.col]) + " -> " + str(row) + str(colonne[col]))
+                text1 = (str(colonne[col2]) + str(row2) + " -> " + str(colonne[col]) + str(row) )
 
                 if text1 not in self.afficher:
                     text = font.render(text1, 1, WHITE)
@@ -248,7 +248,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
         self.pawn_promotion(row, col)
-        self.Coups_Joues(self.board.grid[row][col], row, col)
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def rook_move(self, row, col):
         if self.selected_piece is not None:
@@ -316,6 +316,8 @@ class Game:  # Classe pour représenter le jeu
                     self.board.grid[row][col] = piece
                     self.selected_piece = None
 
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
+
     def knight_move(self, row, col):  # Fonction qui permet de déplacer un cavalier
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
@@ -356,6 +358,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def bishop_move(self, row, col):  # Fonction qui permet de déplacer un fou
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -431,6 +434,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -571,6 +575,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.selected_piece = None  # On déselectionne la pièce
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def king_move(self, row, col):  # Fonction qui permet de déplacer un roi
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -596,6 +601,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+        self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def pawn_promotion(self, row, col):
         piece = self.board.grid[row][col]
