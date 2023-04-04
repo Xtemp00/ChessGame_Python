@@ -225,7 +225,7 @@ class Game:  # Classe pour représenter le jeu
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                self.running = True
+                self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Si on clique sur la souris
                 x, y = pygame.mouse.get_pos()  # On récupère les coordonnées de la souris
                 row = y // GRID_SIZE  # On calcule la ligne
@@ -250,6 +250,7 @@ class Game:  # Classe pour représenter le jeu
                             self.is_check(row, col)
                             self.get_tab_piece()
                             run = False
+                            self.running = True
 
                     if self.selected_piece is not None:
                         piece = self.board.grid[self.selected_piece[0]][self.selected_piece[1]]
@@ -273,13 +274,16 @@ class Game:  # Classe pour représenter le jeu
                 """self.is_king_in_check("white") # On vérifie si le roi est en échec
                 self.is_king_in_check("black") # On vérifie si le roi est en échec"""
 
+        # Fonction qui permet de jouer au tour par tour (les blancs commence)
+
     def select_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]  # On récupère la pièce
         if self.selected_piece is None:
             if piece is not None:  # Si la pièce n'est pas vide
                 self.selected_piece = (row, col)  # On sélectionne la pièce
-        elif self.selected_piece is not None:  # Si une pièce est sélectionnée
+        if self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
+            self.tour_par_tour()
 
     def pawn_move(self, row, col):  # Fonction qui permet de déplacer un pion
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
