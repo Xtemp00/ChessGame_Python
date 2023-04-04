@@ -9,9 +9,9 @@ pygame.init()  # Initialise les modules de Pygame
 updated_rects = []  # Liste des rectangles de l'écran qui ont été mis à jour
 
 # Constantes pour la taille de l'écran et de la grille de jeu
-SCREEN_WIDTH = 720 # Largeur de l'écran
+SCREEN_WIDTH = 720  # Largeur de l'écran
 SCREEN_HEIGHT = 480  # Taille de l'écran
-GRID_SIZE = (SCREEN_WIDTH -250)// 8  # Taille d'une case du plateau de jeu
+GRID_SIZE = (SCREEN_WIDTH - 250) // 8  # Taille d'une case du plateau de jeu
 
 # Couleurs
 WHITE = (255, 255, 255)  # Blanc
@@ -23,10 +23,12 @@ BROWN = (165, 42, 42)  # Marron
 
 # Chargement du background
 BACKGROUND_IMG = pygame.image.load('Background.png')  # Charge l'image du background
-BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG,(SCREEN_WIDTH + 350, SCREEN_HEIGHT + 40))  # Redimensionne l'image du background
+BACKGROUND_IMG = pygame.transform.scale(BACKGROUND_IMG,
+                                        (SCREEN_WIDTH + 350, SCREEN_HEIGHT + 40))  # Redimensionne l'image du background
 
-BACKGROUND_IMG2 = pygame.image.load('Background2.png')# Charge l'image du background
-BACKGROUND_IMG2 = pygame.transform.scale(BACKGROUND_IMG2,(SCREEN_WIDTH, SCREEN_HEIGHT))  # Redimensionne l'image du background
+BACKGROUND_IMG2 = pygame.image.load('Background2.png')  # Charge l'image du background
+BACKGROUND_IMG2 = pygame.transform.scale(BACKGROUND_IMG2,
+                                         (SCREEN_WIDTH, SCREEN_HEIGHT))  # Redimensionne l'image du background
 
 # Chargement des images des pièces
 DEFAULT_IMAGE_SIZE = (64, 64)
@@ -70,13 +72,14 @@ KING_BLACK_IMG = pygame.transform.scale(KING_BLACK_IMG, DEFAULT_IMAGE_SIZE)
 # Classe pour représenter les pièces du jeu d'échecs
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
-                 type, id, row , col):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
+                 type, id, row,
+                 col):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
         self.color = color  # color est une chaîne de caractères
         self.image = image  # image est un objet de la classe pygame.Surface
         self.type = type  # type est une chaîne de caractères
         self.id = id  # id est un entier
-        self.row = row # row est un entier
-        self.col = col # col est un entier
+        self.row = row  # row est un entier
+        self.col = col  # col est un entier
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))  # Dessine l'image de la pièce sur l'écran
@@ -173,7 +176,6 @@ def get_grid_size():  # Fonction qui permet de récupérer la taille de la grill
     return GRID_SIZE
 
 
-
 class Game:  # Classe pour représenter le jeu
     def __init__(self):  # Fonction d'initialisation
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # On crée une fenêtre
@@ -193,16 +195,17 @@ class Game:  # Classe pour représenter le jeu
         self.screen.blit(text, (500, 5))  # On affiche le texte
 
     # On Enregistre les coups joués
-    def Coups_Joués(self, piece, row, col):
-        colonne = ["A","B","C","D","E","F","G","H"]
-        coup = ("La Pièces " + piece.type + " En " + str(piece.row) + str(colonne[piece.col]) + " Vers " + str(row) + str(colonne[col]))
+    def Coups_Joues(self, piece, row, col):
+        colonne = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        coup = ("La Pièces " + piece.type + " En " + str(piece.row) + str(colonne[piece.col]) + " Vers " + str(
+            row) + str(colonne[col]))
         for i in range(len(coup)):
             print(coup[i], end=" ")
         font = pygame.font.SysFont('comicsans', 20)
         # Affiche les 15 dernier coup jouer dans la fenêtre
         for i in range(10):
 
-            text1 = (str(piece.row) + str(colonne[piece.col]) + " -> "+ str(row) + str(colonne[col]))
+            text1 = (str(piece.row) + str(colonne[piece.col]) + " -> " + str(row) + str(colonne[col]))
 
             if text1 not in self.afficher:
                 text = font.render(text1, 1, WHITE)
@@ -220,20 +223,19 @@ class Game:  # Classe pour représenter le jeu
                     text = font.render(self.afficher[i], 1, WHITE)
                     self.screen.blit(text, (500, self.position - 30 * (len(self.afficher) - i)))
 
-
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Si on clique sur la souris
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Si on clique sur la souris
                 x, y = pygame.mouse.get_pos()  # On récupère les coordonnées de la souris
                 row = y // GRID_SIZE  # On calcule la ligne
                 col = x // GRID_SIZE  # On calcule la colonne
                 run = True
                 self.select_piece(row, col)  # On sélectionne la pièce
-                self.is_check(row, col) # On vérifie si le roi est en échec
-                self.get_tab_piece() # On récupère les pièces de chaque joueur
+                self.check()  # On vérifie si le roi est en échec
+                self.get_tab_piece()  # On récupère les pièces de chaque joueur
                 # On regarde la pièce sélectionnée et on la met en Hightlight tant que un second click n'est pas détecter puis on déplace la pièce au click
 
                 while run:
@@ -242,7 +244,7 @@ class Game:  # Classe pour représenter le jeu
                             run = False
                             self.running = False
                         # Si on detect un click gauche on déplace la pièce
-                        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                        elif event.type == pygame.MOUSEBUTTONDOWN :
                             x, y = pygame.mouse.get_pos()
                             row = y // GRID_SIZE
                             col = x // GRID_SIZE
@@ -269,11 +271,6 @@ class Game:  # Classe pour représenter le jeu
                             if piece.type == "king":
                                 self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
 
-
-
-                """self.is_king_in_check("white") # On vérifie si le roi est en échec
-                self.is_king_in_check("black") # On vérifie si le roi est en échec"""
-
         # Fonction qui permet de jouer au tour par tour (les blancs commence)
 
     def select_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
@@ -281,9 +278,9 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is None:
             if piece is not None:  # Si la pièce n'est pas vide
                 self.selected_piece = (row, col)  # On sélectionne la pièce
-        if self.selected_piece is not None:  # Si une pièce est sélectionnée
+        elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
-            self.tour_par_tour()
+            # self.tour_par_tour()
 
     def pawn_move(self, row, col):  # Fonction qui permet de déplacer un pion
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -327,7 +324,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
-        self.Coups_Joués(self.board.grid[row][col], row, col)
+        self.Coups_Joues(piece, row, col)
 
     def rook_move(self, row, col):
         if self.selected_piece is not None:
@@ -658,14 +655,11 @@ class Game:  # Classe pour représenter le jeu
                             if self.board.grid[row + i][col + j].color != piece.color:
                                 self.draw_highlight(row + i, col + j)
 
-
-
     def draw_highlight(self, row, col):
         pygame.draw.rect(self.screen, BROWN,
-                                (col * GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE % 32, GRID_SIZE % 32))
+                         (col * GRID_SIZE + 16, row * GRID_SIZE + 16, GRID_SIZE % 32, GRID_SIZE % 32))
         pygame.display.update()
         pygame.display.update(updated_rects)  # On met à jour l'affichage
-
 
     def move(self, row, col):  # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
@@ -700,7 +694,7 @@ class Game:  # Classe pour représenter le jeu
                     tab.append(self.board.grid[row][col])
         return tab
 
-    #fonction qui permet de detecter si le roi est en echec
+    # fonction qui permet de detecter si le roi est en echec
     def check(self):
         tab = self.get_tab_piece()
         for piece in tab:
@@ -708,7 +702,7 @@ class Game:  # Classe pour représenter le jeu
                 return self.is_check(piece.row, piece.col)
         return False
 
-    def is_check(self,row,col):
+    def is_check(self, row, col):
         piece = self.board.grid[row][col]
         if piece is not None:
             for i in range(-1, 2):
@@ -733,25 +727,24 @@ class Game:  # Classe pour représenter le jeu
                                     return True
         return False
 
-
     def is_checkmate(self):
         tab = self.get_tab_piece()
         for piece in tab:
             if piece.color == "white":
-                for i in range(-1,2):
-                    for j in range(-1,2):
+                for i in range(-1, 2):
+                    for j in range(-1, 2):
                         if piece.row + i >= 0 and piece.row + i < 8 and piece.col + j >= 0 and piece.col + j < 8:
                             if self.board.grid[piece.row + i][piece.col + j] is None:
-                                self.move(piece.row,piece.col)
-                                self.move(piece.row + i,piece.col + j)
+                                self.move(piece.row, piece.col)
+                                self.move(piece.row + i, piece.col + j)
                                 if not self.check():
-                                    self.move(piece.row + i,piece.col + j)
-                                    self.move(piece.row,piece.col)
+                                    self.move(piece.row + i, piece.col + j)
+                                    self.move(piece.row, piece.col)
                                     return False
-                                self.move(piece.row + i,piece.col + j)
-                                self.move(piece.row,piece.col)
+                                self.move(piece.row + i, piece.col + j)
+                                self.move(piece.row, piece.col)
 
-    # Ajout des getter et setter (ps : je pensait pas que la dodo pourrait m'apprendre des trucs utiles)
+    # Ajout des getter et setter
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
         return self.board.grid[row][col]  # On retourne la pièce
 
@@ -894,7 +887,7 @@ class AI:  # Classe qui permet de créer un IA
 
 class Main_Screen:  # Classe pour représenter l'écran d'accueil
     def __init__(self):  # Fonction d'initialisation
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH-240, SCREEN_HEIGHT))  # On crée une fenêtre
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH - 240, SCREEN_HEIGHT))  # On crée une fenêtre
         self.screen.blit(BACKGROUND_IMG, (-150, 0))  # On affiche l'image de fond
         pygame.display.flip()
         pygame.display.set_caption("Jeu d'échec")  # On donne un titre à la fenêtre
@@ -919,7 +912,7 @@ class Main_Screen:  # Classe pour représenter l'écran d'accueil
         pygame.draw.rect(self.screen, WHITE, (150, 300, 190, 100))  # On dessine le bouton "Jouer"
         font = pygame.font.SysFont('comicsans', 50)  # On définit la police
         text = font.render("Jouer", 1, BLACK)  # On écrit le texte
-        self.screen.blit(text, ((SCREEN_WIDTH - 240 ) / 2 - text.get_width() / 2, 310))  # On affiche le texte
+        self.screen.blit(text, ((SCREEN_WIDTH - 240) / 2 - text.get_width() / 2, 310))  # On affiche le texte
         pygame.display.update()  # On met à jour l'affichage
 
     def run(self):  # Fonction qui permet de lancer l'écran d'accueil
