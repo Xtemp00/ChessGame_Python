@@ -1,6 +1,3 @@
-import copy
-from time import sleep
-
 from Board import Board
 from Game import Game
 from Main_Screen import Main_Screen
