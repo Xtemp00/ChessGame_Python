@@ -34,13 +34,14 @@ DEFAULT_IMAGE_SIZE = (64, 64)
 class Piece:  # Piece est une classe qui contient une couleur, une image et un type
     def __init__(self, color, image,
                  type, id, row,
-                 col):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
+                 col,move):  # color est une chaîne de caractères, image est un objet de la classe pygame.Surface
         self.color = color  # color est une chaîne de caractères
         self.image = image  # image est un objet de la classe pygame.Surface
         self.type = type  # type est une chaîne de caractères
         self.id = id  # id est un entier
         self.row = row  # row est un entier
         self.col = col  # col est un entier
+        self.move = move  # move est un entier
 
     def draw(self, screen, x, y):  # x et y sont les coordonnées de la case où dessiner la pièce
         screen.blit(self.image, (x, y))  # Dessine l'image de la pièce sur l'écran

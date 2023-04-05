@@ -33,7 +33,6 @@ def urls_getter(player_name):
         for j in range (len(games[i])):
             urls.append(games[i][j]['url'])
     return urls
-
 # On créait une fonction qui récupère la partie pgn en fonction de l'historique du joueur
 def pgn_getter(player_name):
     games = import_player_game_history(player_name)

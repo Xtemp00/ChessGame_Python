@@ -98,7 +98,7 @@ class Game:  # Classe pour représenter le jeu
             # Affiche les 15 dernier coup jouer dans la fenêtre
             for i in range(10):
 
-                text1 = (str(colonne[col2]) + str(row2) + " -> " + str(colonne[col]) + str(row) )
+                text1 = (str(colonne[col2]) + str(row2) + " -> " + str(colonne[col]) + str(row))
 
                 if text1 not in self.afficher:
                     text = font.render(text1, 1, WHITE)
@@ -247,6 +247,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+            piece.move += 1  # On incrémente le nombre de déplacement de la pièce
         self.pawn_promotion(row, col)
         self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
@@ -315,7 +316,7 @@ class Game:  # Classe pour représenter le jeu
                     self.board.grid[piece_row][piece_col] = None
                     self.board.grid[row][col] = piece
                     self.selected_piece = None
-
+            piece.move += 1
         self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def knight_move(self, row, col):  # Fonction qui permet de déplacer un cavalier
@@ -358,6 +359,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+            piece.move += 1
         self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def bishop_move(self, row, col):  # Fonction qui permet de déplacer un fou
@@ -434,6 +436,7 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
+            piece.move += 1  # On incrémente le nombre de déplacement de la pièce
         self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def queen_move(self, row, col):  # Fonction qui permet de déplacer une reine
@@ -575,12 +578,14 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.selected_piece = None  # On déselectionne la pièce
+            piece.move += 1  # On incrémente le nombre de déplacement de la pièce
         self.Coups_Joues(row, col, piece_row, piece_col, piece)
 
     def king_move(self, row, col):  # Fonction qui permet de déplacer un roi
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            self.castling(row, col)  # On vérifie si le roi peut effectuer un roque
             if piece.type == "king" and piece.color == "white" and (
                     self.player.turn and self.player.color == "white") or (
                     self.player2.turn and self.player2.color == "white"):  # Si la pièce est un roi
@@ -601,7 +606,64 @@ class Game:  # Classe pour représenter le jeu
                         self.board.grid[piece_row][piece_col] = None  # On vide la case de départ
                         self.board.grid[row][col] = piece  # On place la pièce sur la case d'arrivée
                         self.selected_piece = None  # On déselectionne la pièce
-        self.Coups_Joues(row, col, piece_row, piece_col, piece)
+            piece.move += 1  # On incrémente le nombre de déplacement de la pièce
+        # self.Coups_Joues(row, col, piece_row, piece_col, piece)
+
+    # crée une fonction castling qui permet de faire le roque
+    def castling(self, row, col):
+        if self.selected_piece is not None and self.board.grid[row][col] is not None:  # Si une pièce est sélectionnée
+            piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
+            piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            if piece.type == "king" and piece.color == "white" and (
+                    self.player.turn and self.player.color == "white") or (
+                    self.player2.turn and self.player2.color == "white"):  # Si la pièce est un roi
+                if self.board.grid[7][0] is not None and self.board.grid[7][0].type == "rook" and self.board.grid[7][
+                    0].color == "white" and piece.move == 0 and self.board.grid[7][1] is None and \
+                        self.board.grid[7][2] is None and self.board.grid[row][
+                    col].type == "rook":  # Si la tour n'a pas bougé et que les cases entre le roi et la tour sont vides
+                    self.board.grid[7][0] = None  # On vide la case de départ de la tour
+                    self.board.grid[7][3] = None  # On vide la case de départ du roi
+                    self.board.grid[7][2] = Piece('white', ROOK_WHITE_IMG, "rook", 21, 7, 2,
+                                                  0)  # On place la tour sur la case d'arrivée
+                    self.board.grid[7][1] = Piece('white', KING_WHITE_IMG, "king", 5, 7, 3,
+                                                  0)  # On place le roi sur la case d'arrivée
+                    self.selected_piece = None  # On déselectionne la pièce
+                if self.board.grid[7][7] is not None and self.board.grid[7][7].type == "rook" and self.board.grid[7][
+                    7].color == "white" and piece.move == 0 and self.board.grid[7][6] is None and \
+                        self.board.grid[7][5] is None and self.board.grid[row][
+                    col].type == "rook":  # Si la tour n'a pas bougé et que les cases entre le roi et la tour sont vides
+                    self.board.grid[7][7] = None  # On vide la case de départ de la tour
+                    self.board.grid[7][3] = None  # On vide la case de départ du roi
+                    self.board.grid[7][4] = Piece('white', ROOK_WHITE_IMG, "rook", 21, 7, 6,
+                                                  0)  # On place la tour sur la case d'arrivée
+                    self.board.grid[7][5] = Piece('white', KING_WHITE_IMG, "king", 5, 7, 5,
+                                                  0)  # On place le roi sur la case d'arrivée
+                    self.selected_piece = None  # On déselectionne la pièce
+            if piece.type == "king" and piece.color == "black" and (
+                    self.player.turn and self.player.color == "black") or (
+                    self.player2.turn and self.player2.color == "black"):  # Si la pièce est un roi
+                if self.board.grid[0][0] is not None and self.board.grid[0][0].type == "rook" and self.board.grid[0][
+                    0].color == "black" and piece.move == 0 and self.board.grid[0][1] is None and \
+                        self.board.grid[0][
+                            2] is None:  # Si la tour n'a pas bougé et que les cases entre le roi et la tour sont vides
+                    self.board.grid[0][0] = None  # On vide la case de départ de la tour
+                    self.board.grid[0][3] = None  # On vide la case de départ du roi
+                    self.board.grid[0][2] = Piece('black', ROOK_BLACK_IMG, "rook", 7, 0, 2,
+                                                  0)  # On place la tour sur la case d'arrivée
+                    self.board.grid[0][1] = Piece('black', KING_BLACK_IMG, "king", 23, 0, 3,
+                                                  0)  # On place le roi sur la case d'arrivée
+                    self.selected_piece = None  # On déselectionne la pièce
+                if self.board.grid[0][7] is not None and self.board.grid[0][7].type == "rook" and self.board.grid[0][
+                    7].color == "black" and piece.move == 0 and self.board.grid[0][6] is None and \
+                        self.board.grid[0][
+                            5] is None:  # Si la tour n'a pas bougé et que les cases entre le roi et la tour sont vides
+                    self.board.grid[0][7] = None  # On vide la case de départ de la tour
+                    self.board.grid[0][3] = None  # On vide la case de départ du roi
+                    self.board.grid[0][4] = Piece('black', ROOK_BLACK_IMG, "rook", 7, 0, 6,
+                                                  0)  # On place la tour sur la case d'arrivée
+                    self.board.grid[0][5] = Piece('black', KING_BLACK_IMG, "king", 23, 0, 5,
+                                                  0)  # On place le roi sur la case d'arrivée
+                    self.selected_piece = None  # On déselectionne la pièce
 
     def pawn_promotion(self, row, col):
         piece = self.board.grid[row][col]
