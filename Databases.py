@@ -19,5 +19,39 @@
 #   - Id_Adversaire
 #   - Mouvement
 
+# On utilise Mysql pour créer la base de donnée
+# Importation des modules nécessaires
+import sqlite3
 
-# Importation des modules
+# Crée une connexion à la base de données
+conn = sqlite3.connect('Chess.db')
+
+# Crée un curseur pour exécuter des requêtes SQL
+cur = conn.cursor()
+
+# Crée une table
+cur.execute('''CREATE TABLE IF NOT EXISTS Players
+                  (Id_Player INTEGER PRIMARY KEY AUTOINCREMENT,
+                     Name_Player TEXT NOT NULL,
+                        nb_games INTEGER NOT NULL,
+                            nb_wins INTEGER NOT NULL,
+                                nb_defeats INTEGER NOT NULL,
+                                    nb_draws INTEGER NOT NULL)''')
+
+# Crée une table
+cur.execute('''CREATE TABLE IF NOT EXISTS Games
+                    (Id_Game INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Id_Player INTEGER NOT NULL,
+                            Id_Opponent INTEGER NOT NULL,
+                                Result TEXT NOT NULL)''')
+
+# Crée une table
+cur.execute('''CREATE TABLE IF NOT EXISTS Moves
+                    (Id_Game INTEGER NOT NULL,
+                        Id_Player INTEGER NOT NULL,
+                            Id_Opponent INTEGER NOT NULL,
+                                Move TEXT NOT NULL)''')
+
+# Valide les changements et ferme la connexion
+conn.commit()
+conn.close()
