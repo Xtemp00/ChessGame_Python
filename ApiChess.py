@@ -52,7 +52,7 @@ def moves_getter(player_name):
         # On récupère les mouvements de la partie
         for j in range (len(pgn[i])):
             moves.append(pgn[i][j])
-
+    # On supprime le dictionnaire des temps
     return moves
 
 # On récupère le nom des joueurs de chaque partie
@@ -129,3 +129,22 @@ def moves_getter_unique(player_name, game_number):
         loser = moves[len(moves)-1].split(' ')[2]
     return moves, winner, loser
 
+
+# On récupère le resultat du match si le joueur a gagné, perdu ou null
+def result_getter(player_name):
+    game_number = 0
+    # Pour chaque partie du joueur
+    for i in range (total_games(player_name)):
+        moves, winner, loser = moves_getter_unique(player_name, game_number)
+        # Si le joueur est le gagnant
+        if winner == player_name:
+            return 'win'
+        # Si le joueur est le perdant
+        elif loser == player_name:
+            return 'loss'
+        # Si le joueur est le perdant
+        else:
+            game_number += 1
+    return game_number
+
+#print(moves_getter("Xtemp70"))

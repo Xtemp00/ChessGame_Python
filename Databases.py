@@ -42,15 +42,13 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Players
 cur.execute('''CREATE TABLE IF NOT EXISTS Games
                     (Id_Game INTEGER PRIMARY KEY AUTOINCREMENT,
                         Id_Player INTEGER NOT NULL,
-                            Id_Opponent INTEGER NOT NULL,
-                                Result TEXT NOT NULL)''')
+                            Result TEXT NOT NULL)''')
 
 # Crée une table
 cur.execute('''CREATE TABLE IF NOT EXISTS Moves
                     (Id_Game INTEGER NOT NULL,
                         Id_Player INTEGER NOT NULL,
-                            Id_Opponent INTEGER NOT NULL,
-                                Move TEXT NOT NULL)''')
+                            Move TEXT NOT NULL)''')
 
 # Valide les changements et ferme la connexion
 conn.commit()
