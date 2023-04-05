@@ -207,6 +207,7 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
+            self.en_passant(piece_row,piece_col)
             if piece.type == "pawn":  # Si la pièce est un pion
                 if piece.color == "white" and (self.player.turn and self.player.color == "white") or (
                         self.player2.turn and self.player2.color == "white"):  # Si la pièce est blanche
@@ -664,6 +665,42 @@ class Game:  # Classe pour représenter le jeu
                     self.board.grid[0][5] = Piece('black', KING_BLACK_IMG, "king", 23, 0, 5,
                                                   0)  # On place le roi sur la case d'arrivée
                     self.selected_piece = None  # On déselectionne la pièce
+
+    # Fonction qui permet de verifer et de faire le en passant pour les pions
+    def en_passant(self, row, col):
+        piece = self.board.grid[row][col]
+        print("en passant")
+        if piece is not None:
+            print("en passant2")
+            if piece.type == "pawn":
+                if piece.color == "white":
+                    if self.board.grid[4][col - 1] is not None and self.board.grid[4][col - 1].type == "pawn" and \
+                            self.board.grid[4][col - 1].color == "black" and self.board.grid[4][col - 1].move == 1 and \
+                            self.board.grid[4][col - 1].en_passant == 1:
+                        print("en passant3")
+                        self.board.grid[4][col - 1] = None # On vide la case de départ du pion
+                        self.board.grid[row][col] = None # On vide la case de départ du pion
+                        self.board.grid[5][col - 1] = Piece('white', PAWN_WHITE_IMG, "pawn", 16, 5, col - 1, 0)
+                    elif self.board.grid[4][col + 1] is not None and self.board.grid[4][col + 1].type == "pawn" and \
+                            self.board.grid[4][col + 1].color == "black" and self.board.grid[4][col + 1].move == 1 and \
+                            self.board.grid[4][col + 1].en_passant == 1:
+                        self.board.grid[4][col + 1] = None
+                        self.board.grid[row][col] = None
+                        self.board.grid[5][col + 1] = Piece('white', PAWN_WHITE_IMG, "pawn", 16, 5, col + 1, 0)
+                else:
+                    if self.board.grid[3][col - 1] is not None and self.board.grid[3][col - 1].type == "pawn" and \
+                            self.board.grid[3][col - 1].color == "white" and self.board.grid[3][col - 1].move == 1 and \
+                            self.board.grid[3][col - 1].en_passant == 1:
+                        self.board.grid[3][col - 1] = None
+                        self.board.grid[row][col] = None
+                        self.board.grid[2][col - 1] = Piece('black', PAWN_BLACK_IMG, "pawn", 0, 2, col - 1, 0)
+                    elif self.board.grid[3][col + 1] is not None and self.board.grid[3][col + 1].type == "pawn" and \
+                            self.board.grid[3][col + 1].color == "white" and self.board.grid[3][col + 1].move == 1 and \
+                            self.board.grid[3][col + 1].en_passant == 1:
+                        self.board.grid[3][col + 1] = None
+                        self.board.grid[row][col] = None
+                        self.board.grid[2][col + 1] = Piece('black', PAWN_BLACK_IMG, "pawn", 0, 2, col + 1, 0)
+
 
     def pawn_promotion(self, row, col):
         piece = self.board.grid[row][col]
