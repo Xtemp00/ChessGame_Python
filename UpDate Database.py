@@ -67,10 +67,12 @@ def get_id_player(player_name):
 def add_game(Nom_Joueur):
     Id_Player = get_id_player(Nom_Joueur)
     Result = ApiChess.result_getter(Nom_Joueur)
-    # Crée un curseur pour exécuter des requêtes SQL
-    # On ajoute le joueur dans la base de donnée
-    cur.execute("INSERT INTO Games (Id_Player, Result) VALUES (?, ?, ?)", (Id_Player, Result))
-    # On valide les changements
+    for result in Result:
+        # On ajoute une partie dans la table partie
+        # Crée un curseur pour exécuter des requêtes SQL
+        # On ajoute le joueur dans la base de donnée
+        cur.execute("INSERT INTO Games (Id_Player, Result) VALUES (?, ?)", (Id_Player, result))
+        # On valide les changements
     conn.commit()
 
 # On Ajoute les coups d'une partie unique du joueur dans la table mouvement
@@ -99,7 +101,7 @@ def add_moves(Nom_Joueur):
 def Main(Nom_Joueur):
     Joueur(Nom_Joueur)
     add_game(Nom_Joueur)
+    conn.close()
 
-
+ApiChess.import_player_game_history("Xtemp70")
 Main("Xtemp70")
-conn.close()

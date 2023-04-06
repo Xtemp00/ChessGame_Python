@@ -3,6 +3,7 @@ import chessdotcom
 
 annee = 2023
 mois = 4
+games = []
 # On affiche le leaderboard
 def leaderboard():
     data = chessdotcom.get_leaderboards()
@@ -10,10 +11,10 @@ def leaderboard():
 
 # Importation d'une partie d'un Joueur dans une base de donnée
 def import_player_game_history(player_name):
-    games = []
+    global games  # on utilise la variable globale
     # On récupère l'historique de jeu d'un joueur
-    for i in range (2017,2024):
-        for j in range (1,13):
+    for i in range(2017, 2024):
+        for j in range(1, 13):
             if i <= annee and j <= mois:
                 data = chessdotcom.get_player_games_by_month(player_name, i, j)
                 # On récupère les données de la partie
@@ -23,11 +24,8 @@ def import_player_game_history(player_name):
                     # On  ajout dans games les années et le mois depuis data
                     games.append(data['games'])
 
-    return games
-
 # On créer une fonction qui renvoie toutes les urls des parties en fonction du nom du joueurs
 def urls_getter(player_name):
-    games = import_player_game_history(player_name)
     urls = []
     for i in range (len(games)):
         for j in range (len(games[i])):
@@ -35,7 +33,6 @@ def urls_getter(player_name):
     return urls
 # On créait une fonction qui récupère la partie pgn en fonction de l'historique du joueur
 def pgn_getter(player_name):
-    games = import_player_game_history(player_name)
     pgn = []
     for i in range (len(games)):
         for j in range (len(games[i])):
@@ -57,7 +54,6 @@ def moves_getter(player_name):
 
 # On récupère le nom des joueurs de chaque partie
 def players_getter(player_name):
-    games = import_player_game_history(player_name)
     players = []
     for i in range (len(games)):
         for j in range (len(games[i])):
@@ -67,7 +63,6 @@ def players_getter(player_name):
 
 # On récupère le nombre de partie total
 def total_games(player_name):
-    games = import_player_game_history(player_name)
     total = 0
     for i in range (len(games)):
         total += len(games[i])
@@ -76,31 +71,33 @@ def total_games(player_name):
 
 # On récupère le nombre de partie gagné
 def won_games(player_name):
-    games = import_player_game_history(player_name)
     won = 0
     for i in range (len(games)):
         for j in range (len(games[i])):
             if games[i][j]['white']['result'] == 'win':
-                won += 1
+                # On verifie que le joueur n'est pas player_name
+                if games[i][j]['white']['username'] == player_name:
+                    won += 1
             elif games[i][j]['black']['result'] == 'win':
-                won += 1
+                if games[i][j]['white']['username'] == player_name:
+                    won += 1
     return won
 
 # On récupère le nombre de partie perdu
 def lost_games(player_name):
-    games = import_player_game_history(player_name)
     lost = 0
     for i in range (len(games)):
         for j in range (len(games[i])):
-            if games[i][j]['white']['result'] == 'loss':
-                lost += 1
-            elif games[i][j]['black']['result'] == 'loss':
-                lost += 1
+            if games[i][j]['white']['result'] == 'checkmated':
+                if games[i][j]['white']['username'] == player_name:
+                    lost += 1
+            elif games[i][j]['black']['result'] == 'checkmated':
+                if games[i][j]['white']['username'] == player_name:
+                    lost += 1
     return lost
 
 # On récupère le nombre de partie nul
 def draw_games(player_name):
-    games = import_player_game_history(player_name)
     draw = 0
     for i in range (len(games)):
         for j in range (len(games[i])):
@@ -133,18 +130,26 @@ def moves_getter_unique(player_name, game_number):
 # On récupère le resultat du match si le joueur a gagné, perdu ou null
 def result_getter(player_name):
     game_number = 0
-    # Pour chaque partie du joueur
-    for i in range (total_games(player_name)):
-        moves, winner, loser = moves_getter_unique(player_name, game_number)
-        # Si le joueur est le gagnant
-        if winner == player_name:
-            return 'win'
-        # Si le joueur est le perdant
-        elif loser == player_name:
-            return 'loss'
-        # Si le joueur est le perdant
-        else:
-            game_number += 1
-    return game_number
+    list = []
+    # Pour chaque partie du joueur, on regarde si le joueur a gagné, perdu ou null
+    for i in range(len(games)):
+        for j in range(len(games[i])):
+            if games[i][j]['white']['result'] == 'checkmated':
+                if games[i][j]['white']['username'] == player_name:
+                    list.append('lost')
+            elif games[i][j]['black']['result'] == 'checkmated':
+                if games[i][j]['white']['username'] == player_name:
+                    list.append('lost')
+            if games[i][j]['white']['result'] == 'win':
+                # On verifie que le joueur n'est pas player_name
+                if games[i][j]['white']['username'] == player_name:
+                    list.append('won')
+            elif games[i][j]['black']['result'] == 'win':
+                if games[i][j]['white']['username'] == player_name:
+                    list.append('won')
+            else:
+                list.append('draw')
+    return list
 
-#print(moves_getter("Xtemp70"))
+#import_player_game_history("Xtemp70")
+#print(games)
