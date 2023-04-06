@@ -1,5 +1,7 @@
 # On importe la librairie chess.com
 import chessdotcom
+import chess
+import chess.pgn
 
 annee = 2023
 mois = 4
@@ -151,5 +153,15 @@ def result_getter(player_name):
                 list.append('draw')
     return list
 
-#import_player_game_history("Xtemp70")
+#On va récupérer une partie unique en fonction du nom du joueur et du numéro de la partie
+# On va sortir cela sous forme d'un pgn pour pouvoir l'exploiter avec chess.pgn
+def pgn_getter_unique(player_name, game_number):
+    pgn = pgn_getter(player_name)
+    return pgn[game_number]
+
+
+
+
+import_player_game_history("Xtemp70")
 #print(games)
+print(pgn_getter_unique("Xtemp70", 0))
