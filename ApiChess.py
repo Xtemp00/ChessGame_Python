@@ -2,6 +2,8 @@
 import chessdotcom
 import chess
 import chess.pgn
+import os
+import urllib.request
 
 annee = 2023
 mois = 4
@@ -157,8 +159,24 @@ def result_getter(player_name):
 # On va sortir cela sous forme d'un pgn pour pouvoir l'exploiter avec chess.pgn
 def pgn_getter_unique(player_name, game_number):
     pgn = pgn_getter(player_name)
+
+    #On va editer le fichier pgn
     return pgn[game_number]
 
+
+# On exploit le fichier pgn pour extraire tout les mouvements d'une partie a partir du fichier pgn
+def moves_getter_unique_pgn(pgn):
+    # On utilise la librairie chess
+    import chess.pgn
+    # On récupère le fichier pgn
+    pgn = open(pgn)
+    # On récupère la première partie
+    game = chess.pgn.read_game(pgn)
+    # On récupère les mouvements de la partie
+    moves = []
+    for move in game.mainline_moves():
+        moves.append(move)
+    return
 
 
 

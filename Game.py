@@ -173,7 +173,7 @@ class Game:  # Classe pour représenter le jeu
                             self.get_tab_piece()
                             run = False
                             self.running = True
-                            self.check()
+
                     if self.selected_piece is not None:
                         piece = self.board.grid[self.selected_piece[0]][self.selected_piece[1]]
                         # appeler la fonction highlight_moves par pieces avec les coordonnées de la pièce sélectionnée
@@ -673,16 +673,14 @@ class Game:  # Classe pour représenter le jeu
             if piece.type == "pawn":
                 if piece.color == "white":
                     if self.board.grid[row][col - 1] is not None:
-                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
-                            col - 1].color == "black":
+                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][col - 1].color == "black":
                             if self.board.grid[row][col - 1].move == 1:
                                 self.board.grid[row][col - 1] = None
                                 self.board.grid[row - 1][col - 1] = piece
                                 self.board.grid[row][col] = None
                                 self.selected_piece = None
                     if self.board.grid[row][col + 1] is not None:
-                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
-                            col + 1].color == "black":
+                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][col + 1].color == "black":
                             if self.board.grid[row][col + 1].move == 1:
                                 self.board.grid[row][col + 1] = None
                                 self.board.grid[row - 1][col + 1] = piece
@@ -690,16 +688,14 @@ class Game:  # Classe pour représenter le jeu
                                 self.selected_piece = None
                 else:
                     if self.board.grid[row][col - 1] is not None:
-                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
-                            col - 1].color == "white":
+                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][col - 1].color == "white":
                             if self.board.grid[row][col - 1].move == 1:
                                 self.board.grid[row][col - 1] = None
                                 self.board.grid[row + 1][col - 1] = piece
                                 self.board.grid[row][col] = None
                                 self.selected_piece = None
                     if self.board.grid[row][col + 1] is not None:
-                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
-                            col + 1].color == "white":
+                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][col + 1].color == "white":
                             if self.board.grid[row][col + 1].move == 1:
                                 self.board.grid[row][col + 1] = None
                                 self.board.grid[row + 1][col + 1] = piece
@@ -712,12 +708,10 @@ class Game:  # Classe pour représenter le jeu
             if piece.type == "pawn":
                 if piece.color == "black":
                     if row == 7:
-                        self.board.grid[row][col] = Piece('black', QUEEN_BLACK_IMG, "queen", 4, row, col,
-                                                          piece.move + 1)
+                        self.board.grid[row][col] = Piece('black', QUEEN_BLACK_IMG, "queen", 4, row, col)
                 else:
                     if row == 0:
-                        self.board.grid[row][col] = Piece('white', QUEEN_WHITE_IMG, "queen", 20, row, col,
-                                                          piece.move + 1)
+                        self.board.grid[row][col] = Piece('white', QUEEN_WHITE_IMG, "queen", 20, row, col)
 
     def highlight_moves_pawn(self, row,
                              col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un pion
@@ -930,21 +924,21 @@ class Game:  # Classe pour représenter le jeu
                     tab.append(self.board.grid[row][col])
         return tab
 
+
     def get_moves(self, row, col):
         piece = self.board.grid[row][col]
-        if piece is not None:
-            if piece.type == "pawn":
-                return self.pawn_moves(row, col)
-            elif piece.type == "rook":
-                return self.rook_moves(row, col)
-            elif piece.type == "knight":
-                return self.knight_moves(row, col)
-            elif piece.type == "bishop":
-                return self.bishop_moves(row, col)
-            elif piece.type == "queen":
-                return self.queen_moves(row, col)
-            elif piece.type == "king":
-                return self.king_moves(row, col)
+        if piece.type == "pawn":
+            return self.pawn_moves(row, col)
+        elif piece.type == "rook":
+            return self.rook_moves(row, col)
+        elif piece.type == "knight":
+            return self.knight_moves(row, col)
+        elif piece.type == "bishop":
+            return self.bishop_moves(row, col)
+        elif piece.type == "queen":
+            return self.queen_moves(row, col)
+        elif piece.type == "king":
+            return self.king_moves(row, col)
 
     def pawn_moves(self, row, col):
         moves = []
@@ -1155,10 +1149,10 @@ class Game:  # Classe pour représenter le jeu
                             moves.append((row + 1, col + 2))
         return moves
 
-    def bishop_moves(self, row, col):
+    def bishop_moves(self):
+        row, col = self.get_position()
         moves = []
-        piece = self.board.grid[row][col]
-        if piece.color == "white":
+        if self.color == "white":
             # Diagonale Haut Gauche
             i = 1
             while row - i >= 0 and col - i >= 0:
@@ -1242,10 +1236,10 @@ class Game:  # Classe pour représenter le jeu
                 i += 1
         return moves
 
-    def queen_moves(self, row, col):
+    def queen_moves(self):
+        row, col = self.get_position()
         moves = []
-        piece = self.board.grid[row][col]
-        if piece.color == "white":
+        if self.color == "white":
             # Diagonale Haut Gauche
             i = 1
             while row - i >= 0 and col - i >= 0:
@@ -1411,8 +1405,7 @@ class Game:  # Classe pour représenter le jeu
 
     def king_moves(self, row, col):
         moves = []
-        piece = self.board.grid[row][col]
-        if piece.color == "black":
+        if self.color == "black":
             # Haut
             if row - 1 >= 0:
                 if self.board.grid[row - 1][col] is None:
@@ -1528,53 +1521,25 @@ class Game:  # Classe pour représenter le jeu
                         moves.append((row + 1, col + 1))
         return moves
 
-    # Crée une fonction check qui verfie d'apres les regles d'echeques si le roi est en echec
+
+
+
+    #Crée une fonction check qui verfie d'apres les regles d'echeques si le roi est en echec
     def check(self):
-        # On récupère la position du roi
-        king_posb = self.get_piece_position(5)
-        king_posw = self.get_piece_position(21)
-        # On récupère la liste des pièces adverses
+        #On récupère la position du roi
+        king_pos = self.get_piece_position(5)
+        #On récupère la liste des pièces adverses
         tab = self.get_tab_piece()
-        # On parcourt la liste des pièces adverses
-
-        for row in range(8):
-            for col in range(8):
-                piece = self.get_piece(row, col)
-                if piece is not None:
-                    if piece.color == "black":
-                        moves = self.get_moves(piece.row, piece.col)
-                        if moves is not None:
-                            for move in moves:
-                                if move == king_posb:
-                                    print("Echec")
-                                    return True
-                    if piece.color == "white":
-                        moves = self.get_moves(piece.row, piece.col)
-                        if moves is not None:
-                            for move in moves:
-                                if move == king_posw:
-                                    print("Echec")
-                                    return True
-            """print(piece.row)
-            print(piece.col)
-            # On récupère la liste des déplacements possibles de la pièce
-            moves = self.get_moves(piece.row, piece.col)
-            if moves is not None:
-                # On parcourt la liste des déplacements possibles
-                for move in moves:
-                    print(move)
-                    print(king_posb)
-                    print(king_posw)
-                    print("...")
-                    # Si le déplacement est égal à la position du roi
-                    if move == king_posb:
-                        print("Echec")
-                        return True
-                    if move == king_posw:
-                        print("Echec")
-                        return True"""
+        #On parcourt la liste des pièces adverses
+        for piece in tab:
+            #On récupère la liste des déplacements possibles de la pièce
+            moves = self.get_moves(0, 0)
+            #On parcourt la liste des déplacements possibles
+            for move in moves:
+                #Si le déplacement est égal à la position du roi
+                if move == king_pos:
+                    return True
         return False
-
     # Ajout des getter et setter
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
         return self.board.grid[row][col]  # On retourne la pièce
