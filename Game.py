@@ -170,7 +170,6 @@ class Game:  # Classe pour représenter le jeu
                             row = y // GRID_SIZE
                             col = x // GRID_SIZE
                             self.move(row, col)
-                            self.is_check(row, col)
                             self.get_tab_piece()
                             run = False
                             self.running = True
@@ -207,7 +206,8 @@ class Game:  # Classe pour représenter le jeu
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
-            self.en_passant(piece_row,piece_col)
+            self.en_passant(piece_row, piece_col)
+            self.en_passant(row, col)
             if piece.type == "pawn":  # Si la pièce est un pion
                 if piece.color == "white" and (self.player.turn and self.player.color == "white") or (
                         self.player2.turn and self.player2.color == "white"):  # Si la pièce est blanche
@@ -669,38 +669,38 @@ class Game:  # Classe pour représenter le jeu
     # Fonction qui permet de verifer et de faire le en passant pour les pions
     def en_passant(self, row, col):
         piece = self.board.grid[row][col]
-        print("en passant")
         if piece is not None:
-            print("en passant2")
             if piece.type == "pawn":
                 if piece.color == "white":
-                    if self.board.grid[4][col - 1] is not None and self.board.grid[4][col - 1].type == "pawn" and \
-                            self.board.grid[4][col - 1].color == "black" and self.board.grid[4][col - 1].move == 1 and \
-                            self.board.grid[4][col - 1].en_passant == 1:
-                        print("en passant3")
-                        self.board.grid[4][col - 1] = None # On vide la case de départ du pion
-                        self.board.grid[row][col] = None # On vide la case de départ du pion
-                        self.board.grid[5][col - 1] = Piece('white', PAWN_WHITE_IMG, "pawn", 16, 5, col - 1, 0)
-                    elif self.board.grid[4][col + 1] is not None and self.board.grid[4][col + 1].type == "pawn" and \
-                            self.board.grid[4][col + 1].color == "black" and self.board.grid[4][col + 1].move == 1 and \
-                            self.board.grid[4][col + 1].en_passant == 1:
-                        self.board.grid[4][col + 1] = None
-                        self.board.grid[row][col] = None
-                        self.board.grid[5][col + 1] = Piece('white', PAWN_WHITE_IMG, "pawn", 16, 5, col + 1, 0)
+                    if self.board.grid[row][col - 1] is not None:
+                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][col - 1].color == "black":
+                            if self.board.grid[row][col - 1].move == 1:
+                                self.board.grid[row][col - 1] = None
+                                self.board.grid[row - 1][col - 1] = piece
+                                self.board.grid[row][col] = None
+                                self.selected_piece = None
+                    if self.board.grid[row][col + 1] is not None:
+                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][col + 1].color == "black":
+                            if self.board.grid[row][col + 1].move == 1:
+                                self.board.grid[row][col + 1] = None
+                                self.board.grid[row - 1][col + 1] = piece
+                                self.board.grid[row][col] = None
+                                self.selected_piece = None
                 else:
-                    if self.board.grid[3][col - 1] is not None and self.board.grid[3][col - 1].type == "pawn" and \
-                            self.board.grid[3][col - 1].color == "white" and self.board.grid[3][col - 1].move == 1 and \
-                            self.board.grid[3][col - 1].en_passant == 1:
-                        self.board.grid[3][col - 1] = None
-                        self.board.grid[row][col] = None
-                        self.board.grid[2][col - 1] = Piece('black', PAWN_BLACK_IMG, "pawn", 0, 2, col - 1, 0)
-                    elif self.board.grid[3][col + 1] is not None and self.board.grid[3][col + 1].type == "pawn" and \
-                            self.board.grid[3][col + 1].color == "white" and self.board.grid[3][col + 1].move == 1 and \
-                            self.board.grid[3][col + 1].en_passant == 1:
-                        self.board.grid[3][col + 1] = None
-                        self.board.grid[row][col] = None
-                        self.board.grid[2][col + 1] = Piece('black', PAWN_BLACK_IMG, "pawn", 0, 2, col + 1, 0)
-
+                    if self.board.grid[row][col - 1] is not None:
+                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][col - 1].color == "white":
+                            if self.board.grid[row][col - 1].move == 1:
+                                self.board.grid[row][col - 1] = None
+                                self.board.grid[row + 1][col - 1] = piece
+                                self.board.grid[row][col] = None
+                                self.selected_piece = None
+                    if self.board.grid[row][col + 1] is not None:
+                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][col + 1].color == "white":
+                            if self.board.grid[row][col + 1].move == 1:
+                                self.board.grid[row][col + 1] = None
+                                self.board.grid[row + 1][col + 1] = piece
+                                self.board.grid[row][col] = None
+                                self.selected_piece = None
 
     def pawn_promotion(self, row, col):
         piece = self.board.grid[row][col]
@@ -924,56 +924,622 @@ class Game:  # Classe pour représenter le jeu
                     tab.append(self.board.grid[row][col])
         return tab
 
-    # fonction qui permet de detecter si le roi est en echec
-    def check(self):
-        tab = self.get_tab_piece()
-        for piece in tab:
-            if piece.type == "king" and piece.color == "white":
-                return self.is_check(piece.row, piece.col)
-        return False
 
-    def is_check(self, row, col):
+    def get_moves(self, row, col):
         piece = self.board.grid[row][col]
-        if piece is not None:
-            for i in range(-1, 2):
-                for j in range(-1, 2):
-                    if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:
-                        if self.board.grid[row + i][col + j] is not None:
-                            if self.board.grid[row + i][col + j].color != piece.color:
-                                if self.board.grid[row + i][col + j].type == "queen":
-                                    print("check1")
-                                    return True
-                                elif self.board.grid[row + i][col + j].type == "rook" and i == 0 or j == 0:
-                                    print("check2")
-                                    return True
-                                elif self.board.grid[row + i][col + j].type == "bishop" and i != 0 and j != 0:
-                                    print("check3")
-                                    return True
-                                elif self.board.grid[row + i][col + j].type == "knight" and abs(i) + abs(j) == 3:
-                                    print("check4")
-                                    return True
-                                elif self.board.grid[row + i][col + j].type == "pawn" and i == 1 and j != 0:
-                                    print("check5")
-                                    return True
-        return False
+        if piece.type == "pawn":
+            return self.pawn_moves(row, col)
+        elif piece.type == "rook":
+            return self.rook_moves(row, col)
+        elif piece.type == "knight":
+            return self.knight_moves(row, col)
+        elif piece.type == "bishop":
+            return self.bishop_moves(row, col)
+        elif piece.type == "queen":
+            return self.queen_moves(row, col)
+        elif piece.type == "king":
+            return self.king_moves(row, col)
 
-    def is_checkmate(self):
+    def pawn_moves(self, row, col):
+        moves = []
+        piece = self.board.grid[row][col]
+        if piece.color == "white":
+            if row - 1 >= 0:
+                if self.board.grid[row - 1][col] is None:
+                    moves.append((row - 1, col))
+                    if row == 6:
+                        if self.board.grid[row - 2][col] is None:
+                            moves.append((row - 2, col))
+                if col - 1 >= 0:
+                    if self.board.grid[row - 1][col - 1] is not None:
+                        if self.board.grid[row - 1][col - 1].color == "black":
+                            moves.append((row - 1, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row - 1][col + 1] is not None:
+                        if self.board.grid[row - 1][col + 1].color == "black":
+                            moves.append((row - 1, col + 1))
+        else:
+            if row + 1 < 8:
+                if self.board.grid[row + 1][col] is None:
+                    moves.append((row + 1, col))
+                    if row == 1:
+                        if self.board.grid[row + 2][col] is None:
+                            moves.append((row + 2, col))
+                if col - 1 >= 0:
+                    if self.board.grid[row + 1][col - 1] is not None:
+                        if self.board.grid[row + 1][col - 1].color == "white":
+                            moves.append((row + 1, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row + 1][col + 1] is not None:
+                        if self.board.grid[row + 1][col + 1].color == "white":
+                            moves.append((row + 1, col + 1))
+        return moves
+
+    def rook_moves(self, row, col):
+        moves = []
+        piece = self.board.grid[row][col]
+        if piece.color == "white":
+            for i in range(row - 1, -1, -1):
+                if self.board.grid[i][col] is None:
+                    moves.append((i, col))
+                else:
+                    if self.board.grid[i][col].color == "black":
+                        moves.append((i, col))
+                    break
+            for i in range(row + 1, 8):
+                if self.board.grid[i][col] is None:
+                    moves.append((i, col))
+                else:
+                    if self.board.grid[i][col].color == "black":
+                        moves.append((i, col))
+                    break
+            for i in range(col - 1, -1, -1):
+                if self.board.grid[row][i] is None:
+                    moves.append((row, i))
+                else:
+                    if self.board.grid[row][i].color == "black":
+                        moves.append((row, i))
+                    break
+            for i in range(col + 1, 8):
+                if self.board.grid[row][i] is None:
+                    moves.append((row, i))
+                else:
+                    if self.board.grid[row][i].color == "black":
+                        moves.append((row, i))
+                    break
+        else:
+            for i in range(row - 1, -1, -1):
+                if self.board.grid[i][col] is None:
+                    moves.append((i, col))
+                else:
+                    if self.board.grid[i][col].color == "white":
+                        moves.append((i, col))
+                    break
+            for i in range(row + 1, 8):
+                if self.board.grid[i][col] is None:
+                    moves.append((i, col))
+                else:
+                    if self.board.grid[i][col].color == "white":
+                        moves.append((i, col))
+                    break
+            for i in range(col - 1, -1, -1):
+                if self.board.grid[row][i] is None:
+                    moves.append((row, i))
+                else:
+                    if self.board.grid[row][i].color == "white":
+                        moves.append((row, i))
+                    break
+            for i in range(col + 1, 8):
+                if self.board.grid[row][i] is None:
+                    moves.append((row, i))
+                else
+                    if self.board.grid[row][i].color == "white":
+                        moves.append((row, i))
+                    break
+        return moves
+
+    def knight_moves(self, row, col):
+        moves = []
+        piece = self.board.grid[row][col]
+        if piece.color == "white":
+            if row - 2 >= 0:
+                if col - 1 >= 0:
+                    if self.board.grid[row - 2][col - 1] is None:
+                        moves.append((row - 2, col - 1))
+                    else:
+                        if self.board.grid[row - 2][col - 1].color == "black":
+                            moves.append((row - 2, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row - 2][col + 1] is None:
+                        moves.append((row - 2, col + 1))
+                    else:
+                        if self.board.grid[row - 2][col + 1].color == "black":
+                            moves.append((row - 2, col + 1))
+            if row + 2 < 8:
+                if col - 1 >= 0:
+                    if self.board.grid[row + 2][col - 1] is None:
+                        moves.append((row + 2, col - 1))
+                    else:
+                        if self.board.grid[row + 2][col - 1].color == "black":
+                            moves.append((row + 2, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row + 2][col + 1] is None:
+                        moves.append((row + 2, col + 1))
+                    else:
+                        if self.board.grid[row + 2][col + 1].color == "black":
+                            moves.append((row + 2, col + 1))
+            if col - 2 >= 0:
+                if row - 1 >= 0:
+                    if self.board.grid[row - 1][col - 2] is None:
+                        moves.append((row - 1, col - 2))
+                    else:
+                        if self.board.grid[row - 1][col - 2].color == "black":
+                            moves.append((row - 1, col - 2))
+                if row + 1 < 8:
+                    if self.board.grid[row + 1][col - 2] is None:
+                        moves.append((row + 1, col - 2))
+                    else:
+                        if self.board.grid[row + 1][col - 2].color == "black":
+                            moves.append((row + 1, col - 2))
+            if col + 2 < 8:
+                if row - 1 >= 0:
+                    if self.board.grid[row - 1][col + 2] is None:
+                        moves.append((row - 1, col + 2))
+                    else:
+                        if self.board.grid[row - 1][col + 2].color == "black":
+                            moves.append((row - 1, col + 2))
+                if row + 1 < 8:
+                    if self.board.grid[row + 1][col + 2] is None:
+                        moves.append((row + 1, col + 2))
+                    else:
+                        if self.board.grid[row + 1][col + 2].color == "black":
+                            moves.append((row + 1, col + 2))
+        else:
+            if row - 2 >= 0:
+                if col - 1 >= 0:
+                    if self.board.grid[row - 2][col - 1] is None:
+                        moves.append((row - 2, col - 1))
+                    else:
+                        if self.board.grid[row - 2][col - 1].color == "white":
+                            moves.append((row - 2, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row - 2][col + 1] is None:
+                        moves.append((row - 2, col + 1))
+                    else:
+                        if self.board.grid[row - 2][col + 1].color == "white":
+                            moves.append((row - 2, col + 1))
+            if row + 2 < 8:
+                if col - 1 >= 0:
+                    if self.board.grid[row + 2][col - 1] is None:
+                        moves.append((row + 2, col - 1))
+                    else:
+                        if self.board.grid[row + 2][col - 1].color == "white":
+                            moves.append((row + 2, col - 1))
+                if col + 1 < 8:
+                    if self.board.grid[row + 2][col + 1] is None:
+                        moves.append((row + 2, col + 1))
+                    else:
+                        if self.board.grid[row + 2][col + 1].color == "white":
+                            moves.append((row + 2, col + 1))
+            if col - 2 >= 0:
+                if row - 1 >= 0:
+                    if self.board.grid[row - 1][col - 2] is None:
+                        moves.append((row - 1, col - 2))
+                    else:
+                        if self.board.grid[row - 1][col - 2].color == "white":
+                            moves.append((row - 1, col - 2))
+                if row + 1 < 8:
+                    if self.board.grid[row + 1][col - 2] is None:
+                        moves.append((row + 1, col - 2))
+                    else:
+                        if self.board.grid[row + 1][col - 2].color == "white":
+                            moves.append((row + 1, col - 2))
+            if col + 2 < 8:
+                if row - 1 >= 0:
+                    if self.board.grid[row - 1][col + 2] is None:
+                        moves.append((row - 1, col + 2))
+                    else:
+                        if self.board.grid[row - 1][col + 2].color == "white":
+                            moves.append((row - 1, col + 2))
+                if row + 1 < 8:
+                    if self.board.grid[row + 1][col + 2] is None:
+                        moves.append((row + 1, col + 2))
+                    else:
+                        if self.board.grid[row + 1][col + 2].color == "white":
+                            moves.append((row + 1, col + 2))
+        return moves
+
+    def bishop_moves(self):
+        row, col = self.get_position()
+        moves = []
+        if self.color == "white":
+            # Diagonale Haut Gauche
+            i = 1
+            while row - i >= 0 and col - i >= 0:
+                if self.board.grid[row - i][col - i] is None:
+                    moves.append((row - i, col - i))
+                else:
+                    if self.board.grid[row - i][col - i].color == "black":
+                        moves.append((row - i, col - i))
+                    break
+                i += 1
+            # Diagonale Haut Droite
+            i = 1
+            while row - i >= 0 and col + i < 8:
+                if self.board.grid[row - i][col + i] is None:
+                    moves.append((row - i, col + i))
+                else:
+                    if self.board.grid[row - i][col + i].color == "black":
+                        moves.append((row - i, col + i))
+                    break
+                i += 1
+            # Diagonale Bas Gauche
+            i = 1
+            while row + i < 8 and col - i >= 0:
+                if self.board.grid[row + i][col - i] is None:
+                    moves.append((row + i, col - i))
+                else:
+                    if self.board.grid[row + i][col - i].color == "black":
+                        moves.append((row + i, col - i))
+                    break
+                i += 1
+            # Diagonale Bas Droite
+            i = 1
+            while row + i < 8 and col + i < 8:
+                if self.board.grid[row + i][col + i] is None:
+                    moves.append((row + i, col + i))
+                else:
+                    if self.board.grid[row + i][col + i].color == "black":
+                        moves.append((row + i, col + i))
+                    break
+                i += 1
+        else:
+            # Diagonale Haut Gauche
+            i = 1
+            while row - i >= 0 and col - i >= 0:
+                if self.board.grid[row - i][col - i] is None:
+                    moves.append((row - i, col - i))
+                else:
+                    if self.board.grid[row - i][col - i].color == "white":
+                        moves.append((row - i, col - i))
+                    break
+                i += 1
+            # Diagonale Haut Droite
+            i = 1
+            while row - i >= 0 and col + i < 8:
+                if self.board.grid[row - i][col + i] is None:
+                    moves.append((row - i, col + i))
+                else:
+                    if self.board.grid[row - i][col + i].color == "white":
+                        moves.append((row - i, col + i))
+                    break
+                i += 1
+            # Diagonale Bas Gauche
+            i = 1
+            while row + i < 8 and col - i >= 0:
+                if self.board.grid[row + i][col - i] is None:
+                    moves.append((row + i, col - i))
+                else:
+                    if self.board.grid[row + i][col - i].color == "white":
+                        moves.append((row + i, col - i))
+                    break
+                i += 1
+            # Diagonale Bas Droite
+            i = 1
+            while row + i < 8 and col + i < 8:
+                if self.board.grid[row + i][col + i] is None:
+                    moves.append((row + i, col + i))
+                else:
+                    if self.board.grid[row + i][col + i].color == "white":
+                        moves.append((row + i, col + i))
+                    break
+                i += 1
+        return moves
+
+    def queen_moves(self):
+        row, col = self.get_position()
+        moves = []
+        if self.color == "white":
+            # Diagonale Haut Gauche
+            i = 1
+            while row - i >= 0 and col - i >= 0:
+                if self.board.grid[row - i][col - i] is None:
+                    moves.append((row - i, col - i))
+                else:
+                    if self.board.grid[row - i][col - i].color == "black":
+                        moves.append((row - i, col - i))
+                    break
+                i += 1
+            # Diagonale Haut Droite
+            i = 1
+            while row - i >= 0 and col + i < 8:
+                if self.board.grid[row - i][col + i] is None:
+                    moves.append((row - i, col + i))
+                else:
+                    if self.board.grid[row - i][col + i].color == "black":
+                        moves.append((row - i, col + i))
+                    break
+                i += 1
+            # Diagonale Bas Gauche
+            i = 1
+            while row + i < 8 and col - i >= 0:
+                if self.board.grid[row + i][col - i] is None:
+                    moves.append((row + i, col - i))
+                else:
+                    if self.board.grid[row + i][col - i].color == "black":
+                        moves.append((row + i, col - i))
+                    break
+                i += 1
+            # Diagonale Bas Droite
+            i = 1
+            while row + i < 8 and col + i < 8:
+                if self.board.grid[row + i][col + i] is None:
+                    moves.append((row + i, col + i))
+                else:
+                    if self.board.grid[row + i][col + i].color == "black":
+                        moves.append((row + i, col + i))
+                    break
+                i += 1
+            # Haut
+            i = 1
+            while row - i >= 0:
+                if self.board.grid[row - i][col] is None:
+                    moves.append((row - i, col))
+                else:
+                    if self.board.grid[row - i][col].color == "black":
+                        moves.append((row - i, col))
+                    break
+                i += 1
+            # Bas
+            i = 1
+            while row + i < 8:
+                if self.board.grid[row + i][col] is None:
+                    moves.append((row + i, col))
+                else:
+                    if self.board.grid[row + i][col].color == "black":
+                        moves.append((row + i, col))
+                    break
+                i += 1
+            # Gauche
+            i = 1
+            while col - i >= 0:
+                if self.board.grid[row][col - i] is None:
+                    moves.append((row, col - i))
+                else:
+                    if self.board.grid[row][col - i].color == "black":
+                        moves.append((row, col - i))
+                    break
+                i += 1
+            # Droite
+            i = 1
+            while col + i < 8:
+                if self.board.grid[row][col + i] is None:
+                    moves.append((row, col + i))
+                else:
+                    if self.board.grid[row][col + i].color == "black":
+                        moves.append((row, col + i))
+                    break
+                i += 1
+        else:
+            # Diagonale Haut Gauche
+            i = 1
+            while row - i >= 0 and col - i >= 0:
+                if self.board.grid[row - i][col - i] is None:
+                    moves.append((row - i, col - i))
+                else:
+                    if self.board.grid[row - i][col - i].color == "white":
+                        moves.append((row - i, col - i))
+                    break
+                i += 1
+            # Diagonale Haut Droite
+            i = 1
+            while row - i >= 0 and col + i < 8:
+                if self.board.grid[row - i][col + i] is None:
+                    moves.append((row - i, col + i))
+                else:
+                    if self.board.grid[row - i][col + i].color == "white":
+                        moves.append((row - i, col + i))
+                    break
+                i += 1
+            # Diagonale Bas Gauche
+            i = 1
+            while row + i < 8 and col - i >= 0:
+                if self.board.grid[row + i][col - i] is None:
+                    moves.append((row + i, col - i))
+                else:
+                    if self.board.grid[row + i][col - i].color == "white":
+                        moves.append((row + i, col - i))
+                    break
+                i += 1
+            # Diagonale Bas Droite
+            i = 1
+            while row + i < 8 and col + i < 8:
+                if self.board.grid[row + i][col + i] is None:
+                    moves.append((row + i, col + i))
+                else:
+                    if self.board.grid[row + i][col + i].color == "white":
+                        moves.append((row + i, col + i))
+                    break
+                i += 1
+            # Haut
+            i = 1
+            while row - i >= 0:
+                if self.board.grid[row - i][col] is None:
+                    moves.append((row - i, col))
+                else:
+                    if self.board.grid[row - i][col].color == "white":
+                        moves.append((row - i, col))
+                    break
+                i += 1
+            # Bas
+            i = 1
+            while row + i < 8:
+                if self.board.grid[row + i][col] is None:
+                    moves.append((row + i, col))
+                else:
+                    if self.board.grid[row + i][col].color == "white":
+                        moves.append((row + i, col))
+                    break
+                i += 1
+            # Gauche
+            i = 1
+            while col - i >= 0:
+                if self.board.grid[row][col - i] is None:
+                    moves.append((row, col - i))
+                else:
+                    if self.board.grid[row][col - i].color == "white":
+                        moves.append((row, col - i))
+                    break
+                i += 1
+            # Droite
+            i = 1
+            while col + i < 8:
+                if self.board.grid[row][col + i] is None:
+                    moves.append((row, col + i))
+                else:
+                    if self.board.grid[row][col + i].color == "white":
+                        moves.append((row, col + i))
+                    break
+                i += 1
+        return moves
+
+    def king_moves(self, row, col):
+        moves = []
+        if self.color == "black":
+            # Haut
+            if row - 1 >= 0:
+                if self.board.grid[row - 1][col] is None:
+                    moves.append((row - 1, col))
+                else:
+                    if self.board.grid[row - 1][col].color == "white":
+                        moves.append((row - 1, col))
+            # Bas
+            if row + 1 < 8:
+                if self.board.grid[row + 1][col] is None:
+                    moves.append((row + 1, col))
+                else:
+                    if self.board.grid[row + 1][col].color == "white":
+                        moves.append((row + 1, col))
+            # Gauche
+            if col - 1 >= 0:
+                if self.board.grid[row][col - 1] is None:
+                    moves.append((row, col - 1))
+                else:
+                    if self.board.grid[row][col - 1].color == "white":
+                        moves.append((row, col - 1))
+            # Droite
+            if col + 1 < 8:
+                if self.board.grid[row][col + 1] is None:
+                    moves.append((row, col + 1))
+                else:
+                    if self.board.grid[row][col + 1].color == "white":
+                        moves.append((row, col + 1))
+            # Diagonale Haut Gauche
+            if row - 1 >= 0 and col - 1 >= 0:
+                if self.board.grid[row - 1][col - 1] is None:
+                    moves.append((row - 1, col - 1))
+                else:
+                    if self.board.grid[row - 1][col - 1].color == "white":
+                        moves.append((row - 1, col - 1))
+            # Diagonale Haut Droite
+            if row - 1 >= 0 and col + 1 < 8:
+                if self.board.grid[row - 1][col + 1] is None:
+                    moves.append((row - 1, col + 1))
+                else:
+                    if self.board.grid[row - 1][col + 1].color == "white":
+                        moves.append((row - 1, col + 1))
+            # Diagonale Bas Gauche
+            if row + 1 < 8 and col - 1 >= 0:
+                if self.board.grid[row + 1][col - 1] is None:
+                    moves.append((row + 1, col - 1))
+                else:
+                    if self.board.grid[row + 1][col - 1].color == "white":
+                        moves.append((row + 1, col - 1))
+            # Diagonale Bas Droite
+            if row + 1 < 8 and col + 1 < 8:
+                if self.board.grid[row + 1][col + 1] is None:
+                    moves.append((row + 1, col + 1))
+                else:
+                    if self.board.grid[row + 1][col + 1].color == "white":
+                        moves.append((row + 1, col + 1))
+        else:
+            # Haut
+            if row - 1 >= 0:
+                if self.board.grid[row - 1][col] is None:
+                    moves.append((row - 1, col))
+                else:
+                    if self.board.grid[row - 1][col].color == "black":
+                        moves.append((row - 1, col))
+            # Bas
+            if row + 1 < 8:
+                if self.board.grid[row + 1][col] is None:
+                    moves.append((row + 1, col))
+                else:
+                    if self.board.grid[row + 1][col].color == "black":
+                        moves.append((row + 1, col))
+            # Gauche
+            if col - 1 >= 0:
+                if self.board.grid[row][col - 1] is None:
+                    moves.append((row, col - 1))
+                else:
+                    if self.board.grid[row][col - 1].color == "black":
+                        moves.append((row, col - 1))
+            # Droite
+            if col + 1 < 8:
+                if self.board.grid[row][col + 1] is None:
+                    moves.append((row, col + 1))
+                else:
+                    if self.board.grid[row][col + 1].color == "black":
+                        moves.append((row, col + 1))
+            # Diagonale Haut Gauche
+            if row - 1 >= 0 and col - 1 >= 0:
+                if self.board.grid[row - 1][col - 1] is None:
+                    moves.append((row - 1, col - 1))
+                else:
+                    if self.board.grid[row - 1][col - 1].color == "black":
+                        moves.append((row - 1, col - 1))
+            # Diagonale Haut Droite
+            if row - 1 >= 0 and col + 1 < 8:
+                if self.board.grid[row - 1][col + 1] is None:
+                    moves.append((row - 1, col + 1))
+                else:
+                    if self.board.grid[row - 1][col + 1].color == "black":
+                        moves.append((row - 1, col + 1))
+            # Diagonale Bas Gauche
+            if row + 1 < 8 and col - 1 >= 0:
+                if self.board.grid[row + 1][col - 1] is None:
+                    moves.append((row + 1, col - 1))
+                else:
+                    if self.board.grid[row + 1][col - 1].color == "black":
+                        moves.append((row + 1, col - 1))
+            # Diagonale Bas Droite
+            if row + 1 < 8 and col + 1 < 8:
+                if self.board.grid[row + 1][col + 1] is None:
+                    moves.append((row + 1, col + 1))
+                else:
+                    if self.board.grid[row + 1][col + 1].color == "black":
+                        moves.append((row + 1, col + 1))
+        return moves
+
+
+
+
+    #Crée une fonction check qui verfie d'apres les regles d'echeques si le roi est en echec
+    def check(self):
+        #On récupère la position du roi
+        king_pos = self.get_piece_position(5)
+        #On récupère la liste des pièces adverses
         tab = self.get_tab_piece()
+        #On parcourt la liste des pièces adverses
         for piece in tab:
-            if piece.color == "white":
-                for i in range(-1, 2):
-                    for j in range(-1, 2):
-                        if piece.row + i >= 0 and piece.row + i < 8 and piece.col + j >= 0 and piece.col + j < 8:
-                            if self.board.grid[piece.row + i][piece.col + j] is None:
-                                self.move(piece.row, piece.col)
-                                self.move(piece.row + i, piece.col + j)
-                                if not self.check():
-                                    self.move(piece.row + i, piece.col + j)
-                                    self.move(piece.row, piece.col)
-                                    return False
-                                self.move(piece.row + i, piece.col + j)
-                                self.move(piece.row, piece.col)
-
+            #On récupère la liste des déplacements possibles de la pièce
+            moves = piece.get_moves()
+            #On parcourt la liste des déplacements possibles
+            for move in moves:
+                #Si le déplacement est égal à la position du roi
+                if move == king_pos:
+                    return True
+        return False
     # Ajout des getter et setter
     def get_piece(self, row, col):  # Fonction qui permet de récupérer une pièce
         return self.board.grid[row][col]  # On retourne la pièce

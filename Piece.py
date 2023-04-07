@@ -48,6 +48,10 @@ class Piece:  # Piece est une classe qui contient une couleur, une image et un t
         updated_rects.append(
             pygame.Rect(x, y, GRID_SIZE, GRID_SIZE))  # Ajout de la zone de l'écran qui a été mise à jour
 
+    #crée une fonction get_moves qui renvoie les déplacement possible par pieces
+
+
+
     def get_type(self):
         return self.type
 
