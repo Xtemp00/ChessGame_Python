@@ -708,10 +708,10 @@ class Game:  # Classe pour représenter le jeu
             if piece.type == "pawn":
                 if piece.color == "black":
                     if row == 7:
-                        self.board.grid[row][col] = Piece('black', QUEEN_BLACK_IMG, "queen", 4, row, col)
+                        self.board.grid[row][col] = Piece('black', QUEEN_BLACK_IMG, "queen", 4, row, col,piece.move+1)
                 else:
                     if row == 0:
-                        self.board.grid[row][col] = Piece('white', QUEEN_WHITE_IMG, "queen", 20, row, col)
+                        self.board.grid[row][col] = Piece('white', QUEEN_WHITE_IMG, "queen", 20, row, col,piece.move+1)
 
     def highlight_moves_pawn(self, row,
                              col):  # Fonction qui permet de mettre en évidence les déplacements possibles d'un pion
@@ -1541,8 +1541,9 @@ class Game:  # Classe pour représenter le jeu
                 #On parcourt la liste des déplacements possibles
                 for move in moves:
                     print(move)
-                    print("...")
                     print(king_posb)
+                    print(king_posw)
+                    print("...")
                     #Si le déplacement est égal à la position du roi
                     if move == king_posb:
                         print("Echec")
