@@ -116,15 +116,15 @@ class Game:  # Classe pour représenter le jeu
                         text = font.render(self.afficher[i], 1, WHITE)
                         self.screen.blit(text, (500, self.position - 30 * (len(self.afficher) - i)))
 
-    """def choose_player(self):
+    def choose_player(self):
         font = pygame.font.SysFont('comicsans', 30)
         text = font.render("Choisissez votre couleur", 1, WHITE)
         text2 = font.render("Blanc", 1, WHITE)
         text3 = font.render("Noir", 1, WHITE)
-        pygame.draw.rect(self.screen, BLACK, (200, 300, 200, 50))
-        pygame.draw.rect(self.screen, BLACK, (600, 300, 200, 50))
-        self.screen.blit(text2, (200 + 200 // 2 - text2.get_width() // 2, 300 + 50 // 2 - text2.get_height() // 2))
-        self.screen.blit(text3, (600 + 200 // 2 - text3.get_width() // 2, 300 + 50 // 2 - text3.get_height() // 2))
+        pygame.draw.rect(self.screen, BLACK, (100, 300, 100, 50))
+        pygame.draw.rect(self.screen, BLACK, (500, 300, 100, 50))
+        self.screen.blit(text2, (50 + 200 // 2 - text2.get_width() // 2, 300 + 50 // 2 - text2.get_height() // 2))
+        self.screen.blit(text3, (450 + 200 // 2 - text3.get_width() // 2, 300 + 50 // 2 - text3.get_height() // 2))
         self.screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
         pygame.display.update()
         run = True
@@ -135,14 +135,14 @@ class Game:  # Classe pour représenter le jeu
                     self.running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = pygame.mouse.get_pos()
-                    if 200 < x < 400 and 300 < y < 350:
-                        self.player = Player(self.screen, "white")
-                        self.player2 = Player(self.screen, "black")
+                    if 100 < x < 200 and 300 < y < 350:
+                        self.player = Player("white", 1)
+                        self.player2 = Player("black", 0)
                         run = False
-                    if 600 < x < 800 and 300 < y < 350:
-                        self.player = Player(self.screen, "black")
-                        self.player2 = Player(self.screen, "white")
-                        run = False"""
+                    if 500 < x < 600 and 300 < y < 350:
+                        self.player = Player("black", 1)
+                        self.player2 = Player("white", 0)
+                        run = False
 
     def handle_events(self):  # Fonction qui gère les événements
         for event in pygame.event.get():
@@ -672,40 +672,81 @@ class Game:  # Classe pour représenter le jeu
         piece = self.board.grid[row][col]
         if piece is not None:
             if piece.type == "pawn":
-                if piece.color == "white":
-                    if self.board.grid[row][col - 1] is not None:
-                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
-                            col - 1].color == "black":
-                            if self.board.grid[row][col - 1].move == 1:
-                                self.board.grid[row][col - 1] = None
-                                self.board.grid[row - 1][col - 1] = piece
-                                self.board.grid[row][col] = None
-                                self.selected_piece = None
-                    if self.board.grid[row][col + 1] is not None:
-                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
-                            col + 1].color == "black":
-                            if self.board.grid[row][col + 1].move == 1:
-                                self.board.grid[row][col + 1] = None
-                                self.board.grid[row - 1][col + 1] = piece
-                                self.board.grid[row][col] = None
-                                self.selected_piece = None
+                if col != 0 and col != 7:
+                    if piece.color == "white":
+                        if self.board.grid[row][col - 1] is not None:
+                            if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
+                                col - 1].color == "black":
+                                if self.board.grid[row][col - 1].move == 1:
+                                    self.board.grid[row][col - 1] = None
+                                    self.board.grid[row - 1][col - 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                        if self.board.grid[row][col + 1] is not None:
+                            if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
+                                col + 1].color == "black":
+                                if self.board.grid[row][col + 1].move == 1:
+                                    self.board.grid[row][col + 1] = None
+                                    self.board.grid[row - 1][col + 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                    else:
+                        if self.board.grid[row][col - 1] is not None:
+                            if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
+                                col - 1].color == "white":
+                                if self.board.grid[row][col - 1].move == 1:
+                                    self.board.grid[row][col - 1] = None
+                                    self.board.grid[row + 1][col - 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                        if self.board.grid[row][col + 1] is not None:
+                            if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
+                                col + 1].color == "white":
+                                if self.board.grid[row][col + 1].move == 1:
+                                    self.board.grid[row][col + 1] = None
+                                    self.board.grid[row + 1][col + 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                elif col == 0:
+                    if piece.color == "white":
+                        if self.board.grid[row][col + 1] is not None:
+                            if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
+                                col + 1].color == "black":
+                                if self.board.grid[row][col + 1].move == 1:
+                                    self.board.grid[row][col + 1] = None
+                                    self.board.grid[row - 1][col + 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                    else:
+                        if self.board.grid[row][col + 1] is not None:
+                            if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
+                                col + 1].color == "white":
+                                if self.board.grid[row][col + 1].move == 1:
+                                    self.board.grid[row][col + 1] = None
+                                    self.board.grid[row - 1][col + 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
                 else:
-                    if self.board.grid[row][col - 1] is not None:
-                        if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
-                            col - 1].color == "white":
-                            if self.board.grid[row][col - 1].move == 1:
-                                self.board.grid[row][col - 1] = None
-                                self.board.grid[row + 1][col - 1] = piece
-                                self.board.grid[row][col] = None
-                                self.selected_piece = None
-                    if self.board.grid[row][col + 1] is not None:
-                        if self.board.grid[row][col + 1].type == "pawn" and self.board.grid[row][
-                            col + 1].color == "white":
-                            if self.board.grid[row][col + 1].move == 1:
-                                self.board.grid[row][col + 1] = None
-                                self.board.grid[row + 1][col + 1] = piece
-                                self.board.grid[row][col] = None
-                                self.selected_piece = None
+                    if piece.color == "white":
+                        if self.board.grid[row][col - 1] is not None:
+                            if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
+                                col - 1].color == "black":
+                                if self.board.grid[row][col - 1].move == 1:
+                                    self.board.grid[row][col - 1] = None
+                                    self.board.grid[row + 1][col - 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+                    else:
+                        if self.board.grid[row][col - 1] is not None:
+                            if self.board.grid[row][col - 1].type == "pawn" and self.board.grid[row][
+                                col - 1].color == "white":
+                                if self.board.grid[row][col - 1].move == 1:
+                                    self.board.grid[row][col - 1] = None
+                                    self.board.grid[row + 1][col - 1] = piece
+                                    self.board.grid[row][col] = None
+                                    self.selected_piece = None
+
+
 
     def pawn_promotion(self, row, col):
         piece = self.board.grid[row][col]
@@ -1749,9 +1790,10 @@ class Game:  # Classe pour représenter le jeu
         return self.player_turn
 
     def run(self):  # Fonction qui permet de lancer le jeu
-        # self.choose_player()  # On choisit le joueur
+        self.choose_player()  # On choisit le joueur
         while self.running:  # Tant que le jeu est lancé
             self.handle_events()  # On gère les évènements
             self.board.draw(self.screen)  # On dessine le plateau de jeu
             pygame.display.flip()  # On met à jour l'écran
+            pygame.display.update()  # On met à jour l'écran
         pygame.quit()  # On quitte pygame
