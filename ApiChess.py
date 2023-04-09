@@ -1,9 +1,13 @@
 # On importe la librairie chess.com
+from pathlib import Path
+
 import chessdotcom
 import chess
 import chess.pgn
 import os
 import urllib.request
+import json
+import requests
 
 annee = 2023
 mois = 4
@@ -155,31 +159,39 @@ def result_getter(player_name):
                 list.append('draw')
     return list
 
-#On va récupérer une partie unique en fonction du nom du joueur et du numéro de la partie
-# On va sortir cela sous forme d'un pgn pour pouvoir l'exploiter avec chess.pgn
-def pgn_getter_unique(player_name, game_number):
-    pgn = pgn_getter(player_name)
-
-    #On va editer le fichier pgn
-    return pgn[game_number]
-
-
 # On exploit le fichier pgn pour extraire tout les mouvements d'une partie a partir du fichier pgn
-def moves_getter_unique_pgn(pgn):
+def moves_getter_unique_pgn(player_name):
     # On utilise la librairie chess
     import chess.pgn
     # On récupère le fichier pgn
-    pgn = open(pgn)
     # On récupère la première partie
+    # On enregistre le string du tableau dans un ficher pgn temporaire
+    f = open("temp.pgn", "w")
+    f.write(getPGN(player_name, 0))
+    f.close()
+    # On lit le fichier pgn temporaire
+    pgn = open("temp.pgn")
     game = chess.pgn.read_game(pgn)
     # On récupère les mouvements de la partie
+    ligne = 0
     moves = []
     for move in game.mainline_moves():
         moves.append(move)
+        # On recupère la position initiale de la pièce, la position final et le type de pièces
+        print(move.uci())
+
+    # On supprime le fichier pgn
+    import os
+    os.remove("temp.pgn")
     return
+
+# On récupère une partie d'un joueur sous format d'un fichier pgn
+def getPGN(player_name, game_number):
+    pgn = pgn_getter(player_name)
+    return pgn[game_number]
 
 
 
 import_player_game_history("Xtemp70")
 #print(games)
-print(pgn_getter_unique("Xtemp70", 0))
+print(moves_getter_unique_pgn("Xtemp70"))
