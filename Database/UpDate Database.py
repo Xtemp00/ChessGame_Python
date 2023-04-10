@@ -23,6 +23,7 @@
 # Importation des modules nécessaires
 import sqlite3
 import ApiChess
+import os
 
 # Crée une connexion à la base de données
 conn = sqlite3.connect('Chess.db')
@@ -75,33 +76,52 @@ def add_game(Nom_Joueur):
         # On valide les changements
     conn.commit()
 
-# On Ajoute les coups d'une partie unique du joueur dans la table mouvement
-def add_move(Nom_Joueur, Move):
-    Id_Player = ApiChess.get_id_player(Nom_Joueur)
-    # Crée un curseur pour exécuter des requêtes SQL
-    # On ajoute le joueur dans la base de donnée
-    cur.execute("INSERT INTO Moves (Id_Player, Move) VALUES (?, ?)", (Id_Player, Move))
-    # On valide les changements
-    conn.commit()
+# On ajoute tout les mouvement d'une partie a la table Mouvement
+# la table ressemble a ceci
+# - La table des mouvements :# Avec un mouvement de départ et le mouvement d'arrivée
+# cur.execute('''CREATE TABLE IF NOT EXISTS Moves
+#                     (Id_Game INTEGER NOT NULL,
+#                         Id_Player INTEGER NOT NULL,
+#                             Number_Move INTEGER NOT NULL,
+#                                 Move_depart TEXT NOT NULL,
+#                                     Move_arrivee TEXT NOT NULL,
+#                                         Type_Piece TEXT NOT NULL)''')
 
-# On ajoute tout les mouvements de toutes parties dans la table mouvement
-def add_moves(Nom_Joueur):
-    # On récupère les coups de toutes les parties du joueur
-    Moves = ApiChess.moves_getter(Nom_Joueur)
-    # On ajoute les coups d'une partie dans la table mouvement
-    for Move in Moves:
-        # On parcours les coups d'une partie
-        for move in Move:
-            # On ajoute un coup dans la table mouvement
-            add_move(Nom_Joueur, move)
-
+def add_all_move(Nom_Joueur):
+    # On récupère l'Id du joueur
+    Id_Player = get_id_player(Nom_Joueur)
+    # On récupère tout les Id des parties du joueur
+    cur.execute("SELECT Id_Game FROM Games WHERE Id_Player = ?", (Id_Player,))
+    # On récupère les données de la requête
+    data = cur.fetchall()
+    # On récupère tout les mouvements de chaque partie
+    for Id_Game in data:
+        # On récupère tout les mouvements de la partie
+        Moves = ApiChess.moves_getter_unique_pgn(Nom_Joueur, Id_Game[0])
+        # On récupère le nombre de mouvement
+        nb_moves = len(Moves)
+        # On ajoute tout les mouvements dans la table Mouvement
+        for move in Moves:
+            # On récupère le mouvement de départ
+            Move_depart = move[1][0]
+            # On récupère le mouvement d'arrivée
+            Move_arrivee = move[1][1]
+            # On récupère le type de pièce
+            Type_Piece = move[0]
+            # On ajoute le mouvement dans la table Mouvement
+            cur.execute("INSERT INTO Moves (Id_Game, Id_Player, Number_Move, Move_depart, Move_arrivee, Type_Piece) VALUES (?, ?, ?, ?, ?, ?)", (Id_Game[0], Id_Player, nb_moves, Move_depart, Move_arrivee, Type_Piece))
+            # On valide les changements
+            conn.commit()
+            # On décrémente le nombre de mouvement
+            nb_moves -= 1
 
 
 #Fonction d'ajout complet d'un joueur
 def Main(Nom_Joueur):
     Joueur(Nom_Joueur)
     add_game(Nom_Joueur)
+    add_all_move(Nom_Joueur)
     conn.close()
 
 ApiChess.import_player_game_history("Xtemp70")
-Main("Xtemp70")
+Main("Nino_brgs")

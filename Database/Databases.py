@@ -51,7 +51,8 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Moves
                         Id_Player INTEGER NOT NULL,
                             Number_Move INTEGER NOT NULL,
                                 Move_depart TEXT NOT NULL,
-                                    Move_arrivee TEXT NOT NULL)''')
+                                    Move_arrivee TEXT NOT NULL,
+                                        Type_Piece TEXT NOT NULL)''')
 
 # Valide les changements et ferme la connexion
 conn.commit()

@@ -89,6 +89,7 @@ def won_games(player_name):
             elif games[i][j]['black']['result'] == 'win':
                 if games[i][j]['white']['username'] == player_name:
                     won += 1
+
     return won
 
 # On récupère le nombre de partie perdu
@@ -160,30 +161,36 @@ def result_getter(player_name):
     return list
 
 # On exploit le fichier pgn pour extraire tout les mouvements d'une partie a partir du fichier pgn
-def moves_getter_unique_pgn(player_name):
+def moves_getter_unique_pgn(player_name, num):
     # On utilise la librairie chess
+    pion = []
+    mouvement = ("","")
     import chess.pgn
     # On récupère le fichier pgn
     # On récupère la première partie
     # On enregistre le string du tableau dans un ficher pgn temporaire
     f = open("temp.pgn", "w")
-    f.write(getPGN(player_name, 0))
+    f.write(getPGN(player_name, num))
     f.close()
     # On lit le fichier pgn temporaire
     pgn = open("temp.pgn")
     game = chess.pgn.read_game(pgn)
     # On récupère les mouvements de la partie
     ligne = 0
+    board = game.board()
     moves = []
     for move in game.mainline_moves():
-        moves.append(move)
-        # On recupère la position initiale de la pièce, la position final et le type de pièces
-        print(move.uci())
-
-    # On supprime le fichier pgn
-    import os
-    os.remove("temp.pgn")
-    return
+        # On récupère la postion initial d'une pièce a partir de move
+        # On récupère la postion final d'une pièce a partir de move
+        # On récupère le type de pièce a partir de move
+        pion.append([board.piece_at(move.from_square).symbol(), move.uci()])
+        board.push(move)
+        # on sépare la chaine de caractère
+    for i in range (len(pion)):
+        mouv = pion[i][1]
+        mouvement = (mouv[0] + mouv[1],mouv[2] + mouv[3])
+        pion[i][1] =mouvement
+    return pion
 
 # On récupère une partie d'un joueur sous format d'un fichier pgn
 def getPGN(player_name, game_number):
@@ -192,6 +199,6 @@ def getPGN(player_name, game_number):
 
 
 
-import_player_game_history("Xtemp70")
+#import_player_game_history("Xtemp70")
 #print(games)
-print(moves_getter_unique_pgn("Xtemp70"))
+#print(moves_getter_unique_pgn("Xtemp70",0))

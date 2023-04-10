@@ -37,5 +37,22 @@ def display_games():
     for row in data:
         print(row[0], row[1], row[2])
 
-display_games()
+# On récupère les données de la table Moves
+def get_moves():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Moves")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+# On affiche les données de la table Moves
+def display_moves():
+    data = get_moves()
+    print("Id_Move", "Id_Game", "Id_Player", "Number_Move", "Move_depart", "Move_arrivee", "Type_Piece")
+    for row in data:
+        print(row[0], row[1], row[2], row[3], row[4], row[5])
+
 display_players()
+display_games()
+display_moves()
