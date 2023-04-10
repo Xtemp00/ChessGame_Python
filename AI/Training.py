@@ -3,34 +3,14 @@
 import chess.engine
 import chess
 import numpy as np
-import tensorflow as tf
+from tensorflow.keras.models import load_model
 
 engine = chess.engine.SimpleEngine.popen_uci("StockFish/stockfish_15.1_win_x64_avx2/stockfish-windows-2022-x86-64-avx2.exe")
+model = load_model('mon_modele.h5')
 
-# Définition du modèle
-model = tf.keras.Sequential([
-    # Couche d'entrée
-    tf.keras.layers.InputLayer(input_shape=(8, 8, 12)),
+# On entre le nombre d'entrainements
+nb_entraînements = int(input("Nombre d'entrainements: "))
 
-    # Convolution 2D pour extraire les caractéristiques de l'état du plateau
-    tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'),
-    tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-
-    tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'),
-    tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-
-    # Couche entièrement connectée pour apprendre les motifs de jeu
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-
-    # Couche de sortie pour la classification
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
-
-# Compilation du modèle
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 X = []
 y = []
@@ -57,7 +37,7 @@ def get_move(board):
     return result.move
 
 # Boucle principale d'apprentissage
-for i in range(1):
+for i in range(nb_entraînements):
     # Créer un nouveau plateau de jeu
     board = chess.Board()
 

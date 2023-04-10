@@ -1,4 +1,3 @@
-# Dans ce fichier on test l'ia pour quel joue contre nous même
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import numpy as np
@@ -19,9 +18,12 @@ def play_against_model(model):
             move = chess.Move.from_uci(move)
         else:
             # C'est au tour du modèle
-            prediction = model.predict(np.array([chess.board_to_array(board)]))
-            move = np.argmax(prediction)
-            move = chess.Move.from_uci(chess.Move.from_uci(move))
+            prediction = model.predict(np.array([board_to_array(board)]))
+            legal_moves = list(board.legal_moves)
+            legal_moves = [move.uci() for move in legal_moves]
+            legal_moves.sort()
+            move_uci = legal_moves[np.argmax(prediction)]
+            move = chess.Move.from_uci(move_uci)
 
         # Vérification de la validité du mouvement
         if move not in board.legal_moves:
@@ -44,5 +46,20 @@ def play_against_model(model):
         print("Partie nulle (matériel insuffisant)!")
     else:
         print("Résultat inconnu!")
+
+
+def board_to_array(board):
+    pieces = {'P': 0, 'N': 1, 'B': 2, 'R': 3, 'Q': 4, 'K': 5,
+              'p': 6, 'n': 7, 'b': 8, 'r': 9, 'q': 10, 'k': 11, '.': 12}
+    board_array = np.zeros((8, 8, 12), dtype=np.uint8)
+
+    for row in range(8):
+        for col in range(8):
+            piece = board.piece_at(chess.square(col, 7-row))
+            if piece is not None:
+                board_array[row, col, pieces[piece.symbol()]] = 1
+
+    return board_array
+
 
 play_against_model(model)
