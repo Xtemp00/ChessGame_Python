@@ -1,7 +1,6 @@
 import pygame
-from time import sleep
 from Game import Game
-from AI import AI
+from AI.AI import AI
 
 updated_rects = []  # Liste des rectangles de l'écran qui ont été mis à jour
 

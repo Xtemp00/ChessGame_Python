@@ -1,0 +1,39 @@
+Liste des Etapes a Suivre
+
+- Installer TensorFlow : Pour commencer,
+vous devrez installer TensorFlow sur votre ordinateur.
+Vous pouvez le faire en utilisant la commande pip install tensorflow dans votre terminal.
+
+- Collecter les données :
+Pour entraîner votre modèle TensorFlow, vous aurez besoin de données d'entraînement.
+Dans le contexte des échecs, cela peut inclure des parties historiques, des données de notation et d'autres informations.
+Vous pouvez utiliser des bibliothèques telles que python-chess pour récupérer des données d'échecs.
+
+- Préparer les données :
+Une fois que vous avez collecté vos données,
+vous devrez les nettoyer et les préparer pour l'entraînement de votre modèle TensorFlow.
+Cela peut inclure la normalisation des données et la séparation des données en ensembles d'entraînement et de test.
+
+-Entraîner votre modèle :
+À l'aide de TensorFlow,
+vous pouvez créer un modèle d'IA pour jouer aux échecs en utilisant des techniques d'apprentissage automatique telles que les réseaux de neurones.
+Vous pouvez entraîner votre modèle en utilisant les données que vous avez collectées et préparées.
+
+-Intégrer votre modèle avec Pygame :
+Une fois que vous avez entraîné votre modèle,
+vous pouvez l'intégrer dans votre jeu Pygame pour qu'il puisse jouer contre les joueurs.
+Vous pouvez utiliser l'API TensorFlow pour exécuter votre modèle et générer des mouvements pour votre jeu.
+
+Tester et affiner votre modèle :
+Après avoir intégré votre modèle avec Pygame,
+vous devrez le tester pour vous assurer qu'il fonctionne correctement.
+Vous pouvez également affiner votre modèle en continu en lui fournissant des données d'entraînement supplémentaires.
+
+Dans la théories
+Pour collecter les données on va utilisé chess.com qui va nous récupérer les parties d'échecs en ligne.
+de cetains Joueurs puis on va entrainer notre modèle avec ces données.
+    A noter que on utilisera les parties de certains Joueurs
+    Pour cela il faut d'abord installer python-chess et chess.com
+    puis on va créer un fichier python qui va récupérer les données de chess.com
+    puis on va créer un fichier python qui va entrainer notre modèle avec les données récupérées
+    puis on va créer un fichier python qui va intégrer notre modèle avec Pygame

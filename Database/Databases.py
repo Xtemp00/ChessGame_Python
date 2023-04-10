@@ -10,14 +10,16 @@
 # - La table des parties :
 #   - Id_Partie
 #   - Id_Joueur
-#   - Id_Adversaire
 #   - Resultat
 
 # - La table des mouvements :
+#  - Id_Mouvement
 #   - Id_Partie
 #   - Id_Joueur
-#   - Id_Adversaire
-#   - Mouvement
+#   - Position_depart
+#   - Position_arrivee
+#   - Type_piece
+
 
 # On utilise Mysql pour créer la base de donnée
 # Importation des modules nécessaires
@@ -47,12 +49,13 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Games
 # Crée une table Moves
 # Avec un mouvement de départ et le mouvement d'arrivée
 cur.execute('''CREATE TABLE IF NOT EXISTS Moves
-                    (Id_Game INTEGER NOT NULL,
-                        Id_Player INTEGER NOT NULL,
-                            Number_Move INTEGER NOT NULL,
-                                Move_depart TEXT NOT NULL,
-                                    Move_arrivee TEXT NOT NULL,
-                                        Type_Piece TEXT NOT NULL)''')
+                    (Id_Mouvement INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Id_Game INTEGER NOT NULL,
+                            Id_Player INTEGER NOT NULL,
+                                Number_Move INTEGER NOT NULL,
+                                    Move_depart TEXT NOT NULL,
+                                        Move_arrivee TEXT NOT NULL,
+                                            Type_Piece TEXT NOT NULL)''')
 
 # Valide les changements et ferme la connexion
 conn.commit()

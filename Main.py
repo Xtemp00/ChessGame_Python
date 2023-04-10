@@ -1,8 +1,4 @@
-from Board import Board
-from Game import Game
 from Main_Screen import Main_Screen
-from Piece import Piece
-from AI import AI
 import pygame  # Importation du module Pygame
 
 # Initialisation de Pygame

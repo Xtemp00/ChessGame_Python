@@ -77,15 +77,6 @@ def add_game(Nom_Joueur):
     conn.commit()
 
 # On ajoute tout les mouvement d'une partie a la table Mouvement
-# la table ressemble a ceci
-# - La table des mouvements :# Avec un mouvement de départ et le mouvement d'arrivée
-# cur.execute('''CREATE TABLE IF NOT EXISTS Moves
-#                     (Id_Game INTEGER NOT NULL,
-#                         Id_Player INTEGER NOT NULL,
-#                             Number_Move INTEGER NOT NULL,
-#                                 Move_depart TEXT NOT NULL,
-#                                     Move_arrivee TEXT NOT NULL,
-#                                         Type_Piece TEXT NOT NULL)''')
 
 def add_all_move(Nom_Joueur):
     # On récupère l'Id du joueur
@@ -121,6 +112,7 @@ def Main(Nom_Joueur):
     Joueur(Nom_Joueur)
     add_game(Nom_Joueur)
     add_all_move(Nom_Joueur)
+    os.remove("temp.pgn")
     conn.close()
 
 ApiChess.import_player_game_history("Xtemp70")
