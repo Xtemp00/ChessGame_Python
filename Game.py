@@ -1638,10 +1638,10 @@ class Game:  # Classe pour représenter le jeu
                                     print("Echec")
                                     return True
         return False
-    # Fonction qui verifie si le roi est en echec et mat en verifiznt que toute les cases autour du roi sont
+    # Fonction qui vérifie si le roi est en échec et mat en vérifiant que toute les cases autour du roi sont
     # soit bloquer par le plateau soit par les pieces de la meme ou alors que il soit dans la trajectoire de
     # déplacement d'une piece adverse et c'est le cas renvoyer true
-    def checkmate(self):
+    """def checkmate(self):
         king_posb = self.get_piece_position(5)
         king_posw = self.get_piece_position(21)
         tab = self.get_tab_piece()
@@ -1649,12 +1649,37 @@ class Game:  # Classe pour représenter le jeu
             if (self.player.color == "black" and self.player.turn == 1) or (self.player2.color == "black" and self.player2.turn == 1):
                 if king_posb[0] + 1 < 8:
                     if self.board.grid[king_posb[0] + 1][king_posb[1]] is None and self.checkb(king_posb[0] + 1, king_posb[1]) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "black":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8 - king_posb[0]):
+                                                    if move == (king_posb[0] + i, king_posb[1]):
+                                                        print("aa")
+                                                        print(move)
+                                                        return False
                         return False
                     if self.board.grid[king_posb[0] + 1][king_posb[1]] is not None:
                         if self.board.grid[king_posb[0] + 1][king_posb[1]].color == "white" and self.checkb(king_posb[0] + 1, king_posb[1]) is False:
                             return False
                 if king_posb[0] - 1 >= 0:
                     if self.board.grid[king_posb[0] - 1][king_posb[1]] is None and self.checkb(king_posb[0] - 1, king_posb[1]) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "black":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8-king_posb[0]):
+                                                    if move == (king_posb[0] - i, king_posb[1]):
+                                                        print("bb")
+                                                        return False
                         return False
                     if self.board.grid[king_posb[0] - 1][king_posb[1]] is not None:
                         if self.board.grid[king_posb[0] - 1][king_posb[1]].color == "white" and self.checkb(king_posb[0] - 1, king_posb[1]) is False:
@@ -1754,9 +1779,230 @@ class Game:  # Classe pour représenter le jeu
                                 if move == king_posw:
                                     return False
                 print("Echec et mat")
+                return True"""
+
+    def checkmate(self):
+        # get king positions
+        king_posb = self.get_piece_position(5)
+        king_posw = self.get_piece_position(21)
+
+        # get all possible moves of all pieces on the board
+        all_moves = []
+        for row in range(8):
+            for col in range(8):
+                piece = self.get_piece(row, col)
+                if piece is not None:
+                    moves = self.get_moves(row, col)
+                    if moves is not None:
+                        for move in moves:
+                            all_moves.append((row, col, move))
+
+        # check if king can move to a safe position
+        if self.player.color == "black":
+            for move in [(king_posb[0] + i, king_posb[1] + j) for i in [-1, 0, 1] for j in [-1, 0, 1]]:
+                if move[0] < 0 or move[0] > 7 or move[1] < 0 or move[1] > 7:
+                    continue
+                if self.board.grid[move[0]][move[1]] is None and not self.checkb(move[0], move[1]):
+                    if not any([self.is_in_check_after_move(move[0], move[1], row, col, all_moves) for row, col, _ in
+                                all_moves if self.get_piece(row, col).color == "white"]):
+                        return False
+                if self.board.grid[move[0]][move[1]] is not None and self.board.grid[move[0]][
+                    move[1]].color == "white" and not self.checkb(move[0], move[1]):
+                    if not any([self.is_in_check_after_move(move[0], move[1], row, col, all_moves) for row, col, _ in
+                                all_moves if self.get_piece(row, col).color == "white"]):
+                        return False
+        elif self.player.color == "white":
+            for move in [(king_posw[0] + i, king_posw[1] + j) for i in [-1, 0, 1] for j in [-1, 0, 1]]:
+                if move[0] < 0 or move[0] > 7 or move[1] < 0 or move[1] > 7:
+                    continue
+                if self.board.grid[move[0]][move[1]] is None and not self.checkw(move[0], move[1]):
+                    if not any([self.is_in_check_after_move(move[0], move[1], row, col, all_moves) for row, col, _ in
+                                all_moves if self.get_piece(row, col).color == "black"]):
+                        return False
+                if self.board.grid[move[0]][move[1]] is not None and self.board.grid[move[0]][
+                    move[1]].color == "black" and not self.checkw(move[0], move[1]):
+                    if not any([self.is_in_check_after_move(move[0], move[1], row, col, all_moves) for row, col, _ in
+                                all_moves if self.get_piece(row, col).color == "black"]):
+                        return False
+                if self.board.grid[king_posb[0] - 1][king_posb[1] - 1] is None and self.checkb(king_posb[0] - 1, king_posb[1] - 1) is False:
+                    return False
+                if self.board.grid[king_posb[0] - 1][king_posb[1] - 1] is not None:
+                    if self.board.grid[king_posb[0] - 1][king_posb[1] - 1].color == "white" and self.checkb(
+                            king_posb[0] - 1, king_posb[1] - 1) is False:
+                        return False
+            return True
+        elif self.checkw(king_posw[0], king_posw[1]):
+            if (self.player.color == "white" and self.player.turn == 1) or (
+                    self.player2.color == "white" and self.player2.turn == 1):
+                if king_posw[0] + 1 < 8:
+                    if self.board.grid[king_posw[0] + 1][king_posw[1]] is None and self.checkw(king_posw[0] + 1,
+                                                                                                 king_posw[1]) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "white":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8 - king_posw[0]):
+                                                    if move == (king_posw[0] + i, king_posw[1]):
+                                                        print("cc")
+                                                        return False
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1]] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1]].color == "black" and self.checkw(king_posw[0] + 1,
+                                                                                                            king_posw[
+                                                                                                                1]) is False:
+                            return False
+                if king_posw[0] - 1 >= 0:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1]] is None and self.checkw(king_posw[0] - 1,
+                                                                                               king_posw[1]) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "white":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8 - king_posw[0]):
+                                                    if move == (king_posw[0] - i, king_posw[1]):
+                                                        print("dd")
+                                                        return False
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1]] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1]].color == "black" and self.checkw(king_posw[0] - 1,
+                                                                                                            king_posw[
+                                                                                                                1]) is False:
+                            return False
+                if king_posw[1] + 1 < 8:
+                    if self.board.grid[king_posw[0]][king_posw[1] + 1] is None and self.checkw(king_posw[0],
+                                                                                               king_posw[1] + 1) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "white":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8 - king_posw[0]):
+                                                    if move == (king_posw[0], king_posw[1] + i):
+                                                        print("ee")
+                                                        return False
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] + 1] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1] + 1].color == "black" and self.checkw(king_posw[0] + 1,
+                                                                                                         king_posw[
+                                                                                                             1] + 1) is False:
+
+                            return False
+                if king_posw[0] + 1 < 8 and king_posw[1] - 1 >= 0:
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] - 1] is None and self.checkw(king_posw[0] + 1,
+                                                                                                   king_posw[1] - 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] - 1] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1] - 1].color == "black" and self.checkw(
+                                king_posw[0] + 1, king_posw[1] - 1) is False:
+                            return False
+                if king_posw[0] - 1 >= 0 and king_posw[1] + 1 < 8:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] + 1] is None and self.checkw(king_posw[0] - 1,
+                                                                                                   king_posw[1] + 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] + 1] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1] + 1].color == "black" and self.checkw(
+                                king_posw[0] - 1, king_posw[1] + 1) is False:
+                            return False
+                if king_posw[0] - 1 >= 0 and king_posw[1] - 1 >= 0:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] - 1] is None and self.checkw(king_posw[0] - 1,
+                                                                                                   king_posw[1] - 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] - 1] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1] - 1].color == "black" and self.checkw(
+                                king_posw[0] - 1, king_posw[1] - 1) is False:
+                            return False
+        elif self.checkw(king_posw[0], king_posw[1]):
+            if (self.player.color == "white" and self.player.turn == 1) or (
+                    self.player2.color == "white" and self.player2.turn == 1):
+                if king_posw[0] + 1 < 8:
+                    if self.board.grid[king_posw[0] + 1][king_posw[1]] is None and self.checkw(king_posw[0] + 1,
+                                                                                               king_posw[1]) is False:
+                        for row in range(8):
+                            for col in range(8):
+                                piece = self.get_piece(row, col)
+                                if piece is not None:
+                                    if piece.color == "white":
+                                        moves = self.get_moves(row, col)
+                                        if moves is not None:
+                                            for move in moves:
+                                                for i in range(8 - king_posw[0]):
+                                                    if move == (king_posw[0] + i, king_posw[1]):
+                                                        print("ff")
+                                                        return False
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1]] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1]].color == "black" and self.checkw(king_posw[0] + 1,
+                                                                                                         king_posw[
+                                                                                                             1]) is False:
+                            return False
+                if king_posw[0] - 1 >= 0:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1]] is None and self.checkw(king_posw[0] - 1,
+                                                                                               king_posw[1]) is False:
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1]] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1]].color == "black" and self.checkw(
+                                king_posw[0] - 1, king_posw[1]) is False:
+                            return False
+                if king_posw[1] + 1 < 8:
+                    if self.board.grid[king_posw[0]][king_posw[1] + 1] is None and self.checkw(king_posw[0],
+                                                                                               king_posw[1] + 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0]][king_posw[1] + 1] is not None:
+                        if self.board.grid[king_posw[0]][king_posw[1] + 1].color == "black" and self.checkw(
+                                king_posw[0], king_posw[1] + 1) is False:
+                            return False
+                if king_posw[1] - 1 >= 0:
+                    if self.board.grid[king_posw[0]][king_posw[1] - 1] is None and self.checkw(king_posw[0],
+                                                                                               king_posw[1] - 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0]][king_posw[1] - 1] is not None:
+                        if self.board.grid[king_posw[0]][king_posw[1] - 1].color == "black" and self.checkw(
+                                king_posw[0], king_posw[1] - 1) is False:
+                            return False
+                if king_posw[0] + 1 < 8 and king_posw[1] + 1 < 8:
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] + 1] is None and self.checkw(king_posw[0] + 1,
+                                                                                                   king_posw[1] + 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] + 1] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1] + 1].color == "black" and self.checkw(
+                                king_posw[0] + 1, king_posw[1] + 1) is False:
+                            return False
+                if king_posw[0] + 1 < 8 and king_posw[1] - 1 >= 0:
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] - 1] is None and self.checkw(king_posw[0] + 1,
+                                                                                                   king_posw[1] - 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] + 1][king_posw[1] - 1] is not None:
+                        if self.board.grid[king_posw[0] + 1][king_posw[1] - 1].color == "black" and self.checkw(
+                                king_posw[0] + 1, king_posw[1] - 1) is False:
+                            return False
+                if king_posw[0] - 1 >= 0 and king_posw[1] + 1 < 8:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] + 1] is None and self.checkw(king_posw[0] - 1,
+                                                                                                   king_posw[1] + 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] + 1] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1] + 1].color == "black" and self.checkw(
+                                king_posw[0] - 1, king_posw[1] + 1) is False:
+                            return False
+                if king_posw[0] - 1 >= 0 and king_posw[1] - 1 >= 0:
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] - 1] is None and self.checkw(king_posw[0] - 1,
+                                                                                                   king_posw[1] - 1) is False:
+                        return False
+                    if self.board.grid[king_posw[0] - 1][king_posw[1] - 1] is not None:
+                        if self.board.grid[king_posw[0] - 1][king_posw[1] - 1].color == "black" and self.checkw(
+                                king_posw[0] - 1, king_posw[1] - 1) is False:
+                            return False
                 return True
-
-
 
 
 
