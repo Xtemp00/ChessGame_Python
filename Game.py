@@ -155,6 +155,13 @@ class Game:  # Classe pour représenter le jeu
                 col = x // GRID_SIZE  # On calcule la colonne
                 run = True
                 self.select_piece(row, col)  # On sélectionne la pièce
+                if self.selected_piece is not None:
+                    piece = self.board.grid[row][col]
+                    if piece.color == self.player.color and self.player.turn != 1:
+                        self.selected_piece = None
+                    elif piece.color == self.player2.color and self.player2.turn != 1:
+                        self.selected_piece = None
+
                 self.check()  # On vérifie si le roi est en échec
                 self.get_tab_piece()  # On récupère les pièces de chaque joueur
                 # On regarde la pièce sélectionnée et on la met en Hightlight tant que un second click n'est pas détecter puis on déplace la pièce au click
@@ -192,15 +199,16 @@ class Game:  # Classe pour représenter le jeu
                             if piece.type == "king":
                                 self.highlight_moves_king(self.selected_piece[0], self.selected_piece[1])
 
-        # Fonction qui permet de jouer au tour par tour (les blancs commence)
-
     def select_piece(self, row, col):  # Fonction qui permet de sélectionner une pièce
         piece = self.board.grid[row][col]  # On récupère la pièce
         if self.selected_piece is None:
             if piece is not None:  # Si la pièce n'est pas vide
                 if self.player.color == piece.color:
                     self.selected_piece = (row, col)  # On sélectionne la pièce
-        elif self.selected_piece is not None :  # Si une pièce est sélectionnée
+                elif self.player2.color == piece.color:
+                    self.selected_piece = (row, col)
+
+        elif self.selected_piece is not None:  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
             # self.tour_par_tour()
 
@@ -932,35 +940,45 @@ class Game:  # Classe pour représenter le jeu
         pygame.display.update()
         pygame.display.update(updated_rects)  # On met à jour l'affichage
 
+
+
     def move(self, row, col):  # Fonction qui permet de déplacer une pièce
         if self.selected_piece is not None:  # Si une pièce est sélectionnée
             piece_row, piece_col = self.selected_piece  # On récupère les coordonnées de la pièce
             piece = self.board.grid[piece_row][piece_col]  # On récupère la pièce
-            if piece.type == "pawn":  # Si la pièce est un pion
+            if piece.type == "pawn" and (row != piece_row or col != piece_col):  # Si la pièce est un pion
                 self.pawn_move(row, col)  # On appelle la fonction qui permet de déplacer un pion
-            elif piece.type == "rook":  # Si la pièce est une tour
+                self.turn()  # On change de joueur
+            elif piece.type == "rook" and (row != piece_row or col != piece_col):  # Si la pièce est une tour
                 self.rook_move(row, col)  # On appelle la fonction qui permet de déplacer une tour
-            elif piece.type == "knight":  # Si la pièce est un cavalier
+                self.turn()
+            elif piece.type == "knight" and (row != piece_row or col != piece_col):  # Si la pièce est un cavalier
                 self.knight_move(row, col)  # On appelle la fonction qui permet de déplacer un cavalier
-            elif piece.type == "bishop":  # Si la pièce est un fou
+                self.turn()
+            elif piece.type == "bishop" and (row != piece_row or col != piece_col):  # Si la pièce est un fou
                 self.bishop_move(row, col)  # On appelle la fonction qui permet de déplacer un fou
-            elif piece.type == "queen":  # Si la pièce est une reine
+                self.turn()
+            elif piece.type == "queen" and (row != piece_row or col != piece_col):  # Si la pièce est une reine
                 self.queen_move(row, col)  # On appelle la fonction qui permet de déplacer une reine
-            elif piece.type == "king":  # Si la pièce est un roi
+                self.turn()
+            elif piece.type == "king" and (row != piece_row or col != piece_col):  # Si la pièce est un roi
                 self.king_move(row, col)  # On appelle la fonction qui permet de déplacer un roi
+                self.turn()
             self.selected_piece = None  # On déselectionne la pièce
+
 
         else:  # Si aucune pièce n'est sélectionnée
             if self.board.grid[row][col] is not None and self.board.grid[row][
                 col].color == "white":  # Si la case sélectionnée contient une pièce blanche
-                self.selected_piece = (row, col)  # On sélectionne la pièce
+                piece = self.board.grid[row][col]  # On récupère la pièce
+                if self.selected_piece is None:
+                    if piece is not None:  # Si la pièce n'est pas vide
+                        if self.player.color == piece.color:
+                            self.selected_piece = (row, col)  # On sélectionne la pièce
+                        elif self.player2.color == piece.color:
+                            self.selected_piece = (row, col)
 
-        if self.player.turn == 1:
-            self.player.turn = 0
-            self.player2.turn = 1
-        elif self.player.turn == 0:
-            self.player.turn = 1
-            self.player2.turn = 0
+
 
     def update(self):  # Fonction qui permet de mettre à jour le jeu
         self.board.draw(self.screen)  # On dessine le plateau de jeu
@@ -1654,6 +1672,7 @@ class Game:  # Classe pour représenter le jeu
                             for move in moves:
                                 if move == king_posb:
                                     return False
+                print("Echec et mat")
                 return True
             if self.turn == "white":
                 if king_posw[0] + 1 < 8:
@@ -1703,6 +1722,7 @@ class Game:  # Classe pour représenter le jeu
                             for move in moves:
                                 if move == king_posw:
                                     return False
+                print("Echec et mat")
                 return True
 
 
@@ -1782,13 +1802,12 @@ class Game:  # Classe pour représenter le jeu
         self.running = True  # On lance le jeu
 
     def turn(self):  # Fonction qui permet de changer de tour
-        if self.player_turn == 0:  # Si c'est le tour du joueur 1
-            self.player_turn = 1  # On passe au tour du joueur 2
-        else:  # Sinon
-            self.player_turn = 0  # On passe au tour du joueur 1
-
-    def player_turn(self):
-        return self.player_turn
+        if self.player.turn == 1:
+            self.player.turn = 0
+            self.player2.turn = 1
+        else:
+            self.player.turn = 1
+            self.player2.turn = 0
 
     def run(self):  # Fonction qui permet de lancer le jeu
         self.choose_player()  # On choisit le joueur
