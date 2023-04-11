@@ -198,8 +198,9 @@ class Game:  # Classe pour représenter le jeu
         piece = self.board.grid[row][col]  # On récupère la pièce
         if self.selected_piece is None:
             if piece is not None:  # Si la pièce n'est pas vide
-                self.selected_piece = (row, col)  # On sélectionne la pièce
-        elif self.selected_piece is not None:  # Si une pièce est sélectionnée
+                if self.player.color == piece.color:
+                    self.selected_piece = (row, col)  # On sélectionne la pièce
+        elif self.selected_piece is not None :  # Si une pièce est sélectionnée
             self.move(row, col)  # On déplace la pièce
             # self.tour_par_tour()
 
