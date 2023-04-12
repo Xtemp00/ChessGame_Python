@@ -1,5 +1,5 @@
 # AI_Chess_Game
-##### This is a Chess game develop in python with the library pygame, and a Ai who learn by herself generation after generation to become an AI who came play normaly at Chess.
+##### This is a Chess game develop in python with the library pygame, and a Ai using stockfish who learn by herself generation after generation to become an AI who came play normaly at Chess.
 
 ## Getting Started
 
@@ -12,6 +12,7 @@
 ##### Python - all code of the game
 ##### Pygame - library of python
 ##### SQL - to save all the process of learning
+##### C++ - Using stockfish code
 
 
 ### Authors
@@ -23,8 +24,8 @@
 ##### Tim 
 ##### Nino
 ##### Tess
-(License)
 
+### MIT Licence
 
 ### Acknowledgments
 This project is born at the beginning for training python langage but after that it became a start of AI learning.
