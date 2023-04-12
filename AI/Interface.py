@@ -1,45 +1,110 @@
-# Fichier pour faire jouer l'ia et la mettre en lien avec notre jeu
+# On Créer une Interface Pour intéragir avec l'IA
+# On utilise pygame pour créer une interface graphique
 
-from tensorflow.keras.models import load_model
-import numpy as np
-import chess
-import Game
+import pygame
 
-model = load_model('mon_modele.h5')
+# On crée une fonction pour initialiser l'interface
+def InitInterface():
+    pygame.init()
+    pygame.display.set_caption("Deep Chess")
+    screen = pygame.display.set_mode((1920, 1080))
+    # On place un background
+    background = pygame.image.load("../Data/Background/Background.png")
+    screen.blit(background, (0, 0))
 
-# On récupère le plateau de jeu de notre jeu
-def get_board():
-    return Game.board
 
-# On convertit le plateau de jeu en tableau
-def board_to_array(board):
-    pieces = {'P': 0, 'N': 1, 'B': 2, 'R': 3, 'Q': 4, 'K': 5,
-              'p': 6, 'n': 7, 'b': 8, 'r': 9, 'q': 10, 'k': 11, '.': 12}
-    board_array = np.zeros((8, 8, 12), dtype=np.uint8)
+    # On charge l'image pour un bouton
+    button = pygame.image.load("../Data/Noeuds.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (230, 49))
+    # On affiche le bouton
+    screen.blit(button, (845, 750))
 
-    for row in range(8):
-        for col in range(8):
-            piece = board.piece_at(chess.square(col, 7-row))
-            if piece is not None:
-                board_array[row, col, pieces[piece.symbol()]] = 1
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Play.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (250, 50))
+    # On affiche le bouton
+    screen.blit(button, (835, 400))
 
-    return board_array
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Bots.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (200, 50))
+    # On affiche le bouton
+    screen.blit(button, (860, 470))
 
-# On récupère le mouvement de l'ia
-def get_move():
-    # On récupère le plateau de jeu
-    board = get_board()
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Test.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (190, 50))
+    # On affiche le bouton
+    screen.blit(button, (865, 540))
 
-    # On récupère les mouvements possibles
-    legal_moves = list(board.legal_moves)
-    legal_moves = [move.uci() for move in legal_moves]
-    legal_moves.sort()
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Database.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (215, 50))
+    # On affiche le bouton
+    screen.blit(button, (852, 610))
 
-    # On récupère la prédiction de l'ia
-    prediction = model.predict(np.array([board_to_array(board)]))
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Train.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (215, 50))
+    # On affiche le bouton
+    screen.blit(button, (852, 680))
 
-    # On récupère le mouvement à jouer
-    move_uci = legal_moves[np.argmax(prediction)]
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Credits.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (115, 50))
+    # On affiche le bouton
+    screen.blit(button, (1800, 960))
 
-    # On retourne le mouvement
-    return chess.Move.from_uci(move_uci)
+    # On affiche le Bouton pour jouer contre l'ia
+    button = pygame.image.load("../Data/Quit.png")
+    # On redimensionne l'image
+    button = pygame.transform.scale(button, (115, 50))
+    # On affiche le bouton
+    screen.blit(button, (1800, 1020))
+
+
+    return screen
+
+# On créer une boucle pour pygame
+def pygame_loop(screen):
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        pygame.display.flip()
+
+        # On va détecter si le bouton est cliqué
+        if pygame.mouse.get_pressed()[0]:
+            # On récupère la position de la souris
+            pos = pygame.mouse.get_pos()
+            # On vérifie si la souris est dans le bouton
+            if 850 < pos[0] < 1084 and 1000 < pos[1] < 1049:
+                # On affiche un message
+                print("Bouton cliqué")
+
+        # On regarder si le bouton quitte est cliqué
+        if pygame.mouse.get_pressed()[0]:
+            # On récupère la position de la souris
+            pos = pygame.mouse.get_pos()
+            # On vérifie si la souris est dans le bouton
+            if 1800 < pos[0] < 1915 and 1020 < pos[1] < 1070:
+                # On affiche un message
+                print("Bouton cliqué")
+                # On quitte le programme
+                pygame.quit()
+                exit()
+
+    pygame.quit()
+
+# On lance l'interface dans le main
+if __name__ == '__main__':
+    screen = InitInterface()
+    pygame_loop(screen)

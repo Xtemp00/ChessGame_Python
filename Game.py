@@ -1,9 +1,14 @@
+import chess
 import pygame
+
 from Board import Board
 from Piece import Piece
 from Player import Player
+from AI import Interface
+import chess
 
 updated_rects = []  # Liste des rectangles de l'écran qui ont été mis à jour
+
 
 # Constantes pour la taille de l'écran et de la grille de jeu
 SCREEN_WIDTH = 720  # Largeur de l'écran
@@ -98,7 +103,7 @@ class Game:  # Classe pour représenter le jeu
             # Affiche les 15 dernier coup jouer dans la fenêtre
             for i in range(10):
 
-                text1 = (str(colonne[col2]) + str(row2) + " -> " + str(colonne[col]) + str(row))
+                text1 = (str(colonne[col2]) + str(8-row2) + " -> " + str(colonne[col]) + str(8-row))
 
                 if text1 not in self.afficher:
                     text = font.render(text1, 1, WHITE)
@@ -1704,11 +1709,6 @@ class Game:  # Classe pour représenter le jeu
                                 if move == king_posw:
                                     return False
                 return True
-
-
-
-
-
 
 
     # Ajout des getter et setter
