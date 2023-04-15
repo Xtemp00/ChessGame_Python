@@ -68,8 +68,6 @@ def get_move(board):
 
 # On va faire une fonction pour jouer contre l'ia et le voir de manière graphique
 def Training(nb_entraînements):
-    os.remove("mon_modele.h5"")
-    screen = InitInterface()
 
     # Boucle principale d'apprentissage
     for i in range(nb_entraînements):
@@ -84,9 +82,6 @@ def Training(nb_entraînements):
             # Jouer le mouvement sur le plateau de jeu
             board.push(move)
             print(board)
-            DrawBoard(screen)
-            DrawPieces(screen, board)
-            pygame.display.flip()
 
             # Évaluer le plateau de jeu
             score = evaluate_board(board)
@@ -101,11 +96,14 @@ def Training(nb_entraînements):
             # pour l'apprentissage par renforcement
             X.append(board_to_input(board))
             y.append(score)
-
+            model.fit(np.array(X), np.array(y), batch_size=128, epochs=5)
+            os.remove('Hermes_L0.h5')
+            model.save('Hermes_L0.h5')
         # Entraîner le modèle sur les données collectées
-        model.fit(np.array(X), np.array(y), batch_size=128, epochs=5000)
-    model.save('mon_modele.h5')
+        model.fit(np.array(X), np.array(y), batch_size=32, epochs=500)
+    os.remove('Hermes_L0.h5')
+    model.save('Hermes_L0.h5')
 
 
 if __name__ == "__main__":
-    Training(5)
+    Training(50)

@@ -1,9 +1,10 @@
-from tensorflow import keras
+import tensorflow as tf
 from keras.utils.vis_utils import plot_model
-import pydot
+import netron
 
-# Charger le modèle sauvegardé
-model = keras.models.load_model('mon_modele.h5')
 
-# Afficher le graphe du modèle
-plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=True)
+
+def AfficherGraphique(model):
+    # Visualiser le graphique de votre modèle avec netron
+    # Visualiser le graphique de votre modèle avec Netron
+    netron.start(model)

@@ -102,6 +102,32 @@ def pygame_loop(screen):
                 pygame.quit()
                 exit()
 
+        # On regarder si le bouton noeuds est cliqué
+        if pygame.mouse.get_pressed()[0]:
+            # On récupère la position de la souris
+            pos = pygame.mouse.get_pos()
+            # On vérifie si la souris est dans le bouton
+            if 845 < pos[0] < 1075 and 750 < pos[1] < 799:
+                # On affiche un message
+                import Noeuds
+                Noeuds.AfficherGraphique("mon_modele.h5")
+                # On quitte le programme
+                pygame.quit()
+                exit()
+
+        # On regarder si le bouton play est cliqué
+        if pygame.mouse.get_pressed()[0]:
+            # On récupère la position de la souris
+            pos = pygame.mouse.get_pos()
+            # On vérifie si la souris est dans le bouton
+            if 835 < pos[0] < 1085 and 400 < pos[1] < 450:
+                # On affiche un message
+                import Versus
+                Versus.game_loop()
+                # On quitte le programme
+                pygame.quit()
+                exit()
+
     pygame.quit()
 
 # On lance l'interface dans le main
