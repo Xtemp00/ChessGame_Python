@@ -37,3 +37,24 @@ de cetains Joueurs puis on va entrainer notre modèle avec ces données.
     puis on va créer un fichier python qui va récupérer les données de chess.com
     puis on va créer un fichier python qui va entrainer notre modèle avec les données récupérées
     puis on va créer un fichier python qui va intégrer notre modèle avec Pygame
+
+
+
+"""
+Liste des trucs fait et a faire :
+Pouvoir Jouer contre L'ia:
+    - Jouer contre elle V
+    - Affiches les Coups joué X
+    - Faire une Pop Up qui dit si on a gagné ou perdu V
+    - Etudier les coups pour savoir si c'est un bon coup ou non X
+    - Faire un système de notation pour savoir si c'est un bon coup ou non X
+    - Affiche l'évaluation de coups X
+Pouvoir étudier une partie de chess.com de manières complète X
+Analyser les data de l'ia X
+Pouvoir voir les nodes V
+Pouvoir entrainer l'ia de manière graphique X
+Jouer contre Un bots X
+Faire Jouer l'ia contre un Bot X
+
+
+"""
