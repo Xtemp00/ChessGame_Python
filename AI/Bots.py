@@ -6,17 +6,6 @@ import chess
 import pygame
 import chess.engine
 
-
-
-
-def Bots(niv):
-    # On créer un bot d'un Niveau voulu
-    engine = chess.engine.SimpleEngine.popen_uci("StockFish/stockfish_15.1_win_x64_avx2/stockfish-windows-2022-x86-64-avx2.exe")
-    bot = chess.engine.SimpleEnginePlayer(engine, elo=niv)
-    return bot
-
-from tensorflow.keras.models import load_model
-model = load_model('Hermes_L0.h5')
 def InitInterface():
     pygame.init()
     pygame.display.set_caption("Chess")
@@ -49,41 +38,55 @@ def DrawBoard(screen):
 
 # On fait une pop up pour le changement de pièces
 def DrawPopUp(screen):
-    # On affiche un carre vert transparent pour le fond de la pop up, Au centre de l'écran
-    pygame.draw.rect(screen, (0, 255, 0, 100), (500, 200, 400, 600))
+    # On affiche le cadre pour la promotion
+    cadre = pygame.image.load("../Data/Background/Promotion.png")
+    # On redimensionne l'image
+    cadre = pygame.transform.scale(cadre, (700, 430))
+    screen.blit(cadre, (125, 0))
     # On affiche les pièces possible pour la promotion
     # On affiche le bouton pour la tour
     button = pygame.image.load("../pieces/rook_white.png")
     # On redimensionne l'image
-    button = pygame.transform.scale(button, (100, 100))
+    button = pygame.transform.scale(button, (125, 125))
     # On affiche le bouton
-    screen.blit(button, (600, 300))
+    screen.blit(button, (215, 225))
     # On affiche le bouton pour le fou
     button = pygame.image.load("../pieces/bishop_white.png")
     # On redimensionne l'image
-    button = pygame.transform.scale(button, (100, 100))
+    button = pygame.transform.scale(button, (125, 125))
     # On affiche le bouton
-    screen.blit(button, (600, 450))
+    screen.blit(button, (340, 225))
     # On affiche le bouton pour le cavalier
     button = pygame.image.load("../pieces/knight_white.png")
     # On redimensionne l'image
-    button = pygame.transform.scale(button, (100, 100))
+    button = pygame.transform.scale(button, (125, 125))
     # On affiche le bouton
-    screen.blit(button, (600, 600))
+    screen.blit(button, (465, 225))
     # On affiche le bouton pour la reine
     button = pygame.image.load("../pieces/queen_white.png")
     # On redimensionne l'image
-    button = pygame.transform.scale(button, (100, 100))
+    button = pygame.transform.scale(button, (125, 125))
     # On affiche le bouton
-    screen.blit(button, (600, 750))
+    screen.blit(button, (590, 225))
 
     # On met un texte pour dire de choisir une pièce
-    font = pygame.font.SysFont("comicsansms", 30)
-    text = font.render("Promotion", True, (0, 0, 0))
-    screen.blit(text, (600, 200))
+    font = pygame.font.SysFont("comicsansms", 40)
+    text = font.render("Promotion", True, (255, 255, 255))
+    screen.blit(text, (375, 180))
 
     pygame.display.flip()
 
+
+def CoupJoueAffichage(screen, liste_coup):
+
+   # On affiche tout les coups de la liste
+    for i in range(len(liste_coup)):
+        # On affiche le coup
+        font = pygame.font.SysFont("comicsansms", 40)
+        text = font.render(str(liste_coup[i]), True, (255, 255, 255))
+        screen.blit(text, (1140, 50 + i * 40))
+
+    pygame.display.flip()
 
 # On affiche certaine action
 def DrawAction(screen):
@@ -121,6 +124,7 @@ def highlight_square(screen, square, board):
     pygame.display.flip()
     # On regarde les coups possibles de la pièce sélectionnée
     moves = board.legal_moves
+
     # On affiche un carre vert transparent sur les case possible
     for move in moves:
         if move.from_square == square:
@@ -163,16 +167,20 @@ def draw_text(screen, text):
 def game_loop():
     screen = InitInterface()
     engine = chess.engine.SimpleEngine.popen_uci("StockFish/stockfish_15.1_win_x64_avx2/stockfish-windows-2022-x86-64-avx2.exe")
-    elo = 1500
-    bot = chess.engine.SimpleEnginePlayer(engine, elo=elo)
+    elo = 0
+    #On définie un niveau pour le moteur
+    engine.configure({"Skill Level": elo})
     board = chess.Board()
-
     DrawBoard(screen)
     DrawPieces(screen, board)
     pygame.display.flip()
+    #DrawPopUp(screen)
     tour = 0
 
+    coup_joue =[]
+
     while True:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -181,7 +189,6 @@ def game_loop():
         if check_game_state(board):
             draw_text(screen, "Partie Terminé")
             pygame.display.flip()
-            time.sleep(15)
             pygame.quit()
             exit()
 
@@ -232,16 +239,27 @@ def game_loop():
                                 print(board)
                                 DrawBoard(screen)
                                 DrawPieces(screen, board)
+                                coup_joue.append(move)
+                                CoupJoueAffichage(screen, coup_joue)
                                 pygame.display.flip()
                                 tour = 1
                                 break
+                    # Si le clique droit est pressé on annule le déplacement et on déselectionne la pièce
+                    if pygame.mouse.get_pressed()[2]:
+                        DrawBoard(screen)
+                        DrawPieces(screen, board)
+                        pygame.display.flip()
+                        break
+
         elif tour == 1:
             print("C'est au tour du bot")
             # C'est au tour du bot
-            result = engine.play(board, chess.engine.Limit(time=2.0))
+            result = engine.play(board, chess.engine.Limit(time=1.0))
             board.push(result.move)
             DrawBoard(screen)
             DrawPieces(screen, board)
+            coup_joue.append(result.move)
+            CoupJoueAffichage(screen, coup_joue)
             pygame.display.flip()
             tour = 0
 

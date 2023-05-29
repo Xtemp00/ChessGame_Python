@@ -128,6 +128,17 @@ def pygame_loop(screen):
                 pygame.quit()
                 exit()
 
+
+        # On regarde si le boutton bot est cliqué
+        if pygame.mouse.get_pressed()[0]:
+            pos = pygame.mouse.get_pos()
+
+            if 860 < pos[0] < 1060 and 470 < pos[1] < 520:
+                import Bots
+                Bots.game_loop()
+                pygame.quit()
+                exit()
+
     pygame.quit()
 
 # On lance l'interface dans le main
